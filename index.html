@@ -28,6 +28,16 @@
   .empty{padding:70px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.8;}
   .empty b{color:var(--ink);}
   .foot{max-width:860px;margin:10px auto 0;font-size:11px;color:var(--mut);text-align:right;}
+  /* 모바일: 좁은 화면에서는 머리글·탭을 가운데 정렬 */
+  @media (max-width:640px){
+    .head{text-align:center;}
+    .bar{justify-content:center;}
+    .spacer{display:none;}
+    select{margin:8px 0 6px;}
+    .body{padding:14px 10px 30px;}
+    iframe{height:calc(100vh - 240px);}
+    .foot{text-align:center;}
+  }
 </style>
 </head>
 <body>
