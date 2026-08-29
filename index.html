@@ -184,7 +184,7 @@ function renderReader(){
       mobilize(doc);
     } catch(e){}
   };
-  f.src = "briefs/" + state.kind + "/" + state.date + ".html";
+  f.src = "briefs/" + state.kind + "/" + state.date + ".html?v=" + Date.now();   /* 재발행분이 캐시에 가려지지 않게 */
 }
 
 /* 이메일용 고정폭 브리핑을 좁은 화면에 맞게 풀어준다 (원본 index.html 로직 유지) */
