@@ -134,8 +134,16 @@ function mobilize(doc) {
       t.removeAttribute("width");
     }
   });
+  /* 셀 고정폭(달력 7칸 등)이 화면보다 넓어지는 것 방지 — 폭 지정을 풀어 균등 분배 */
+  doc.querySelectorAll("th[width], td[width]").forEach(function (c) {
+    if (parseInt(c.getAttribute("width"), 10) >= 30) c.removeAttribute("width");
+  });
   var st = doc.createElement("style");
-  st.textContent = "body{overflow-x:hidden;word-break:keep-all;} img{max-width:100%;height:auto;}";
+  st.textContent =
+    "html,body{overflow-x:hidden;word-break:keep-all;" +
+    "-webkit-text-size-adjust:100% !important;text-size-adjust:100% !important;}" +   /* 모바일 폰트 확대(부스팅) 금지 */
+    "img{max-width:100%;height:auto;}" +
+    "td,th{white-space:normal !important;}";                                          /* 줄바꿈 금지 셀이 표를 넓히는 것 방지 */
   (doc.head || doc.documentElement).appendChild(st);
 }
 </script>
