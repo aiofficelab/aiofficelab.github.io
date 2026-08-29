@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>아침 브리핑</title>
+<style>
+  :root{ --ink:#201e1d; --acc:#ec3013; --bg:#e9e7e7; --line:#d8d4d3; --mut:#7d7979; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:var(--ink);}
+  .top{background:#fff;border-bottom:1px solid var(--line);}
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px;}
+  .head{padding:26px 0 0;}
+  .kick{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--acc);}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:6px 0 16px;}
+  .bar{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;padding-bottom:0;}
+  .tab{appearance:none;border:1px solid var(--line);border-bottom:none;background:#f4f2f2;
+       color:var(--mut);font:inherit;font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .tab:hover:not(.on){background:#fff;color:var(--ink);}
+  .spacer{flex:1;}
+  select{font:inherit;font-size:12.5px;padding:6px 8px;border:1px solid var(--line);background:#fff;
+         color:var(--ink);margin-bottom:6px;max-width:150px;}
+  .body{padding:18px 16px 40px;}
+  .card{max-width:860px;margin:0 auto;background:#fff;border:1px solid var(--line);}
+  iframe{display:block;width:100%;height:calc(100vh - 210px);min-height:520px;border:0;background:#fff;}
+  .empty{padding:70px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.8;}
+  .empty b{color:var(--ink);}
+  .foot{max-width:860px;margin:10px auto 0;font-size:11px;color:var(--mut);text-align:right;}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="wrap head">
+    <div class="kick">DAILY BRIEFING</div>
+    <h1>아침 브리핑</h1>
+    <div class="bar">
+      <button class="tab on" data-kind="morning">📈 시황 브리핑</button>
+      <button class="tab" data-kind="econrisk">🌐 경제·리스크</button>
+      <span class="spacer"></span>
+      <select id="dateSel" title="지난 브리핑 보기"></select>
+    </div>
+  </div>
+</div>
+<div class="body">
+  <div class="card">
+    <div class="empty" id="empty" hidden>
+      <b>아직 발행된 브리핑이 없습니다.</b><br>
+      매일 아침 자동으로 새 브리핑이 올라옵니다.
+    </div>
+    <iframe id="frame" title="브리핑 본문" hidden></iframe>
+  </div>
+  <div class="foot" id="foot"></div>
+</div>
+<script>
+var state = { kind: "morning", manifest: {} };
+var $ = function (id) { return document.getElementById(id); };
+
+fetch("manifest.json?t=" + Date.now())
+  .then(function (r) { return r.ok ? r.json() : {}; })
+  .then(function (m) { state.manifest = m || {}; render(); })
+  .catch(function () { render(); });
+
+document.querySelectorAll(".tab").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll(".tab").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    state.kind = b.getAttribute("data-kind");
+    render();
+  });
+});
+
+$("dateSel").addEventListener("change", function () { show(this.value); });
+
+function dates() { return state.manifest[state.kind] || []; }
+
+function render() {
+  var ds = dates(), sel = $("dateSel");
+  sel.innerHTML = "";
+  ds.forEach(function (d) {
+    var o = document.createElement("option");
+    o.value = d; o.textContent = d;
+    sel.appendChild(o);
+  });
+  sel.hidden = ds.length === 0;
+  if (ds.length === 0) { $("frame").hidden = true; $("empty").hidden = false; $("foot").textContent = ""; return; }
+  $("empty").hidden = true;
+  show(ds[0]);
+}
+
+function show(d) {
+  var f = $("frame");
+  f.hidden = false;
+  f.src = "briefs/" + state.kind + "/" + d + ".html";
+  $("foot").textContent = d + " 발행";
+}
+</script>
+</body>
+</html>
