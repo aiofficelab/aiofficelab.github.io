@@ -143,7 +143,9 @@ function mobilize(doc) {
     "html,body{overflow-x:hidden;word-break:keep-all;" +
     "-webkit-text-size-adjust:100% !important;text-size-adjust:100% !important;}" +   /* 모바일 폰트 확대(부스팅) 금지 */
     "img{max-width:100%;height:auto;}" +
-    "td,th{white-space:normal !important;}";                                          /* 줄바꿈 금지 셀이 표를 넓히는 것 방지 */
+    "td,th{white-space:normal !important;}" +
+    "td span{max-width:100% !important;word-break:break-all !important;" +
+    "white-space:normal !important;box-sizing:border-box;}";                          /* 긴 종목명 배지는 칸 안에서 줄바꿈 */                                          /* 줄바꿈 금지 셀이 표를 넓히는 것 방지 */
   (doc.head || doc.documentElement).appendChild(st);
 }
 </script>
