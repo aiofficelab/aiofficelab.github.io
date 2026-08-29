@@ -87,7 +87,7 @@
     </div>
   </section>
   <section id="reader" class="wrap reader" hidden>
-    <button class="backbtn" id="back">← 전체 브리핑</button>
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><button class="backbtn" id="back">← 전체 브리핑</button><button class="backbtn" id="next" hidden></button></div>
     <div class="rkick" id="rkick"></div>
     <h1 class="rtitle" id="rtitle"></h1>
     <div class="archive"><span class="lbl">아카이브</span><span id="dates"></span></div>
@@ -152,8 +152,26 @@ function openReader(kind){
   var b = BRIEFS.filter(function(x){ return x.kind === kind; })[0];
   $("rkick").textContent = b.kick + " · " + b.cad;
   $("rtitle").textContent = b.title;
+  var nb = nextBrief(kind);
+  if (nb) {
+    $("next").hidden = false;
+    $("next").textContent = "다음: " + nb.title + " →";
+    $("next").onclick = function(){ openReader(nb.kind); };
+  } else {
+    $("next").hidden = true;
+  }
   renderReader();
   window.scrollTo(0, 0);
+}
+
+function nextBrief(kind){
+  var idx = -1;
+  BRIEFS.forEach(function(b, i){ if (b.kind === kind) idx = i; });
+  for (var i = 1; i < BRIEFS.length; i++) {
+    var b = BRIEFS[(idx + i) % BRIEFS.length];
+    if (dates(b.kind).length) return b;
+  }
+  return null;
 }
 
 $("back").addEventListener("click", function(){
