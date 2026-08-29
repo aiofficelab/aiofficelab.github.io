@@ -104,8 +104,27 @@ function render() {
 function show(d) {
   var f = $("frame");
   f.hidden = false;
+  f.onload = function () { try { mobilize(f.contentDocument); } catch (e) {} };
   f.src = "briefs/" + state.kind + "/" + d + ".html";
   $("foot").textContent = d + " 발행";
+}
+
+/* 브리핑 본문은 이메일용이라 폭 600px 고정 — 좁은 화면에서는
+   고정폭 표를 화면 폭에 맞게 풀어서 좌우 스크롤을 없앤다 (같은 사이트라 접근 가능) */
+function mobilize(doc) {
+  if (!doc || window.innerWidth >= 640) return;
+  doc.querySelectorAll("table").forEach(function (t) {
+    var w = parseInt(t.getAttribute("width"), 10) ||
+            parseInt((t.style.width || "").replace("px", ""), 10) || 0;
+    if (w >= 480) {
+      t.style.setProperty("width", "100%", "important");
+      t.style.setProperty("max-width", w + "px", "important");
+      t.removeAttribute("width");
+    }
+  });
+  var st = doc.createElement("style");
+  st.textContent = "body{overflow-x:hidden;word-break:keep-all;} img{max-width:100%;height:auto;}";
+  (doc.head || doc.documentElement).appendChild(st);
 }
 </script>
 </body>
