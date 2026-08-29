@@ -5,149 +5,211 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>AI Office Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --ink:#201e1d; --acc:#ec3013; --bg:#e9e7e7; --line:#d8d4d3; --mut:#7d7979; }
+  :root{ --bg:#f3f2f2; --ink:#201e1d; --acc:#ec3013; --acc7:#a02008; --mut:#6b6866; --mut2:#8a8683; --line2:#d8d4d3; --tint:#eceae9; }
   *{box-sizing:border-box;}
-  [hidden]{display:none !important;}  /* hidden 속성이 항상 이기게 — 탭 전환 시 이전 내용 잔상 방지 */
-  body{margin:0;background:var(--bg);font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:var(--ink);}
-  .top{background:#fff;border-bottom:1px solid var(--line);}
-  .wrap{max-width:680px;margin:0 auto;padding:0 16px;}
-  .head{padding:26px 0 0;}
-  .kick{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--acc);}
-  h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:6px 0 16px;}
-  .bar{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;padding-bottom:0;}
-  .tab{appearance:none;border:1px solid var(--line);border-bottom:none;background:#f4f2f2;
-       color:var(--mut);font:inherit;font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;}
-  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink);}
-  .tab:hover:not(.on){background:#fff;color:var(--ink);}
-  .spacer{flex:1;}
-  select{font:inherit;font-size:12.5px;padding:6px 8px;border:1px solid var(--line);background:#fff;
-         color:var(--ink);margin-bottom:6px;max-width:150px;}
-  .body{padding:18px 16px 40px;}
-  .card{max-width:680px;margin:0 auto;background:#fff;border:1px solid var(--line);}
-  iframe{display:block;width:100%;height:calc(100vh - 210px);min-height:520px;border:0;background:#fff;}
+  [hidden]{display:none !important;}
+  body{margin:0;background:var(--tint);color:var(--ink);font-family:'Archivo','Apple SD Gothic Neo','Malgun Gothic',sans-serif;word-break:keep-all;}
+  a{color:var(--acc7);} a:hover{color:var(--acc);}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px;width:100%;}
+  .topbar{border-bottom:2px solid var(--ink);}
+  .topbar .wrap{padding-top:14px;padding-bottom:14px;font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc);}
+  .page{min-height:100vh;display:flex;flex-direction:column;}
+  main{flex:1;}
+  h1.masthead{margin:36px 0 6px;font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-1.5px;}
+  .subdomain{font-size:16px;font-weight:700;letter-spacing:1px;color:var(--mut);}
+  .dateline{margin-top:16px;border-top:2px solid var(--ink);padding-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
+  .dateline .r{color:var(--mut);}
+  .lead{margin-top:28px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:16px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;}
+  .lead .k{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--acc);white-space:nowrap;}
+  .lead .t{font-size:19px;font-weight:700;letter-spacing:-0.3px;}
+  .seclabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--mut);padding:28px 0 10px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 40px;}
+  .cardx{border-top:2px solid var(--ink);padding:16px 0 26px;cursor:pointer;}
+  .cardx:hover{background:var(--tint);}
+  .cardx.off{cursor:default;}
+  .cardx.off:hover{background:transparent;}
+  .cardx .head{display:flex;gap:12px;align-items:baseline;}
+  .cardx .no{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--acc);}
+  .cardx.off .no{color:#9a9694;}
+  .cardx .cad{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--mut);}
+  .cardx .ttl{padding-top:8px;font-size:22px;font-weight:800;letter-spacing:-0.4px;}
+  .cardx.off .ttl{color:#9a9694;}
+  .cardx .sum{padding-top:8px;font-size:14px;line-height:1.6;color:#4d4a48;}
+  .cardx .meta{padding-top:12px;font-size:12px;color:var(--mut);}
+  .cardx .meta b{color:var(--ink);}
+  .cardx .meta .go{color:var(--acc7);font-weight:700;}
+  .reader{padding-top:24px;}
+  .backbtn{appearance:none;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;padding:8px 0;cursor:pointer;text-align:left;}
+  .backbtn:hover{color:var(--acc7);}
+  .rkick{margin-top:14px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--acc);}
+  .rtitle{margin:6px 0 14px;font-size:34px;font-weight:800;letter-spacing:-0.8px;}
+  .archive{border-top:2px solid var(--ink);padding:10px 0 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .archive .lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--mut);margin-right:6px;}
+  .dbtn{appearance:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:1px solid #b9b5b3;background:transparent;color:var(--ink);}
+  .dbtn:hover{border-color:var(--acc);color:var(--acc7);}
+  .dbtn.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .frame-card{border:1px solid var(--line2);background:#fff;margin-bottom:40px;}
+  iframe{display:block;width:100%;height:calc(100vh - 260px);min-height:560px;border:0;background:#fff;}
   .empty{padding:70px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.8;}
   .empty b{color:var(--ink);}
-  .foot{max-width:680px;margin:10px auto 0;font-size:11px;color:var(--mut);text-align:right;}
-  /* 모바일: 좁은 화면에서는 머리글·탭을 가운데 정렬 */
+  footer{margin-top:auto;background:var(--acc7);}
+  footer .wrap{padding-top:22px;padding-bottom:22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#fff;}
+  footer .b{font-size:13px;font-weight:800;letter-spacing:1px;}
+  footer .s{font-size:11px;letter-spacing:0.5px;}
+  :focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
   @media (max-width:640px){
-    .head{text-align:center;}
-    .bar{justify-content:center;}
-    .spacer{display:none;}
-    select{margin:8px 0 6px;}
-    .body{padding:14px 10px 30px;}
-    iframe{height:calc(100vh - 240px);}
-    .foot{text-align:center;}
+    h1.masthead{font-size:38px;}
+    .lead .t{font-size:16px;}
+    iframe{height:calc(100vh - 300px);}
   }
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="wrap head">
-    <div class="kick">DAILY BRIEFING</div>
-    <h1>AI Office Lab</h1>
-    <div class="bar">
-      <button class="tab on" data-kind="morning">시황</button>
-      <button class="tab" data-kind="ir">IR캘린더</button>
-      <button class="tab" data-kind="weekly">주간대시보드</button>
-      <button class="tab" data-kind="finstats">주요금융통계</button>
-      <button class="tab" data-kind="econrisk">경제리스크</button>
-      <button class="tab" data-kind="econscan">금감원/재경부</button>
-      <button class="tab" data-kind="law">법률</button>
-      <span class="spacer"></span>
-      <select id="dateSel" title="지난 브리핑 보기"></select>
+<div class="page">
+<div class="topbar"><div class="wrap">DAILY BRIEFING</div></div>
+<main>
+  <section id="home">
+    <div class="wrap">
+      <h1 class="masthead">AI Office Lab</h1>
+      <div class="subdomain">AIOFFICELAB.GITHUB.IO</div>
+      <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span><span class="r">자동 생성 브리핑 · GitHub Actions</span></div>
+      <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
     </div>
-  </div>
-</div>
-<div class="body">
-  <div class="card">
-    <div class="empty" id="empty" hidden>
-      <b>아직 발행된 브리핑이 없습니다.</b><br>
-      매일 아침 자동으로 새 브리핑이 올라옵니다.
+    <div class="wrap">
+      <div class="seclabel">DAILY MARKET — 마켓 브리핑</div>
+      <div class="grid" id="gridMarket"></div>
+      <div class="seclabel">REGULATORY — 규제기관 모니터링</div>
+      <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
     </div>
-    <iframe id="frame" title="브리핑 본문" hidden></iframe>
-  </div>
-  <div class="foot" id="foot"></div>
+  </section>
+  <section id="reader" class="wrap reader" hidden>
+    <button class="backbtn" id="back">← 전체 브리핑</button>
+    <div class="rkick" id="rkick"></div>
+    <h1 class="rtitle" id="rtitle"></h1>
+    <div class="archive"><span class="lbl">아카이브</span><span id="dates"></span></div>
+    <div class="frame-card">
+      <div class="empty" id="empty" hidden><b>아직 발행된 브리핑이 없습니다.</b><br>발행이 시작되면 자동으로 올라옵니다.</div>
+      <iframe id="frame" title="브리핑 본문" hidden></iframe>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span class="b">AI OFFICE LAB</span><span class="s">자동 생성 브리핑 · 투자 권유가 아닙니다 · 평일 아침 발행, 주말·공휴일 휴간</span></div></footer>
 </div>
 <script>
-var state = { kind: "morning", manifest: {} };
-var $ = function (id) { return document.getElementById(id); };
+var BRIEFS = [
+  { kind:"econrisk", group:"market", no:"01", cad:"매일 아침 7시", title:"경제 & 리스크 브리핑", kick:"ECONOMY & RISK BRIEFING", sum:"국내외 경제 분석 지표 제공" },
+  { kind:"ir",       group:"market", no:"02", cad:"매일 아침 8시", title:"IR 캘린더", kick:"GLOBAL IR CALENDAR", sum:"실적발표 캘린더 · 주간 실적 리뷰" },
+  { kind:"weekly",   group:"market", no:"03", cad:"매주 월요일",  title:"MY 포트폴리오 대시보드", kick:"MY PORTFOLIO DASHBOARD", sum:"보유 종목 전일·주간·전월말·연간 비교" },
+  { kind:"finstats", group:"market", no:"04", cad:"매일 아침 8시", title:"주요 금융 통계", kick:"DAILY FINANCIAL STATS", sum:"주가 · 환율 · 금리 · 원자재 비교표" },
+  { kind:"morning",  group:"market", no:"05", cad:"준비 중",     title:"아침 시황 브리핑", kick:"MORNING BRIEFING", sum:"발행이 시작되면 이 자리에 최신호가 표시됩니다." },
+  { kind:"econscan", group:"reg",    no:"06", cad:"매일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
+  { kind:"law",      group:"reg",    no:"07", cad:"매일 아침 8시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+];
+var state = { kind:null, date:null, manifest:{} };
+var $ = function(id){ return document.getElementById(id); };
 
-fetch("manifest.json?t=" + Date.now())
-  .then(function (r) { return r.ok ? r.json() : {}; })
-  .then(function (m) { state.manifest = m || {}; render(); })
-  .catch(function () { render(); });
+var d = new Date();
+$("today").textContent = d.getFullYear() + "." + (d.getMonth()+1) + "." + d.getDate() + "(" + "일월화수목금토"[d.getDay()] + ")";
 
-document.querySelectorAll(".tab").forEach(function (b) {
-  b.addEventListener("click", function () {
-    document.querySelectorAll(".tab").forEach(function (x) { x.classList.remove("on"); });
-    b.classList.add("on");
-    state.kind = b.getAttribute("data-kind");
-    render();
+fetch("manifest.json", { cache:"no-store" })
+  .then(function(r){ return r.ok ? r.json() : {}; })
+  .then(function(m){ state.manifest = m || {}; renderHome(); })
+  .catch(function(){ renderHome(); });
+
+/* '오늘 시장 한 줄' — 주요 금융 통계 발행 시 함께 올라오는 lead.json에서 읽는다 */
+fetch("lead.json", { cache:"no-store" })
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(l){
+    if (l && l.text) { $("leadText").textContent = l.text; $("lead").hidden = false; }
+  })
+  .catch(function(){});
+
+function dates(kind){ return state.manifest[kind] || []; }
+
+function renderHome(){
+  ["gridMarket","gridReg"].forEach(function(id){ $(id).innerHTML = ""; });
+  BRIEFS.forEach(function(b){
+    var ds = dates(b.kind), has = ds.length > 0;
+    var el = document.createElement("div");
+    el.className = "cardx" + (has ? "" : " off");
+    el.innerHTML =
+      '<div class="head"><span class="no">' + b.no + '</span><span class="cad">' + (has ? b.cad : "준비 중") + '</span></div>' +
+      '<div class="ttl">' + b.title + '</div>' +
+      '<div class="sum">' + b.sum + '</div>' +
+      (has ? '<div class="meta">최신 <b>' + ds[0] + '</b> &nbsp;·&nbsp; <span class="go">브리핑 열기 →</span></div>' : '');
+    if (has) el.addEventListener("click", function(){ openReader(b.kind); });
+    $(b.group === "market" ? "gridMarket" : "gridReg").appendChild(el);
   });
+}
+
+function openReader(kind){
+  state.kind = kind; state.date = dates(kind)[0] || null;
+  $("home").hidden = true; $("reader").hidden = false;
+  var b = BRIEFS.filter(function(x){ return x.kind === kind; })[0];
+  $("rkick").textContent = b.kick + " · " + b.cad;
+  $("rtitle").textContent = b.title;
+  renderReader();
+  window.scrollTo(0, 0);
+}
+
+$("back").addEventListener("click", function(){
+  $("reader").hidden = true; $("home").hidden = false;
 });
 
-$("dateSel").addEventListener("change", function () { show(this.value); });
-
-function dates() { return state.manifest[state.kind] || []; }
-
-function render() {
-  var ds = dates(), sel = $("dateSel");
-  sel.innerHTML = "";
-  ds.forEach(function (d) {
-    var o = document.createElement("option");
-    o.value = d; o.textContent = d;
-    sel.appendChild(o);
+function renderReader(){
+  var ds = dates(state.kind), box = $("dates");
+  box.innerHTML = "";
+  ds.forEach(function(dd){
+    var btn = document.createElement("button");
+    btn.className = "dbtn" + (dd === state.date ? " on" : "");
+    btn.textContent = dd;
+    btn.addEventListener("click", function(){ state.date = dd; renderReader(); });
+    box.appendChild(btn);
   });
-  sel.hidden = ds.length === 0;
-  if (ds.length === 0) { $("frame").hidden = true; $("empty").hidden = false; $("foot").textContent = ""; return; }
+  if (!state.date) { $("frame").hidden = true; $("empty").hidden = false; return; }
   $("empty").hidden = true;
-  show(ds[0]);
-}
-
-function show(d) {
   var f = $("frame");
   f.hidden = false;
-  f.onload = function () {
+  f.onload = function(){
     try {
       var doc = f.contentDocument;
-      /* 뉴스 링크는 새 탭으로 — 언론사가 iframe 안에서 열리는 걸 거부하기 때문 */
-      var b = doc.createElement("base");
-      b.target = "_blank";
+      var base = doc.createElement("base");
+      base.target = "_blank";
       var head = doc.head || doc.documentElement;
-      head.insertBefore(b, head.firstChild);
+      head.insertBefore(base, head.firstChild);
       mobilize(doc);
-    } catch (e) {}
+    } catch(e){}
   };
-  f.src = "briefs/" + state.kind + "/" + d + ".html";
-  $("foot").textContent = d + " 발행";
+  f.src = "briefs/" + state.kind + "/" + state.date + ".html";
 }
 
-/* 브리핑 본문은 이메일용이라 폭 600px 고정 — 좁은 화면에서는
-   고정폭 표를 화면 폭에 맞게 풀어서 좌우 스크롤을 없앤다 (같은 사이트라 접근 가능) */
-function mobilize(doc) {
+/* 이메일용 고정폭 브리핑을 좁은 화면에 맞게 풀어준다 (원본 index.html 로직 유지) */
+function mobilize(doc){
   if (!doc || window.innerWidth >= 640) return;
-  doc.querySelectorAll("table").forEach(function (t) {
+  doc.querySelectorAll("table").forEach(function(t){
     var w = parseInt(t.getAttribute("width"), 10) ||
-            parseInt((t.style.width || "").replace("px", ""), 10) || 0;
+            parseInt((t.style.width || "").replace("px",""), 10) || 0;
     if (w >= 480) {
-      t.style.setProperty("width", "100%", "important");
-      t.style.setProperty("max-width", w + "px", "important");
+      t.style.setProperty("width","100%","important");
+      t.style.setProperty("max-width", w + "px","important");
       t.removeAttribute("width");
     }
   });
-  /* 셀 고정폭(달력 7칸 등)이 화면보다 넓어지는 것 방지 — 폭 지정을 풀어 균등 분배 */
-  doc.querySelectorAll("th[width], td[width]").forEach(function (c) {
+  doc.querySelectorAll("th[width], td[width]").forEach(function(c){
     if (parseInt(c.getAttribute("width"), 10) >= 30) c.removeAttribute("width");
   });
   var st = doc.createElement("style");
   st.textContent =
     "html,body{overflow-x:hidden;word-break:keep-all;" +
-    "-webkit-text-size-adjust:100% !important;text-size-adjust:100% !important;}" +   /* 모바일 폰트 확대(부스팅) 금지 */
+    "-webkit-text-size-adjust:100% !important;text-size-adjust:100% !important;}" +
     "img{max-width:100%;height:auto;}" +
     "td,th{white-space:normal !important;}" +
     "td span{max-width:100% !important;word-break:break-all !important;" +
-    "white-space:normal !important;box-sizing:border-box;}";                          /* 긴 종목명 배지는 칸 안에서 줄바꿈 */                                          /* 줄바꿈 금지 셀이 표를 넓히는 것 방지 */
+    "white-space:normal !important;box-sizing:border-box;}";
   (doc.head || doc.documentElement).appendChild(st);
 }
 </script>
