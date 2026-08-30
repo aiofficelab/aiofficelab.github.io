@@ -26,7 +26,7 @@
   .subdomain{font-size:16px;font-weight:700;letter-spacing:1px;color:var(--mut);}
   .dateline{margin-top:16px;border-top:2px solid var(--ink);padding-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
   .dateline .r{color:var(--mut);}
-  .lead{margin-top:28px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:16px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;}
+  .lead{margin-top:28px;border-top:2px solid var(--ink);padding:16px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;}
   .lead .k{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--acc);white-space:nowrap;}
   .lead .t{font-size:19px;font-weight:700;letter-spacing:-0.3px;}
   .seclabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--mut);padding:28px 0 10px;}
@@ -68,7 +68,7 @@
   .snaphead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
   .snapat{margin-left:auto;font-size:11px;color:var(--mut);}
   .snapgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-    margin-top:10px;border:2px solid var(--ink);}
+    margin-top:10px;border:1px solid var(--line2);}
   .sn{padding:12px 14px 13px;border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);}
   .sn:nth-child(4n){border-right:0;}
   .sn:nth-last-child(-n+4){border-bottom:0;}
@@ -112,20 +112,20 @@
     <div class="wrap">
       <h1 class="masthead">AI Office Lab</h1>
       <div class="subdomain">DAILY BRIEFING</div>
-      <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span><span class="r">자동 생성 브리핑 · GitHub Actions</span></div>
+      <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span></div>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
     </div>
     <div class="wrap">
       <div class="snap" id="snap" hidden>
-        <div class="snaphead"><span class="seclabel">MARKET SNAPSHOT — 주요 지수</span>
+        <div class="snaphead"><span class="seclabel">MARKET SNAPSHOT</span>
           <span class="snapat" id="snapAt"></span></div>
         <div class="snapgrid" id="snapGrid"></div>
       </div>
     </div>
     <div class="wrap">
-      <div class="seclabel">DAILY MARKET — 마켓 브리핑</div>
+      <div class="seclabel">DAILY MARKET</div>
       <div class="grid" id="gridMarket"></div>
-      <div class="seclabel">REGULATORY — 규제기관 모니터링</div>
+      <div class="seclabel">REGULATORY</div>
       <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
     </div>
   </section>
