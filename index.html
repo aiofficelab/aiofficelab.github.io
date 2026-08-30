@@ -60,6 +60,27 @@
   /* 높이를 내용에 맞춰 늘린다(fitFrame) — iframe 자체 스크롤바가 생기지 않게. 창 스크롤 하나만 남는다 */
   iframe{display:block;width:100%;height:600px;border:0;background:#fff;}
   body.reading .frame-card{border:0;background:#fff;margin-bottom:0;}
+  /* 지수 스냅샷 — 아침 시황 브리핑이 올리는 market.json 을 읽어 그린다 */
+  .snap{margin:26px 0 4px;}
+  .snaphead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .snapat{margin-left:auto;font-size:11px;color:var(--mut);}
+  .snapgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+    margin-top:10px;border:2px solid var(--ink);}
+  .sn{padding:12px 14px 13px;border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);}
+  .sn:nth-child(4n){border-right:0;}
+  .sn:nth-last-child(-n+4){border-bottom:0;}
+  .sn .l{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mut2);}
+  .sn .v{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-top:3px;line-height:1.1;}
+  .sn .c{font-size:12px;font-weight:700;margin-top:2px;}
+  .sn .up{color:var(--acc7);} .sn .dn{color:#1a56db;} .sn .fl{color:var(--mut);}
+  .sn svg{display:block;width:100%;height:30px;margin-top:8px;}
+  .sn svg polyline{fill:none;stroke-width:1.6;}
+  .sn svg polygon{opacity:.12;}
+  @media (max-width:900px){ .snapgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .sn:nth-child(4n){border-right:1px solid var(--line2);}
+    .sn:nth-child(2n){border-right:0;}
+    .sn:nth-last-child(-n+4){border-bottom:1px solid var(--line2);}
+    .sn:nth-last-child(-n+2){border-bottom:0;} }
   .totop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;display:grid;
     place-items:center;background:#fff;color:var(--ink);border:2px solid var(--ink);
     font-size:16px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;}
@@ -90,6 +111,13 @@
       <div class="subdomain">AIOFFICELAB.GITHUB.IO</div>
       <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span><span class="r">자동 생성 브리핑 · GitHub Actions</span></div>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
+    </div>
+    <div class="wrap">
+      <div class="snap" id="snap" hidden>
+        <div class="snaphead"><span class="seclabel">MARKET SNAPSHOT — 주요 지수</span>
+          <span class="snapat" id="snapAt"></span></div>
+        <div class="snapgrid" id="snapGrid"></div>
+      </div>
     </div>
     <div class="wrap">
       <div class="seclabel">DAILY MARKET — 마켓 브리핑</div>
@@ -159,6 +187,36 @@ fetch("manifest.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : {}; })
   .then(function(m){ state.manifest = m || {}; renderHome(); })
   .catch(function(){ renderHome(); });
+
+/* 주요 지수 스냅샷 — 아침 시황 브리핑이 발행할 때 함께 올리는 market.json.
+   브리핑 HTML을 파싱하는 대신 작은 JSON 하나를 읽는다(발행 쪽이 바뀌어도 홈이 안 깨짐). */
+fetch("market.json", { cache:"no-store" })
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(m){
+    if (!m || !m.items || !m.items.length) return;
+    $("snapAt").textContent = m.at ? m.at + " 기준" : "";
+    $("snapGrid").innerHTML = m.items.map(function(it){
+      var up = (it.pct || 0) >= 0, cls = it.pct == null ? "fl" : (it.pct > 0 ? "up" : it.pct < 0 ? "dn" : "fl");
+      var arrow = it.pct == null ? "" : (it.pct > 0 ? "▲ " : it.pct < 0 ? "▼ " : "― ");
+      var val = Number(it.last).toLocaleString("ko-KR",
+        { minimumFractionDigits: it.d, maximumFractionDigits: it.d }) + (it.rate ? "%" : "");
+      var pct = it.pct == null ? "—" : (it.pct > 0 ? "+" : "") + it.pct.toFixed(2) + "%";
+      var sp = "";
+      if (it.spark && it.spark.length > 4) {
+        var st = 100 / (it.spark.length - 1);
+        var pts = it.spark.map(function(v, i){ return (i*st).toFixed(1) + "," + (28 - v/100*26).toFixed(1); }).join(" ");
+        var col = up ? "var(--acc)" : "#1a56db";
+        sp = '<svg viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">' +
+             '<polygon points="0,30 ' + pts + ' 100,30" fill="' + col + '"/>' +
+             '<polyline points="' + pts + '" stroke="' + col + '"/></svg>';
+      }
+      return '<div class="sn"><div class="l">' + it.label + '</div>' +
+             '<div class="v">' + val + '</div>' +
+             '<div class="c ' + cls + '">' + arrow + pct + '</div>' + sp + '</div>';
+    }).join("");
+    $("snap").hidden = false;
+  })
+  .catch(function(){});
 
 /* '오늘 시장 한 줄' — 주요 금융 통계 발행 시 함께 올라오는 lead.json에서 읽는다 */
 fetch("lead.json", { cache:"no-store" })
