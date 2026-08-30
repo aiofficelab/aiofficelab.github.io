@@ -169,19 +169,28 @@ function fitFrame(){
   requestAnimationFrame(function(){
     try{
       var f = $("frame"), doc = f && f.contentDocument;
-      if (!doc || !doc.documentElement) { fitting = false; return; }
-      /* 먼저 0으로 낮춰야 콘텐츠 고유 높이가 나온다.
-         늘린 상태로 재면 documentElement 가 프레임을 채워 그 높이를 그대로 돌려주고,
-         한 번 커진 높이가 영영 줄지 않아 아래가 텅 빈다. */
-      f.style.height = "0px";
-      var h = Math.max(doc.body ? doc.body.scrollHeight : 0,
-                       doc.documentElement.scrollHeight);
-      f.style.height = (h > 0 ? h + 2 : 600) + "px";
+      if (!doc || !doc.body) { fitting = false; return; }
+      /* body 만 잰다. documentElement 는 프레임을 채우도록 늘어나므로 현재 높이를
+         그대로 돌려주고, 그러면 한 번 커진 높이가 줄지 않는다.
+         반대로 재기 전에 프레임을 접으면 문서가 짧아진 순간 창 스크롤이
+         맨 위로 당겨진다 — 모바일에서 주소창 때문에 resize 가 잦아 특히 심하다. */
+      var b = doc.body, cs = doc.defaultView.getComputedStyle(b);
+      var h = Math.max(b.scrollHeight, b.getBoundingClientRect().height) +
+              (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+      h = h > 0 ? Math.ceil(h) + 2 : 600;
+      if (Math.abs(h - (parseFloat(f.style.height) || 0)) > 1) f.style.height = h + "px";
     } catch(e){}
     fitting = false;
   });
 }
-window.addEventListener("resize", fitFrame);
+
+/* 세로 크기 변화(모바일 주소창 접힘)로는 다시 재지 않는다 — 스크롤 중 흔들림의 원인 */
+var lastW = window.innerWidth;
+window.addEventListener("resize", function(){
+  if (window.innerWidth === lastW) return;
+  lastW = window.innerWidth;
+  fitFrame();
+});
 
 /* 맨 위로 — 브리핑이 통째로 펼쳐져 창 스크롤이 길어지므로 부모에 둔다 */
 (function(){
@@ -327,8 +336,9 @@ function renderReader(){
       try{
         if (window.ResizeObserver) {
           if (frameRO) frameRO.disconnect();
+          /* body 만 관찰한다. documentElement 는 프레임 높이를 따라 커지므로
+             함께 관찰하면 '높이 조정 → 관찰 → 다시 조정' 이 되먹임으로 돈다. */
           frameRO = new ResizeObserver(fitFrame);
-          frameRO.observe(doc.documentElement);
           frameRO.observe(doc.body);
         }
       } catch(e){}
