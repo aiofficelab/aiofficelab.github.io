@@ -53,16 +53,14 @@
   .dbtn:hover{border-color:var(--acc);color:var(--acc7);}
   .dbtn.on{background:var(--ink);border-color:var(--ink);color:#fff;}
   .frame-card{border:1px solid var(--line2);background:#fff;margin-bottom:40px;}
-  iframe{display:block;width:100%;height:calc(100vh - 260px);min-height:560px;border:0;background:#fff;}
-  /* 브리핑을 볼 때는 페이지 스크롤을 죽이고 iframe만 스크롤시킨다 (스크롤바 1개) */
-  body.reading{overflow:hidden;height:100vh;}
-  body.reading footer{display:none;}
-  body.reading .page{height:100vh;min-height:0;}
-  body.reading main{min-height:0;display:flex;flex-direction:column;}
-  body.reading .reader{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:14px;}
-  body.reading .archive{padding-bottom:10px;}
-  body.reading .frame-card{flex:1;min-height:0;margin-bottom:0;}
-  body.reading iframe{height:100%;min-height:0;}
+  /* 높이를 내용에 맞춰 늘린다(fitFrame) — iframe 자체 스크롤바가 생기지 않게. 창 스크롤 하나만 남는다 */
+  iframe{display:block;width:100%;height:600px;border:0;background:#fff;}
+  .totop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;display:grid;
+    place-items:center;background:var(--tint);color:var(--ink);border:2px solid var(--ink);
+    font-size:16px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;}
+  .totop.on{opacity:1;visibility:visible;}
+  .totop:hover{background:var(--acc);border-color:var(--acc);color:#fff;}
+  @media (max-width:640px){ .totop{right:12px;bottom:12px;width:38px;height:38px;} }
   .empty{padding:70px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.8;}
   .empty b{color:var(--ink);}
   footer{margin-top:auto;background:var(--acc7);}
@@ -73,7 +71,7 @@
   @media (max-width:640px){
     h1.masthead{font-size:38px;}
     .lead .t{font-size:16px;}
-    iframe{height:calc(100vh - 300px);}
+    /* 모바일에서도 높이는 fitFrame이 정한다 */
   }
 </style>
 </head>
@@ -106,6 +104,7 @@
     </div>
   </section>
 </main>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
 <footer><div class="wrap"><span class="b">AI OFFICE LAB</span><span class="s">자동 생성 브리핑 · 투자 권유가 아닙니다 · 평일 아침 발행, 주말·공휴일 휴간</span></div></footer>
 </div>
 <script>
@@ -121,6 +120,28 @@ var BRIEFS = [
   { kind:"law",      group:"reg",    no:"06", cad:"매일 아침 8시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
 ];
 var state = { kind:null, date:null, manifest:{} };
+var frameRO = null;
+
+/* iframe 높이를 내용 높이에 맞춘다 — 프레임 자체 스크롤바를 없애고 창 스크롤 하나만 남긴다 */
+function fitFrame(){
+  try{
+    var f = $("frame"), doc = f && f.contentDocument;
+    if (!doc || !doc.documentElement) return;
+    var h = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+    if (h > 0) f.style.height = (h + 2) + "px";
+  } catch(e){}
+}
+window.addEventListener("resize", fitFrame);
+
+/* 맨 위로 — 브리핑이 통째로 펼쳐져 창 스크롤이 길어지므로 부모에 둔다 */
+(function(){
+  var b = document.getElementById("totop");
+  if (!b) return;
+  function paint(){ b.classList.toggle("on", (window.scrollY || 0) > 360); }
+  b.addEventListener("click", function(){ window.scrollTo({ top:0, behavior:"smooth" }); });
+  window.addEventListener("scroll", paint, { passive:true });
+  paint();
+})();
 var $ = function(id){ return document.getElementById(id); };
 
 var d = new Date();
@@ -158,7 +179,6 @@ function renderHome(){
 }
 
 function openReader(kind){
-  document.body.classList.add("reading");
   state.kind = kind; state.date = dates(kind)[0] || null;
   $("home").hidden = true; $("reader").hidden = false;
   var b = BRIEFS.filter(function(x){ return x.kind === kind; })[0];
@@ -187,7 +207,6 @@ function nextBrief(kind){
 }
 
 $("back").addEventListener("click", function(){
-  document.body.classList.remove("reading");
   $("reader").hidden = true; $("home").hidden = false;
 });
 
@@ -213,6 +232,15 @@ function renderReader(){
       var head = doc.head || doc.documentElement;
       head.insertBefore(base, head.firstChild);
       mobilize(doc);
+      fitFrame();
+      try{
+        if (window.ResizeObserver) {
+          if (frameRO) frameRO.disconnect();
+          frameRO = new ResizeObserver(fitFrame);
+          frameRO.observe(doc.documentElement);
+          frameRO.observe(doc.body);
+        }
+      } catch(e){}
     } catch(e){}
   };
   f.src = "briefs/" + state.kind + "/" + state.date + ".html?v=" + Date.now();   /* 재발행분이 캐시에 가려지지 않게 */
