@@ -12,7 +12,7 @@
   :root{ --bg:#f3f2f2; --ink:#201e1d; --acc:#ec3013; --acc7:#a02008; --mut:#6b6866; --mut2:#8a8683; --line2:#d8d4d3; --tint:#eceae9; }
   *{box-sizing:border-box;}
   [hidden]{display:none !important;}
-  body{margin:0;background:var(--tint);color:var(--ink);font-family:'Archivo','Apple SD Gothic Neo','Malgun Gothic',sans-serif;word-break:keep-all;}
+  body{margin:0;background:#fff;color:var(--ink);font-family:'Archivo','Apple SD Gothic Neo','Malgun Gothic',sans-serif;word-break:keep-all;}
   a{color:var(--acc7);} a:hover{color:var(--acc);}
   .wrap{max-width:1060px;margin:0 auto;padding:0 24px;width:100%;}
   .topbar{border-bottom:2px solid var(--ink);}
@@ -55,8 +55,9 @@
   .frame-card{border:1px solid var(--line2);background:#fff;margin-bottom:40px;}
   /* 높이를 내용에 맞춰 늘린다(fitFrame) — iframe 자체 스크롤바가 생기지 않게. 창 스크롤 하나만 남는다 */
   iframe{display:block;width:100%;height:600px;border:0;background:#fff;}
+  body.reading .frame-card{border:0;background:#fff;margin-bottom:0;}
   .totop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;display:grid;
-    place-items:center;background:var(--tint);color:var(--ink);border:2px solid var(--ink);
+    place-items:center;background:#fff;color:var(--ink);border:2px solid var(--ink);
     font-size:16px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;}
   .totop.on{opacity:1;visibility:visible;}
   .totop:hover{background:var(--acc);border-color:var(--acc);color:#fff;}
@@ -179,6 +180,7 @@ function renderHome(){
 }
 
 function openReader(kind){
+  document.body.classList.add("reading");
   state.kind = kind; state.date = dates(kind)[0] || null;
   $("home").hidden = true; $("reader").hidden = false;
   var b = BRIEFS.filter(function(x){ return x.kind === kind; })[0];
@@ -207,6 +209,7 @@ function nextBrief(kind){
 }
 
 $("back").addEventListener("click", function(){
+  document.body.classList.remove("reading");
   $("reader").hidden = true; $("home").hidden = false;
 });
 
