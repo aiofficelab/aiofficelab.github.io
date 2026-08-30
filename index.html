@@ -49,9 +49,13 @@
   .rtitle{margin:6px 0 14px;font-size:34px;font-weight:800;letter-spacing:-0.8px;}
   .archive{border-top:2px solid var(--ink);padding:10px 0 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .archive .lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--mut);margin-right:6px;}
-  .dbtn{appearance:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;padding:6px 12px;border:1px solid #b9b5b3;background:transparent;color:var(--ink);}
-  .dbtn:hover{border-color:var(--acc);color:var(--acc7);}
-  .dbtn.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .dsel{appearance:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;
+    padding:7px 30px 7px 12px;border:2px solid var(--ink);background:#fff;color:var(--ink);
+    background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);
+    background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+  .dsel:hover{border-color:var(--acc);color:var(--acc7);}
+  .dnote{font-size:11px;color:var(--mut);}
   .frame-card{border:1px solid var(--line2);background:#fff;margin-bottom:40px;}
   /* 높이를 내용에 맞춰 늘린다(fitFrame) — iframe 자체 스크롤바가 생기지 않게. 창 스크롤 하나만 남는다 */
   iframe{display:block;width:100%;height:600px;border:0;background:#fff;}
@@ -98,7 +102,9 @@
     <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><button class="backbtn" id="back">← 전체 브리핑</button><button class="backbtn" id="next" hidden></button></div>
     <div class="rkick" id="rkick"></div>
     <h1 class="rtitle" id="rtitle"></h1>
-    <div class="archive"><span class="lbl">아카이브</span><span id="dates"></span></div>
+    <div class="archive"><span class="lbl">아카이브</span>
+      <select id="dates" class="dsel" aria-label="회차 선택"></select>
+      <span class="dnote" id="dnote"></span></div>
     <div class="frame-card">
       <div class="empty" id="empty" hidden><b>아직 발행된 브리핑이 없습니다.</b><br>발행이 시작되면 자동으로 올라옵니다.</div>
       <iframe id="frame" title="브리핑 본문" hidden></iframe>
@@ -214,15 +220,18 @@ $("back").addEventListener("click", function(){
 });
 
 function renderReader(){
-  var ds = dates(state.kind), box = $("dates");
-  box.innerHTML = "";
-  ds.forEach(function(dd){
-    var btn = document.createElement("button");
-    btn.className = "dbtn" + (dd === state.date ? " on" : "");
-    btn.textContent = dd;
-    btn.addEventListener("click", function(){ state.date = dd; renderReader(); });
-    box.appendChild(btn);
+  /* 회차는 최신이 위. manifest 가 unshift 로 쌓아 이미 내림차순이지만 한 번 더 정렬해 둔다 */
+  var ds = dates(state.kind).slice().sort().reverse(), sel = $("dates");
+  sel.innerHTML = "";
+  ds.forEach(function(dd, i){
+    var op = document.createElement("option");
+    op.value = dd;
+    op.textContent = dd + (i === 0 ? "  (최신)" : "");
+    if (dd === state.date) op.selected = true;
+    sel.appendChild(op);
   });
+  sel.onchange = function(){ state.date = this.value; renderReader(); };
+  $("dnote").textContent = ds.length > 1 ? "전체 " + ds.length + "회차" : "";
   if (!state.date) { $("frame").hidden = true; $("empty").hidden = false; return; }
   $("empty").hidden = true;
   var f = $("frame");
