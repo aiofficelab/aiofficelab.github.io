@@ -16,7 +16,10 @@
   a{color:var(--acc7);} a:hover{color:var(--acc);}
   .wrap{max-width:1060px;margin:0 auto;padding:0 24px;width:100%;}
   .topbar{border-bottom:2px solid var(--ink);}
-  .topbar .wrap{padding-top:14px;padding-bottom:14px;font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc);}
+  .topbar .wrap{padding-top:14px;padding-bottom:14px;font-size:12px;font-weight:700;letter-spacing:3px;}
+  /* 상단 바의 주소 = 홈 복귀 버튼. 브리핑을 읽다가 언제든 목록으로 돌아온다 */
+  .brandlink{color:var(--acc);text-decoration:none;}
+  .brandlink:hover{color:var(--ink);}
   .page{min-height:100vh;display:flex;flex-direction:column;}
   main{flex:1;}
   h1.masthead{margin:36px 0 6px;font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-1.5px;}
@@ -103,12 +106,12 @@
 </head>
 <body>
 <div class="page">
-<div class="topbar"><div class="wrap">DAILY BRIEFING</div></div>
+<div class="topbar"><div class="wrap"><a href="#" id="homeLink" class="brandlink">AIOFFICELAB.GITHUB.IO</a></div></div>
 <main>
   <section id="home">
     <div class="wrap">
       <h1 class="masthead">AI Office Lab</h1>
-      <div class="subdomain">AIOFFICELAB.GITHUB.IO</div>
+      <div class="subdomain">DAILY BRIEFING</div>
       <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span><span class="r">자동 생성 브리핑 · GitHub Actions</span></div>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
     </div>
@@ -159,13 +162,24 @@ var state = { kind:null, date:null, manifest:{} };
 var frameRO = null;
 
 /* iframe 높이를 내용 높이에 맞춘다 — 프레임 자체 스크롤바를 없애고 창 스크롤 하나만 남긴다 */
+var fitting = false;
 function fitFrame(){
-  try{
-    var f = $("frame"), doc = f && f.contentDocument;
-    if (!doc || !doc.documentElement) return;
-    var h = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
-    if (h > 0) f.style.height = (h + 2) + "px";
-  } catch(e){}
+  if (fitting) return;                 /* 관찰 → 조정 → 관찰 루프 차단 */
+  fitting = true;
+  requestAnimationFrame(function(){
+    try{
+      var f = $("frame"), doc = f && f.contentDocument;
+      if (!doc || !doc.documentElement) { fitting = false; return; }
+      /* 먼저 0으로 낮춰야 콘텐츠 고유 높이가 나온다.
+         늘린 상태로 재면 documentElement 가 프레임을 채워 그 높이를 그대로 돌려주고,
+         한 번 커진 높이가 영영 줄지 않아 아래가 텅 빈다. */
+      f.style.height = "0px";
+      var h = Math.max(doc.body ? doc.body.scrollHeight : 0,
+                       doc.documentElement.scrollHeight);
+      f.style.height = (h > 0 ? h + 2 : 600) + "px";
+    } catch(e){}
+    fitting = false;
+  });
 }
 window.addEventListener("resize", fitFrame);
 
@@ -272,6 +286,12 @@ function nextBrief(kind){
   }
   return null;
 }
+
+$("homeLink").addEventListener("click", function(ev){
+  ev.preventDefault();
+  if (!$("reader").hidden) { $("back").click(); }
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
 
 $("back").addEventListener("click", function(){
   document.body.classList.remove("reading");
