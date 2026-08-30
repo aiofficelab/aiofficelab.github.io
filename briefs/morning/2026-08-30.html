@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>아침 시황 브리핑</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#131211; --paper:#1b1918; --paper2:#232120;
+  --ink:#f2efed; --ink2:#b3aeab; --ink3:#8a8481;
+  --rule:rgba(242,239,237,.44); --rule-soft:rgba(242,239,237,.15);
+  --accent:#ff5330; --accent-700:#ff8062; --accent-100:#2c1a15;
+  --blue:#6ea3ff; --blue-700:#9dc0ff;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다 */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
+.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
+.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:32px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:17px}
+.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
+.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
+.note b{color:var(--ink2)}
+.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
+  font-size:14px;font-weight:700}
+
+/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
+.item{display:grid;grid-template-columns:34px 1fr;gap:0 4px;
+  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
+.item .meta b{color:var(--ink2)}
+.chips{margin-bottom:5px}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
+.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+
+/* 링크 버튼 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
+.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 지표 타일 — 값 하나 + 등락 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
+.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
+footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
+  color:var(--ink3);font-size:11px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:24px}
+  .item{grid-template-columns:26px 1fr}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">MORNING BRIEFING</div><h1>아침 시황 브리핑</h1><div class="dt">8/30(일) · 매일 아침 발행 · 한국 전일 종가 · 미국/유럽 지난밤 마감</div></header>
+<div class="rule"></div>
+<nav class="nav"><a href="#s0" target="_self">오늘의 흐름</a><a href="#s1" target="_self">환율</a><a href="#s2" target="_self">증시</a><a href="#s3" target="_self">미국 금리</a><a href="#s4" target="_self">원자재·대체자산</a><a href="#s5" target="_self">보조 지표</a><a href="#s9" target="_self">금융스트레스</a><span class="sep"></span></nav><div class="lead">트럼프발 금리 우려 속 기술주 약세와 원화 면역력 부각</div>
+<section id="s0"><div class="sh"><span class="no">01</span><h2>오늘의 흐름</h2><span class="en">TODAY</span></div><ul class="bul"><li class="risk">계열사의 고객정보 무단 조회를 방치한 SG증권에 대한 금감원의 제재 철퇴 <a href="https://www.newsis.com/view/NISX20260828_0003767397" target="_blank" rel="noopener">기사↗</a></li><li class="">트럼프가 선택한 워시의 중간선거 앞 금리 인상 가능성과 9월 FOMC 시험대 <a href="https://www.newsis.com/view/NISX20260829_0003768049" target="_blank" rel="noopener">기사↗</a> <a href="https://www.yna.co.kr/view/AKR20260830003151072?input=1195m" target="_blank" rel="noopener">기사↗</a></li><li class="">잭슨홀 매파 발언에 꺾인 비트코인 시세와 향후 고용지표에 따른 재안착 여부 <a href="https://www.dt.co.kr/article/12080881?ref=naver" target="_blank" rel="noopener">기사↗</a></li><li class="">대외 충격에 대한 원화의 면역력 형성 및 대미 투자 시 환율 부담 완화 <a href="https://www.chosun.com/economy/int_economy/2026/08/30/L3KSXM6MTJEHPGAJZHVYQB3OAI/?utm_source=naver&amp;utm_medium=referral&amp;utm_campaign=naver-news" target="_blank" rel="noopener">기사↗</a></li><li class="">서학개미의 10조 원 규모 미국 주식 매수 속 엔비디아 매도와 특정 종목 매수 <a href="https://biz.sbs.co.kr/article_hub/20000331545?division=NAVER" target="_blank" rel="noopener">기사↗</a></li></ul><p class="note">네이버 뉴스에서 키워드별 최근 30시간 기사 1건씩 수집 후 요약 · ⚠️ 는 리스크 신호 · 제목에 없는 사실은 넣지 않음</p></section><section id="s1"><div class="sh"><span class="no">02</span><h2>환율</h2><span class="en">FX</span></div><div class="tiles"><div class="tile"><div class="l">USD/KRW</div><div class="v">1,371.5</div><div class="c"><span class="dn">▼0.65%  <span style="font-weight:600">(-8.9)</span></span></div></div><div class="tile"><div class="l">JPY/KRW(100엔)</div><div class="v">8.6</div><div class="c"><span class="dn">▼1.06%  <span style="font-weight:600">(-0.1)</span></span></div></div><div class="tile"><div class="l">EUR/KRW</div><div class="v">1,592.8</div><div class="c"><span class="dn">▼0.89%  <span style="font-weight:600">(-14.3)</span></span></div></div><div class="tile"><div class="l">CNY/KRW</div><div class="v">204.08</div><div class="c"><span class="dn">▼0.62%  <span style="font-weight:600">(-1.27)</span></span></div></div><div class="tile"><div class="l">달러인덱스</div><div class="v">99.70</div><div class="c"><span class="up">▲0.54%  <span style="font-weight:600">(+0.54)</span></span></div></div></div></section><section id="s2"><div class="sh"><span class="no">03</span><h2>증시</h2><span class="en">EQUITY</span></div><div class="tiles"><div class="tile"><div class="l">KOSPI</div><div class="v">6,788.9</div><div class="c"><span class="dn">▼1.79%  <span style="font-weight:600">(-123.5)</span></span></div></div><div class="tile"><div class="l">KOSDAQ</div><div class="v">838.4</div><div class="c"><span class="up">▲0.09%  <span style="font-weight:600">(+0.8)</span></span></div></div><div class="tile"><div class="l">DOW</div><div class="v">53,560</div><div class="c"><span class="dn">▼0.02%  <span style="font-weight:600">(-9)</span></span></div></div><div class="tile"><div class="l">NASDAQ</div><div class="v">26,402.4</div><div class="c"><span class="dn">▼0.52%  <span style="font-weight:600">(-138.9)</span></span></div></div><div class="tile"><div class="l">S&amp;P500</div><div class="v">7,711.8</div><div class="c"><span class="dn">▼0.25%  <span style="font-weight:600">(-19.2)</span></span></div></div><div class="tile"><div class="l">니케이225</div><div class="v">66,405.6</div><div class="c"><span class="up">▲0.41%  <span style="font-weight:600">(+273.6)</span></span></div></div><div class="tile"><div class="l">상해종합</div><div class="v">3,952.2</div><div class="c"><span class="dn">▼0.11%  <span style="font-weight:600">(-4.4)</span></span></div></div><div class="tile"><div class="l">항셍</div><div class="v">25,584.8</div><div class="c"><span class="up">▲0.07%  <span style="font-weight:600">(+19.0)</span></span></div></div><div class="tile"><div class="l">EWY(한국ETF)</div><div class="v">180.20</div><div class="c"><span class="dn">▼1.07%  <span style="font-weight:600">(-1.94)</span></span></div></div></div></section><section id="s3"><div class="sh"><span class="no">04</span><h2>미국 금리</h2><span class="en">RATES</span></div><div class="tiles"><div class="tile"><div class="l">美 3M</div><div class="v">0.37%</div><div class="c"><span class="up">▲1.41%  <span style="font-weight:600">(+0.005)</span></span></div></div><div class="tile"><div class="l">美 10Y</div><div class="v">0.47%</div><div class="c"><span class="up">▲1.03%  <span style="font-weight:600">(+0.005)</span></span></div></div><div class="tile"><div class="l">美 30Y</div><div class="v">0.52%</div><div class="c"><span class="up">▲0.29%  <span style="font-weight:600">(+0.001)</span></span></div></div></div></section><section id="s4"><div class="sh"><span class="no">05</span><h2>원자재·대체자산</h2><span class="en">COMMODITIES</span></div><div class="tiles"><div class="tile"><div class="l">금</div><div class="v">4,478</div><div class="c"><span class="dn">▼2.85%  <span style="font-weight:600">(-132)</span></span></div></div><div class="tile"><div class="l">은</div><div class="v">67.00</div><div class="c"><span class="dn">▼3.51%  <span style="font-weight:600">(-2.43)</span></span></div></div><div class="tile"><div class="l">구리</div><div class="v">6.56</div><div class="c"><span class="dn">▼0.38%  <span style="font-weight:600">(-0.03)</span></span></div></div><div class="tile"><div class="l">WTI</div><div class="v">83.40</div><div class="c"><span class="dn">▼0.16%  <span style="font-weight:600">(-0.13)</span></span></div></div><div class="tile"><div class="l">비트코인</div><div class="v">78,204</div><div class="c"><span class="dn">▼2.56%  <span style="font-weight:600">(-2,053)</span></span></div></div><div class="tile"><div class="l">이더리움</div><div class="v">2,460</div><div class="c"><span class="dn">▼2.01%  <span style="font-weight:600">(-50)</span></span></div></div></div></section><section id="s5"><div class="sh"><span class="no">06</span><h2>보조 지표</h2><span class="en">SIGNALS</span></div><div class="tiles"><div class="tile"><div class="l">SOX(반도체)</div><div class="v">11,469.7</div><div class="c"><span class="dn">▼3.47%  <span style="font-weight:600">(-412.5)</span></span></div></div><div class="tile"><div class="l">IGV(SW섹터)</div><div class="v">109.50</div><div class="c"><span class="dn">▼0.74%  <span style="font-weight:600">(-0.82)</span></span></div></div><div class="tile"><div class="l">VIX(변동성)</div><div class="v">14.43</div><div class="c"><span class="dn">▼0.55%  <span style="font-weight:600">(-0.08)</span></span></div></div><div class="tile"><div class="l">KT(ADR)</div><div class="v">19.63</div><div class="c"><span class="up">▲0.15%  <span style="font-weight:600">(+0.03)</span></span></div></div><div class="tile"><div class="l">SKM(ADR)</div><div class="v">39.34</div><div class="c"><span class="dn">▼0.33%  <span style="font-weight:600">(-0.13)</span></span></div></div><div class="tile"><div class="l">SKHY(ADR)</div><div class="v">161.04</div><div class="c"><span class="dn">▼0.35%  <span style="font-weight:600">(-0.57)</span></span></div></div></div></section><section id="s9"><div class="sh"><span class="no">07</span><h2>금융스트레스</h2><span class="en">STRESS</span></div><div class="gauge"><div class="gh"><span class="gn">장단기 금리차</span><span class="gs">10Y−2Y</span><span class="gv">0.39%p</span><span class="badge" style="background:#5f7a4f">정상</span></div><div class="zbar"><span class="z" style="width:25.00%;background:#ec3013"></span><span class="z" style="width:5.00%;background:#c08a1e"></span><span class="z" style="width:70.00%;background:#5f7a4f"></span><span class="mk" style="left:34.75%"></span></div><div class="zleg"><span><i style="background:#ec3013"></i>역전</span><span><i style="background:#c08a1e"></i>평탄</span><span><i style="background:#5f7a4f"></i>정상</span><span style="margin-left:auto">기준일 2026-08-28</span></div></div><div class="gauge"><div class="gh"><span class="gn">하이일드 스프레드</span><span class="gs">투기등급 회사채</span><span class="gv">2.63%p</span><span class="badge" style="background:#5f7a4f">정상</span></div><div class="zbar"><span class="z" style="width:35.00%;background:#5f7a4f"></span><span class="z" style="width:15.00%;background:#c08a1e"></span><span class="z" style="width:50.00%;background:#ec3013"></span><span class="mk" style="left:26.30%"></span></div><div class="zleg"><span><i style="background:#5f7a4f"></i>정상</span><span><i style="background:#c08a1e"></i>주의</span><span><i style="background:#ec3013"></i>위험</span><span style="margin-left:auto">기준일 2026-08-27</span></div></div><div class="gauge"><div class="gh"><span class="gn">금융스트레스지수</span><span class="gs">세인트루이스 연준 종합</span><span class="gv">-0.81</span><span class="badge" style="background:#5f7a4f">정상</span></div><div class="zbar"><span class="z" style="width:33.33%;background:#5f7a4f"></span><span class="z" style="width:16.67%;background:#c08a1e"></span><span class="z" style="width:50.00%;background:#ec3013"></span><span class="mk" style="left:19.82%"></span></div><div class="zleg"><span><i style="background:#5f7a4f"></i>정상</span><span><i style="background:#c08a1e"></i>주의</span><span><i style="background:#ec3013"></i>위험</span><span style="margin-left:auto">기준일 2026-08-21</span></div></div><div class="gauge"><div class="gh"><span class="gn">샴 룰</span><span class="gs">침체 신호</span><span class="gv">-0.03%p</span><span class="badge" style="background:#5f7a4f">정상</span></div><div class="zbar"><span class="z" style="width:10.00%;background:#5f7a4f"></span><span class="z" style="width:15.00%;background:#c08a1e"></span><span class="z" style="width:75.00%;background:#ec3013"></span><span class="mk" style="left:0.00%"></span></div><div class="zleg"><span><i style="background:#5f7a4f"></i>정상</span><span><i style="background:#c08a1e"></i>관찰</span><span><i style="background:#ec3013"></i>침체 신호</span><span style="margin-left:auto">기준일 2026-07-01</span></div></div><p class="note">FRED 최신 공표치 · 지표마다 공표 주기가 달라 기준일이 서로 다를 수 있음 · 구간은 통상적인 경험칙이며 절대 기준이 아님</p></section>
+<footer><p>시세: Yahoo Finance · 금융스트레스: FRED · 뉴스: 네이버 검색</p><p>앱스크립트로 나뉘어 있던 '아침 시황'과 '경제 &amp; 리스크' 브리핑을 합친 것</p><p class="w">자동 생성 브리핑 · 투자 권유 아님 · 수치 오류 가능성 있음</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     클릭을 가로채 직접 스크롤한다. scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  var nav=document.querySelector(".nav");
+  if(nav) nav.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
