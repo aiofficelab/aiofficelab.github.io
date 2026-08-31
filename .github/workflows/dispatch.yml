@@ -1,0 +1,80 @@
+name: 브리핑 깨우기
+
+# briefing-engine(비공개)의 예약 실행이 걸리지 않아 여기서 대신 깨운다.
+# 저장소 이름을 바꾼 뒤로 그쪽 schedule 이 한 번도 뜨지 않았다(수동 실행만 동작).
+# 공개 저장소인 이쪽 스케줄러로 시각을 잡고, repository_dispatch 로 일을 넘긴다.
+#
+# 필요한 시크릿: ENGINE_TOKEN — briefing-engine 에 쓰기 권한이 있는 PAT
+#   (Settings → Secrets and variables → Actions → New repository secret)
+
+on:
+  schedule:
+    # cron 요일은 UTC 기준. 한국 월~금 아침은 UTC 일~목 밤(0-4)이다.
+    - cron: '3 22 * * 0-4'     # 한국 07:03  재경부+금감원
+    - cron: '9 22 * * 0-4'     # 한국 07:09  법률 모니터링
+    - cron: '17 22 * * 0-4'    # 한국 07:17  아침 시황 브리핑
+    - cron: '47 22 * * 0-4'    # 한국 07:47  IR 캘린더
+    - cron: '23 23 * * 0-4'    # 한국 08:23  관심종목 리포트
+  workflow_dispatch:
+    inputs:
+      brief:
+        description: '깨울 브리핑 (all / econscan / law / morning / ir / portfolio)'
+        default: 'all'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 어느 브리핑인지 고른다
+        id: pick
+        env:
+          SCHED: ${{ github.event.schedule }}
+          MANUAL: ${{ github.event.inputs.brief }}
+        run: |
+          case "$SCHED" in
+            "3 22 * * 0-4")  t=econscan  ;;
+            "9 22 * * 0-4")  t=law       ;;
+            "17 22 * * 0-4") t=morning   ;;
+            "47 22 * * 0-4") t=ir        ;;
+            "23 23 * * 0-4") t=portfolio ;;
+            *)               t="${MANUAL:-all}" ;;
+          esac
+          echo "target=$t" >> "$GITHUB_OUTPUT"
+          echo "깨울 대상: $t"
+
+      - name: briefing-engine 깨우기
+        env:
+          TOKEN: ${{ secrets.ENGINE_TOKEN }}
+          TARGET: ${{ steps.pick.outputs.target }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::ENGINE_TOKEN 시크릿이 없습니다 — briefing-engine 에 쓰기 권한이 있는 PAT 를 넣으세요"
+            exit 1
+          fi
+          if [ "$TARGET" = "all" ]; then
+            list="econscan law morning ir portfolio"
+          else
+            list="$TARGET"
+          fi
+          fail=0
+          for t in $list; do
+            code=$(curl -sS -o /tmp/resp -w '%{http_code}' -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/aiofficelab/briefing-engine/dispatches \
+              -d "{\"event_type\":\"$t\"}")
+            # 204 가 정상. 401/403 은 토큰 권한, 404 는 저장소 이름을 확인할 것
+            if [ "$code" = "204" ]; then
+              echo "✅ $t 깨움"
+            else
+              echo "::error::$t 실패 (HTTP $code) $(cat /tmp/resp)"
+              fail=1
+            fi
+            sleep 1
+          done
+          exit $fail
