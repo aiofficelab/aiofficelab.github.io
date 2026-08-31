@@ -4,8 +4,13 @@ name: 브리핑 깨우기
 # 저장소 이름을 바꾼 뒤로 그쪽 schedule 이 한 번도 뜨지 않았다(수동 실행만 동작).
 # 공개 저장소인 이쪽 스케줄러로 시각을 잡고, repository_dispatch 로 일을 넘긴다.
 #
-# 필요한 시크릿: ENGINE_TOKEN — briefing-engine 에 쓰기 권한이 있는 PAT
-#   (Settings → Secrets and variables → Actions → New repository secret)
+# 필요한 시크릿: ENGINE_TOKEN
+#   반드시 fine-grained PAT 로 — Repository access 를 briefing-engine 하나로,
+#   Permissions 는 Contents: Read and write 만. (dispatches API 요건)
+#
+#   계정 전체 권한(classic repo 범위)을 여기 두면 안 된다. 이 저장소에 쓰기 권한이
+#   있는 사람은 이 파일을 고쳐 토큰을 빼돌릴 수 있으므로, 토큰이 넓으면 사이트가
+#   뚫렸을 때 피해가 계정 전체로 번진다. briefing-engine 하나로 좁혀 두면 거기서 끝난다.
 
 on:
   schedule:
@@ -15,6 +20,8 @@ on:
     - cron: '17 22 * * 0-4'    # 한국 07:17  아침 시황 브리핑
     - cron: '47 22 * * 0-4'    # 한국 07:47  IR 캘린더
     - cron: '23 23 * * 0-4'    # 한국 08:23  관심종목 리포트
+    # 아래 한 줄은 스케줄러가 이 계정에서 도는지 보는 시험용 — 확인되면 지운다
+    - cron: '52 22 * * *'
   workflow_dispatch:
     inputs:
       brief:
@@ -22,8 +29,8 @@ on:
         default: 'all'
         required: false
 
-permissions:
-  contents: read
+# 이 잡은 코드를 체크아웃하지도, 이 저장소에 쓰지도 않는다
+permissions: {}
 
 jobs:
   wake:
@@ -41,6 +48,7 @@ jobs:
             "17 22 * * 0-4") t=morning   ;;
             "47 22 * * 0-4") t=ir        ;;
             "23 23 * * 0-4") t=portfolio ;;
+            "52 22 * * *")   t=none      ;;   # 시험용 — 깨우지 않고 뜨기만 확인
             *)               t="${MANUAL:-all}" ;;
           esac
           echo "target=$t" >> "$GITHUB_OUTPUT"
@@ -51,6 +59,10 @@ jobs:
           TOKEN: ${{ secrets.ENGINE_TOKEN }}
           TARGET: ${{ steps.pick.outputs.target }}
         run: |
+          if [ "$TARGET" = "none" ]; then
+            echo "시험 실행 — 스케줄러 동작 확인용. 아무것도 깨우지 않음"
+            exit 0
+          fi
           if [ -z "$TOKEN" ]; then
             echo "::error::ENGINE_TOKEN 시크릿이 없습니다 — briefing-engine 에 쓰기 권한이 있는 PAT 를 넣으세요"
             exit 1
