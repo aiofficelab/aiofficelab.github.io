@@ -113,7 +113,7 @@
     <div class="wrap">
       <h1 class="masthead">AI Office Lab</h1>
       <div class="subdomain">DAILY BRIEFING</div>
-      <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 아침 자동 발행</span></div>
+      <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;평일 아침 자동 발행</span></div>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
     </div>
     <div class="wrap">
@@ -144,20 +144,20 @@
   </section>
 </main>
 <button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
-<footer><div class="wrap"><span class="b">AI OFFICE LAB</span><span class="s">자동 생성 브리핑 · 투자 권유가 아닙니다 · 평일 아침 발행, 주말·공휴일 휴간</span></div></footer>
+<footer><div class="wrap"><span class="b">AI OFFICE LAB</span><span class="s">자동 생성 브리핑 · 투자 권유가 아닙니다 · 평일 아침 발행</span></div></footer>
 </div>
 <script>
 var BRIEFS = [
   /* 앱스크립트의 '아침 시황'과 '경제 & 리스크' 브리핑을 합친 것 — 2026-08-30.
      지난 회차는 econrisk kind 에 남아 있으나 카드는 없앴다. */
-  { kind:"morning",  group:"market", no:"01", cad:"매일 아침 7시", title:"아침 시황 브리핑", kick:"MORNING BRIEFING", sum:"환율·증시·금리·원자재 + 오늘의 흐름 · 금융스트레스" },
-  { kind:"ir",       group:"market", no:"02", cad:"매일 아침 8시", title:"IR 캘린더", kick:"GLOBAL IR CALENDAR", sum:"실적발표 캘린더 · 주간 실적 리뷰" },
+  { kind:"morning",  group:"market", no:"01", cad:"평일 07:17", title:"아침 시황 브리핑", kick:"MORNING BRIEFING", sum:"환율·증시·금리·원자재 + 오늘의 흐름 · 금융스트레스" },
+  { kind:"ir",       group:"market", no:"02", cad:"평일 07:47", title:"IR 캘린더", kick:"GLOBAL IR CALENDAR", sum:"실적발표 캘린더 · 주간 실적 리뷰" },
   /* weekly(MY 포트폴리오 대시보드) + finstats(주요 금융 통계) 통합 — 2026-08-30.
      시장 지표를 붙여둔 이유가 "내 종목이 어떤 지표를 따라 움직이나"였는데 둘이 떨어져 있어 그 연결을 볼 수 없었다.
      지난 회차는 아래 두 kind에 그대로 남아 있어 예전 날짜를 고르면 계속 열린다. */
-  { kind:"portfolio", group:"market", no:"03", cad:"매일 아침 8시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
-  { kind:"econscan", group:"reg",    no:"04", cad:"매일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
-  { kind:"law",      group:"reg",    no:"05", cad:"매일 아침 8시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+  { kind:"portfolio", group:"market", no:"03", cad:"평일 08:23", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
+  { kind:"econscan", group:"reg",    no:"04", cad:"평일 07:03", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
+  { kind:"law",      group:"reg",    no:"05", cad:"평일 07:09", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
 ];
 var state = { kind:null, date:null, manifest:{} };
 var frameRO = null;
