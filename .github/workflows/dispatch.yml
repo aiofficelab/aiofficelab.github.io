@@ -46,7 +46,16 @@ jobs:
             "17 22 * * 0-4") t=morning   ;;
             "47 22 * * 0-4") t=ir        ;;
             "23 23 * * 0-4") t=portfolio ;;
-            *)               t="${MANUAL:-all}" ;;
+            "")              t="${MANUAL:-all}" ;;   # 수동 실행일 때만 입력값 사용
+            *)
+              # 예약인데 목록에 없는 cron — all 로 떨어뜨리면 아침마다 5×5 발행이 된다.
+              # cron 을 고치면 여기 case 도 반드시 함께 고칠 것.
+              echo "::error::모르는 cron: '$SCHED' — case 목록과 어긋남"
+              exit 1 ;;
+          esac
+          case "$t" in
+            all|econscan|law|morning|ir|portfolio) ;;
+            *) echo "::error::모르는 브리핑 이름: '$t'"; exit 1 ;;
           esac
           echo "target=$t" >> "$GITHUB_OUTPUT"
           echo "깨울 대상: $t"
