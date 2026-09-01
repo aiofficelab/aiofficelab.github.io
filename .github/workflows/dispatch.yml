@@ -20,8 +20,6 @@ on:
     - cron: '17 22 * * 0-4'    # 한국 07:17  아침 시황 브리핑
     - cron: '47 22 * * 0-4'    # 한국 07:47  IR 캘린더
     - cron: '23 23 * * 0-4'    # 한국 08:23  관심종목 리포트
-    # 아래 한 줄은 스케줄러가 이 계정에서 도는지 보는 시험용 — 확인되면 지운다
-    - cron: '52 22 * * *'
   workflow_dispatch:
     inputs:
       brief:
@@ -48,7 +46,6 @@ jobs:
             "17 22 * * 0-4") t=morning   ;;
             "47 22 * * 0-4") t=ir        ;;
             "23 23 * * 0-4") t=portfolio ;;
-            "52 22 * * *")   t=none      ;;   # 시험용 — 깨우지 않고 뜨기만 확인
             *)               t="${MANUAL:-all}" ;;
           esac
           echo "target=$t" >> "$GITHUB_OUTPUT"
@@ -59,10 +56,6 @@ jobs:
           TOKEN: ${{ secrets.ENGINE_TOKEN }}
           TARGET: ${{ steps.pick.outputs.target }}
         run: |
-          if [ "$TARGET" = "none" ]; then
-            echo "시험 실행 — 스케줄러 동작 확인용. 아무것도 깨우지 않음"
-            exit 0
-          fi
           if [ -z "$TOKEN" ]; then
             echo "::error::ENGINE_TOKEN 시크릿이 없습니다 — briefing-engine 에 쓰기 권한이 있는 PAT 를 넣으세요"
             exit 1
