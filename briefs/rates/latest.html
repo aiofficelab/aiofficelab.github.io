@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>주간 금리 동향</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#131211; --paper:#1b1918; --paper2:#232120;
+  --ink:#f2efed; --ink2:#b3aeab; --ink3:#8a8481;
+  --rule:rgba(242,239,237,.44); --rule-soft:rgba(242,239,237,.15);
+  --accent:#ff5330; --accent-700:#ff8062; --accent-100:#2c1a15;
+  --blue:#6ea3ff; --blue-700:#9dc0ff;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다 */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
+.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
+.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:32px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:17px}
+.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
+.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
+.note b{color:var(--ink2)}
+.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
+  font-size:14px;font-weight:700}
+
+/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
+  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
+/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+.item.side{grid-template-columns:34px minmax(0,1fr) auto}
+.item .ex{align-self:center;padding-left:14px}
+.item .ex .acts{margin-top:0;justify-content:flex-end}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
+.item .meta b{color:var(--ink2)}
+.chips{margin-bottom:5px}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
+.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+
+/* 링크 버튼 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
+.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
+.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
+  border-bottom:1px solid var(--rule)}
+.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
+.item.wide{grid-template-columns:96px minmax(0,1fr)}
+.item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
+/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
+.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){
+  .item.wide{grid-template-columns:72px minmax(0,1fr)}
+  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
+  .item.side{grid-template-columns:34px minmax(0,1fr)}
+  .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
+  .item .ex{grid-column:2;padding-left:0}
+  .item .ex .acts{margin-top:9px;justify-content:flex-start}
+}
+/* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
+table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g td.spk{text-align:left}
+/* 시장 표 — 절마다 라벨 길이가 달라 열이 어긋나던 것을 칸 너비로 고정한다 */
+table.g.mk{table-layout:fixed}
+/* 좁은 화면에서는 6개월·전월말비·작년말비를 접는다 — 가로 스크롤이 생기지 않게 */
+.mper{display:none}
+table.g.mk tr.mrow{display:none}
+@media(max-width:640px){
+  .mo{display:none}
+  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
+  table.g.mk{table-layout:auto;min-width:0}
+  table.g.mk col.c1,table.g.mk col.c2{width:auto}
+  table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
+  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
+  table.g.mk tr[data-v]{cursor:pointer}
+  table.g.mk tr.mrow.op{display:table-row}
+  table.g.mk tr.mrow > td{padding:0 0 10px}
+  table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--rule-soft)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink3);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+}
+table.g.mk col.c1{width:190px}
+table.g.mk col.c2{width:110px}
+@media(max-width:640px){table.g.mk col.c1{width:150px}}
+table.g tr:hover td{background:rgba(128,128,128,.07)}
+table.g .nm{font-weight:700;color:var(--ink)}
+table.g .em{margin-right:6px}
+table.g .val{font-weight:800;color:var(--ink)}
+svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
+svg.sp polyline{fill:none;stroke-width:1.5}
+svg.sp polygon{opacity:.13}
+/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
+  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
+.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .wd.we{opacity:.65}
+.cal .dy{min-height:86px;padding:6px 7px 9px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .dy.past{background:rgba(128,128,128,.05)}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
+.cal .dy.past .dn{color:var(--ink3)}
+.cal .dy.today .dn{color:var(--accent-700)}
+.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
+  text-decoration:none;background:var(--ink);color:var(--paper);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .tk.kr{background:var(--accent);color:#fff}
+.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
+.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
+/* 지표 타일 — 값 하나 + 등락 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
+.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+.tile .em{margin-right:5px}
+.tile .sp{display:block;margin-top:8px;width:100%;height:34px}
+.tile .sp polyline{fill:none;stroke-width:1.6}
+.tile .sp polygon{opacity:.13}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
+footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
+  color:var(--ink3);font-size:11px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:24px}
+  .item{grid-template-columns:26px 1fr}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">WEEKLY RATES</div><h1>주간 금리 동향</h1><div class="dt">9/3(목) · 매주 월요일 아침 발행 · 지난주 마감 기준</div></header>
+<div class="rule"></div>
+<nav class="nav"><a href="#s1" target="_self">지난주 동향</a><a href="#s2" target="_self">한국 금리</a><a href="#s3" target="_self">미국 금리</a><a href="#s4" target="_self">한미 금리차</a><a href="#s5" target="_self">원/달러</a><a href="#s6" target="_self">금주 전망</a><span class="sep"></span></nav>
+<section id="s1"><div class="sh"><span class="no">01</span><h2>지난주 동향</h2><span class="en">LAST WEEK</span></div><p class="sump" style="font-size:13.5px;line-height:1.9;color:var(--ink2);margin:4px 0 0">미국 국채 금리가 단기물 위주로 급등(UST 2년 +22.0bp, 10년 +15.0bp)하며 국내 국고채 금리도 전 구간 상승 압력을 받음. 한미 금리차가 3년물 기준 -16.2bp로 확대되며 역전 폭이 심화되었으나, 원/달러 환율은 기업의 달러 매도세 등에 힘입어 주간 2.0% 하락한 1355.510원으로 마감함. 미 금리 상승세 대비 원화는 강세를 보이며 금리와 환율의 동조화가 다소 약화된 흐름을 나타냄.</p></section><section id="s2"><div class="sh"><span class="no">02</span><h2>한국 금리</h2><span class="en">KOREA RATES</span></div><div class="scroll"><table class="g mk"><colgroup><col class="c1"><col class="c2"><col><col><col><col></colgroup><tr><th>구분</th><th class="mo" style="text-align:left">12주</th><th>최근</th><th>주간</th><th class="mo">4주</th><th class="mo">연초 대비</th></tr><tr><td><span class="nm">국고채(3년)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,7.6 1.7,6.0 3.3,17.6 5.0,19.5 6.6,20.0 8.3,17.1 10.0,12.8 11.6,15.7 13.3,15.5 14.9,16.6 16.6,18.4 18.3,20.5 19.9,14.2 21.6,17.4 23.2,15.3 24.9,15.0 26.6,15.3 28.2,15.1 29.9,12.9 31.5,7.2 33.2,8.7 34.9,10.0 36.5,8.7 38.2,5.3 39.8,5.0 41.5,2.0 43.1,11.4 44.8,13.5 46.5,11.3 48.1,16.6 49.8,17.9 51.4,23.0 53.1,17.7 54.8,17.4 56.4,12.9 58.1,14.2 59.7,14.9 61.4,13.8 63.1,13.7 64.7,12.7 66.4,9.6 68.0,10.9 69.7,12.4 71.4,16.8 73.0,14.4 74.7,10.8 76.3,4.1 78.0,7.1 78,24" fill="var(--accent)"/><polyline points="0.0,7.6 1.7,6.0 3.3,17.6 5.0,19.5 6.6,20.0 8.3,17.1 10.0,12.8 11.6,15.7 13.3,15.5 14.9,16.6 16.6,18.4 18.3,20.5 19.9,14.2 21.6,17.4 23.2,15.3 24.9,15.0 26.6,15.3 28.2,15.1 29.9,12.9 31.5,7.2 33.2,8.7 34.9,10.0 36.5,8.7 38.2,5.3 39.8,5.0 41.5,2.0 43.1,11.4 44.8,13.5 46.5,11.3 48.1,16.6 49.8,17.9 51.4,23.0 53.1,17.7 54.8,17.4 56.4,12.9 58.1,14.2 59.7,14.9 61.4,13.8 63.1,13.7 64.7,12.7 66.4,9.6 68.0,10.9 69.7,12.4 71.4,16.8 73.0,14.4 74.7,10.8 76.3,4.1 78.0,7.1" style="stroke:var(--accent)"/></svg></td><td class="val">3.888%</td><td><span class="up">▲13.3bp</span></td><td class="mo"><span class="up">▲21.9bp</span></td><td class="mo"><span class="up">▲93.5bp</span></td></tr><tr><td><span class="nm">국고채(5년)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,11.5 1.7,10.9 3.3,21.7 5.0,22.5 6.6,23.0 8.3,19.6 10.0,13.3 11.6,15.1 13.3,15.2 14.9,16.7 16.6,18.5 18.3,21.1 19.9,14.3 21.6,17.4 23.2,16.8 24.9,16.2 26.6,16.2 28.2,15.1 29.9,13.5 31.5,7.7 33.2,8.8 34.9,9.6 36.5,8.2 38.2,4.8 39.8,5.3 41.5,2.0 43.1,11.7 44.8,13.7 46.5,11.0 48.1,15.2 49.8,15.9 51.4,21.7 53.1,19.0 54.8,18.6 56.4,13.4 58.1,14.5 59.7,15.1 61.4,13.1 63.1,11.7 64.7,11.8 66.4,8.8 68.0,11.7 69.7,14.0 71.4,17.9 73.0,14.8 74.7,12.7 76.3,5.1 78.0,8.4 78,24" fill="var(--accent)"/><polyline points="0.0,11.5 1.7,10.9 3.3,21.7 5.0,22.5 6.6,23.0 8.3,19.6 10.0,13.3 11.6,15.1 13.3,15.2 14.9,16.7 16.6,18.5 18.3,21.1 19.9,14.3 21.6,17.4 23.2,16.8 24.9,16.2 26.6,16.2 28.2,15.1 29.9,13.5 31.5,7.7 33.2,8.8 34.9,9.6 36.5,8.2 38.2,4.8 39.8,5.3 41.5,2.0 43.1,11.7 44.8,13.7 46.5,11.0 48.1,15.2 49.8,15.9 51.4,21.7 53.1,19.0 54.8,18.6 56.4,13.4 58.1,14.5 59.7,15.1 61.4,13.1 63.1,11.7 64.7,11.8 66.4,8.8 68.0,11.7 69.7,14.0 71.4,17.9 73.0,14.8 74.7,12.7 76.3,5.1 78.0,8.4" style="stroke:var(--accent)"/></svg></td><td class="val">4.118%</td><td><span class="up">▲14.4bp</span></td><td class="mo"><span class="up">▲20.2bp</span></td><td class="mo"><span class="up">▲87.8bp</span></td></tr><tr><td><span class="nm">국고채(10년)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,11.7 1.7,10.2 3.3,20.4 5.0,20.8 6.6,23.0 8.3,20.4 10.0,16.1 11.6,17.4 13.3,17.4 14.9,18.9 16.6,18.9 18.3,21.9 19.9,15.5 21.6,16.7 23.2,15.6 24.9,15.1 26.6,13.3 28.2,13.0 29.9,12.3 31.5,8.4 33.2,8.7 34.9,10.4 36.5,8.6 38.2,5.0 39.8,5.1 41.5,2.0 43.1,10.8 44.8,12.6 46.5,9.6 48.1,12.4 49.8,12.4 51.4,18.6 53.1,16.1 54.8,15.3 56.4,10.2 58.1,10.5 59.7,10.3 61.4,9.5 63.1,8.1 64.7,8.9 66.4,6.0 68.0,8.3 69.7,10.9 71.4,13.7 73.0,11.1 74.7,9.5 76.3,3.6 78.0,6.5 78,24" fill="var(--accent)"/><polyline points="0.0,11.7 1.7,10.2 3.3,20.4 5.0,20.8 6.6,23.0 8.3,20.4 10.0,16.1 11.6,17.4 13.3,17.4 14.9,18.9 16.6,18.9 18.3,21.9 19.9,15.5 21.6,16.7 23.2,15.6 24.9,15.1 26.6,13.3 28.2,13.0 29.9,12.3 31.5,8.4 33.2,8.7 34.9,10.4 36.5,8.6 38.2,5.0 39.8,5.1 41.5,2.0 43.1,10.8 44.8,12.6 46.5,9.6 48.1,12.4 49.8,12.4 51.4,18.6 53.1,16.1 54.8,15.3 56.4,10.2 58.1,10.5 59.7,10.3 61.4,9.5 63.1,8.1 64.7,8.9 66.4,6.0 68.0,8.3 69.7,10.9 71.4,13.7 73.0,11.1 74.7,9.5 76.3,3.6 78.0,6.5" style="stroke:var(--accent)"/></svg></td><td class="val">4.367%</td><td><span class="up">▲12.9bp</span></td><td class="mo"><span class="up">▲21.7bp</span></td><td class="mo"><span class="up">▲98.2bp</span></td></tr><tr><td><span class="nm">KOFR(익일물)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,18.8 1.7,18.5 3.3,19.3 5.0,19.6 6.6,19.7 8.3,20.0 10.0,19.7 11.6,19.3 13.3,19.3 14.9,19.7 16.6,19.3 18.3,19.3 19.9,17.5 21.6,19.7 23.2,22.8 24.9,23.0 26.6,22.2 28.2,22.2 29.9,19.6 31.5,19.0 33.2,18.5 34.9,19.5 36.5,14.2 38.2,14.9 39.8,15.0 41.5,15.3 43.1,14.8 44.8,15.0 46.5,15.1 48.1,14.0 49.8,11.2 51.4,11.6 53.1,11.7 54.8,12.3 56.4,11.7 58.1,11.6 59.7,11.2 61.4,11.8 63.1,12.8 64.7,12.9 66.4,13.3 68.0,13.2 69.7,12.8 71.4,12.8 73.0,4.2 74.7,4.1 76.3,2.0 78.0,4.5 78,24" fill="var(--accent)"/><polyline points="0.0,18.8 1.7,18.5 3.3,19.3 5.0,19.6 6.6,19.7 8.3,20.0 10.0,19.7 11.6,19.3 13.3,19.3 14.9,19.7 16.6,19.3 18.3,19.3 19.9,17.5 21.6,19.7 23.2,22.8 24.9,23.0 26.6,22.2 28.2,22.2 29.9,19.6 31.5,19.0 33.2,18.5 34.9,19.5 36.5,14.2 38.2,14.9 39.8,15.0 41.5,15.3 43.1,14.8 44.8,15.0 46.5,15.1 48.1,14.0 49.8,11.2 51.4,11.6 53.1,11.7 54.8,12.3 56.4,11.7 58.1,11.6 59.7,11.2 61.4,11.8 63.1,12.8 64.7,12.9 66.4,13.3 68.0,13.2 69.7,12.8 71.4,12.8 73.0,4.2 74.7,4.1 76.3,2.0 78.0,4.5" style="stroke:var(--accent)"/></svg></td><td class="val">2.980%</td><td><span class="up">▲24.2bp</span></td><td class="mo"><span class="up">▲20.6bp</span></td><td class="mo"><span class="up">▲29.3bp</span></td></tr><tr><td><span class="nm">CD(91일)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,19.3 1.7,18.4 3.3,21.2 5.0,21.2 6.6,20.3 8.3,21.2 10.0,21.2 11.6,21.2 13.3,21.2 14.9,21.2 16.6,21.2 18.3,21.2 19.9,21.2 21.6,21.2 23.2,21.2 24.9,22.1 26.6,22.1 28.2,22.1 29.9,23.0 31.5,23.0 33.2,23.0 34.9,22.1 36.5,22.1 38.2,22.1 39.8,22.1 41.5,22.1 43.1,21.2 44.8,21.2 46.5,20.3 48.1,18.4 49.8,20.3 51.4,20.3 53.1,20.3 54.8,20.3 56.4,20.3 58.1,19.3 59.7,20.3 61.4,19.3 63.1,19.3 64.7,19.3 66.4,18.4 68.0,17.5 69.7,16.6 71.4,2.9 73.0,2.0 74.7,2.9 76.3,2.9 78.0,2.9 78,24" fill="var(--accent)"/><polyline points="0.0,19.3 1.7,18.4 3.3,21.2 5.0,21.2 6.6,20.3 8.3,21.2 10.0,21.2 11.6,21.2 13.3,21.2 14.9,21.2 16.6,21.2 18.3,21.2 19.9,21.2 21.6,21.2 23.2,21.2 24.9,22.1 26.6,22.1 28.2,22.1 29.9,23.0 31.5,23.0 33.2,23.0 34.9,22.1 36.5,22.1 38.2,22.1 39.8,22.1 41.5,22.1 43.1,21.2 44.8,21.2 46.5,20.3 48.1,18.4 49.8,20.3 51.4,20.3 53.1,20.3 54.8,20.3 56.4,20.3 58.1,19.3 59.7,20.3 61.4,19.3 63.1,19.3 64.7,19.3 66.4,18.4 68.0,17.5 69.7,16.6 71.4,2.9 73.0,2.0 74.7,2.9 76.3,2.9 78.0,2.9" style="stroke:var(--accent)"/></svg></td><td class="val">3.120%</td><td><span class="flat">0.0bp</span></td><td class="mo"><span class="up">▲19.0bp</span></td><td class="mo"><span class="up">▲31.0bp</span></td></tr></table></div><p class="note">단위 %, 변화는 bp · 한국은행 ECOS(전 영업일 고시) · 주간=5거래일, 4주=20거래일 전 대비</p></section><section id="s3"><div class="sh"><span class="no">03</span><h2>미국 금리</h2><span class="en">US RATES</span></div><div class="scroll"><table class="g mk"><colgroup><col class="c1"><col class="c2"><col><col><col><col></colgroup><tr><th>구분</th><th class="mo" style="text-align:left">12주</th><th>최근</th><th>주간</th><th class="mo">4주</th><th class="mo">연초 대비</th></tr><tr><td><span class="nm">UST 2년</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,16.8 1.7,18.1 3.3,23.0 5.0,20.5 6.6,21.8 8.3,23.0 10.0,14.4 11.6,11.3 13.3,16.2 14.9,19.3 16.6,21.8 18.3,19.9 19.9,17.4 21.6,15.6 23.2,18.1 24.9,14.4 26.6,13.1 28.2,16.2 29.9,10.0 31.5,15.0 33.2,18.1 34.9,16.2 36.5,13.1 38.2,10.0 39.8,6.9 41.5,3.2 43.1,6.9 44.8,10.0 46.5,12.5 48.1,11.9 49.8,10.6 51.4,13.7 53.1,15.0 54.8,10.6 56.4,10.6 58.1,12.5 59.7,13.7 61.4,16.8 63.1,14.4 64.7,14.4 66.4,14.4 68.0,14.4 69.7,11.3 71.4,15.6 73.0,14.4 74.7,13.7 76.3,5.1 78.0,2.0 78,24" fill="var(--accent)"/><polyline points="0.0,16.8 1.7,18.1 3.3,23.0 5.0,20.5 6.6,21.8 8.3,23.0 10.0,14.4 11.6,11.3 13.3,16.2 14.9,19.3 16.6,21.8 18.3,19.9 19.9,17.4 21.6,15.6 23.2,18.1 24.9,14.4 26.6,13.1 28.2,16.2 29.9,10.0 31.5,15.0 33.2,18.1 34.9,16.2 36.5,13.1 38.2,10.0 39.8,6.9 41.5,3.2 43.1,6.9 44.8,10.0 46.5,12.5 48.1,11.9 49.8,10.6 51.4,13.7 53.1,15.0 54.8,10.6 56.4,10.6 58.1,12.5 59.7,13.7 61.4,16.8 63.1,14.4 64.7,14.4 66.4,14.4 68.0,14.4 69.7,11.3 71.4,15.6 73.0,14.4 74.7,13.7 76.3,5.1 78.0,2.0" style="stroke:var(--accent)"/></svg></td><td class="val">4.390%</td><td><span class="up">▲22.0bp</span></td><td class="mo"><span class="up">▲19.0bp</span></td><td class="mo"><span class="up">▲92.0bp</span></td></tr><tr><td><span class="nm">UST 10년</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,13.8 1.7,15.3 3.3,19.4 5.0,17.9 6.6,18.4 8.3,20.4 10.0,18.9 11.6,16.3 13.3,16.9 14.9,21.5 16.6,23.0 18.3,23.0 19.9,19.9 21.6,17.9 23.2,17.9 24.9,14.3 26.6,13.8 28.2,14.8 29.9,10.7 31.5,12.8 33.2,14.3 34.9,13.3 36.5,11.7 38.2,10.2 39.8,8.1 41.5,6.1 43.1,9.2 44.8,11.2 46.5,8.1 48.1,7.6 49.8,6.6 51.4,10.2 53.1,10.2 54.8,7.1 56.4,5.6 58.1,6.6 59.7,7.6 61.4,10.2 63.1,5.6 64.7,6.1 66.4,9.2 68.0,7.1 69.7,6.6 71.4,9.7 73.0,8.7 74.7,8.1 76.3,4.0 78.0,2.0 78,24" fill="var(--accent)"/><polyline points="0.0,13.8 1.7,15.3 3.3,19.4 5.0,17.9 6.6,18.4 8.3,20.4 10.0,18.9 11.6,16.3 13.3,16.9 14.9,21.5 16.6,23.0 18.3,23.0 19.9,19.9 21.6,17.9 23.2,17.9 24.9,14.3 26.6,13.8 28.2,14.8 29.9,10.7 31.5,12.8 33.2,14.3 34.9,13.3 36.5,11.7 38.2,10.2 39.8,8.1 41.5,6.1 43.1,9.2 44.8,11.2 46.5,8.1 48.1,7.6 49.8,6.6 51.4,10.2 53.1,10.2 54.8,7.1 56.4,5.6 58.1,6.6 59.7,7.6 61.4,10.2 63.1,5.6 64.7,6.1 66.4,9.2 68.0,7.1 69.7,6.6 71.4,9.7 73.0,8.7 74.7,8.1 76.3,4.0 78.0,2.0" style="stroke:var(--accent)"/></svg></td><td class="val">4.790%</td><td><span class="up">▲15.0bp</span></td><td class="mo"><span class="up">▲16.0bp</span></td><td class="mo"><span class="up">▲61.0bp</span></td></tr><tr><td><span class="nm">UST 30년</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,15.1 1.7,16.0 3.3,18.8 5.0,17.9 6.6,17.9 8.3,19.7 10.0,21.1 11.6,18.8 13.3,19.3 14.9,23.0 16.6,22.5 18.3,23.0 19.9,20.7 21.6,17.9 23.2,16.9 24.9,14.1 26.6,13.7 28.2,14.1 29.9,11.8 31.5,12.7 33.2,12.7 34.9,12.3 36.5,11.3 38.2,10.4 39.8,9.5 41.5,8.5 43.1,10.9 44.8,12.3 46.5,7.1 48.1,6.7 49.8,5.7 51.4,8.1 53.1,8.5 54.8,6.2 56.4,4.8 58.1,5.3 59.7,5.3 61.4,6.7 63.1,2.0 64.7,3.4 66.4,7.6 68.0,5.7 69.7,5.7 71.4,8.5 73.0,8.1 74.7,7.6 76.3,4.8 78.0,3.9 78,24" fill="var(--accent)"/><polyline points="0.0,15.1 1.7,16.0 3.3,18.8 5.0,17.9 6.6,17.9 8.3,19.7 10.0,21.1 11.6,18.8 13.3,19.3 14.9,23.0 16.6,22.5 18.3,23.0 19.9,20.7 21.6,17.9 23.2,16.9 24.9,14.1 26.6,13.7 28.2,14.1 29.9,11.8 31.5,12.7 33.2,12.7 34.9,12.3 36.5,11.3 38.2,10.4 39.8,9.5 41.5,8.5 43.1,10.9 44.8,12.3 46.5,7.1 48.1,6.7 49.8,5.7 51.4,8.1 53.1,8.5 54.8,6.2 56.4,4.8 58.1,5.3 59.7,5.3 61.4,6.7 63.1,2.0 64.7,3.4 66.4,7.6 68.0,5.7 69.7,5.7 71.4,8.5 73.0,8.1 74.7,7.6 76.3,4.8 78.0,3.9" style="stroke:var(--accent)"/></svg></td><td class="val">5.270%</td><td><span class="up">▲10.0bp</span></td><td class="mo"><span class="up">▲9.0bp</span></td><td class="mo"><span class="up">▲43.0bp</span></td></tr><tr><td><span class="nm">SOFR(1일)</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,13.8 1.7,15.1 3.3,7.2 5.0,2.0 6.6,9.9 8.3,9.9 10.0,12.5 11.6,11.2 13.3,11.2 14.9,8.6 16.6,11.2 18.3,3.3 19.9,5.9 21.6,8.6 23.2,11.2 24.9,16.4 26.6,23.0 28.2,20.4 29.9,9.9 31.5,8.6 33.2,11.2 34.9,15.1 36.5,12.5 38.2,11.2 39.8,8.6 41.5,8.6 43.1,7.2 44.8,7.2 46.5,7.2 48.1,5.9 49.8,5.9 51.4,8.6 53.1,7.2 54.8,11.2 56.4,8.6 58.1,11.2 59.7,11.2 61.4,11.2 63.1,7.2 64.7,11.2 66.4,9.9 68.0,7.2 69.7,5.9 71.4,8.6 73.0,8.6 74.7,7.2 76.3,5.9 78.0,7.2 78,24" fill="var(--accent)"/><polyline points="0.0,13.8 1.7,15.1 3.3,7.2 5.0,2.0 6.6,9.9 8.3,9.9 10.0,12.5 11.6,11.2 13.3,11.2 14.9,8.6 16.6,11.2 18.3,3.3 19.9,5.9 21.6,8.6 23.2,11.2 24.9,16.4 26.6,23.0 28.2,20.4 29.9,9.9 31.5,8.6 33.2,11.2 34.9,15.1 36.5,12.5 38.2,11.2 39.8,8.6 41.5,8.6 43.1,7.2 44.8,7.2 46.5,7.2 48.1,5.9 49.8,5.9 51.4,8.6 53.1,7.2 54.8,11.2 56.4,8.6 58.1,11.2 59.7,11.2 61.4,11.2 63.1,7.2 64.7,11.2 66.4,9.9 68.0,7.2 69.7,5.9 71.4,8.6 73.0,8.6 74.7,7.2 76.3,5.9 78.0,7.2" style="stroke:var(--accent)"/></svg></td><td class="val">3.650%</td><td><span class="up">▲1.0bp</span></td><td class="mo"><span class="up">▲1.0bp</span></td><td class="mo"><span class="dn">▼22.0bp</span></td></tr></table></div><p class="note">FRED 기준 — 공표가 1~2영업일 늦습니다</p></section><section id="s4"><div class="sh"><span class="no">04</span><h2>한미 금리차</h2><span class="en">KR−US SPREAD</span></div><div class="scroll"><table class="g mk"><colgroup><col class="c1"><col class="c2"><col><col><col><col></colgroup><tr><th>구분</th><th class="mo" style="text-align:left">12주</th><th>최근</th><th>주간</th><th class="mo">4주</th><th class="mo">연초 대비</th></tr><tr><td><span class="nm">한미 3년 금리차</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,5.0 1.7,10.1 3.3,8.3 5.0,7.5 6.6,2.0 8.3,8.7 10.0,11.4 11.6,19.7 13.3,15.5 14.9,15.5 16.6,12.2 18.3,11.9 19.9,11.7 21.6,11.6 23.2,13.3 24.9,14.0 26.6,11.4 28.2,13.3 29.9,13.5 31.5,16.1 33.2,18.2 34.9,10.3 36.5,10.8 38.2,11.0 39.8,15.6 41.5,14.8 43.1,13.4 44.8,17.9 46.5,17.6 48.1,18.1 49.8,23.0 51.4,22.8 53.1,19.2 54.8,22.4 56.4,18.9 58.1,20.3 59.7,16.6 61.4,16.5 63.1,15.7 64.7,14.0 66.4,16.1 68.0,15.9 69.7,17.3 71.4,14.4 73.0,17.3 74.7,21.0 76.3,21.9 78.0,23.0 78,24" fill="var(--blue)"/><polyline points="0.0,5.0 1.7,10.1 3.3,8.3 5.0,7.5 6.6,2.0 8.3,8.7 10.0,11.4 11.6,19.7 13.3,15.5 14.9,15.5 16.6,12.2 18.3,11.9 19.9,11.7 21.6,11.6 23.2,13.3 24.9,14.0 26.6,11.4 28.2,13.3 29.9,13.5 31.5,16.1 33.2,18.2 34.9,10.3 36.5,10.8 38.2,11.0 39.8,15.6 41.5,14.8 43.1,13.4 44.8,17.9 46.5,17.6 48.1,18.1 49.8,23.0 51.4,22.8 53.1,19.2 54.8,22.4 56.4,18.9 58.1,20.3 59.7,16.6 61.4,16.5 63.1,15.7 64.7,14.0 66.4,16.1 68.0,15.9 69.7,17.3 71.4,14.4 73.0,17.3 74.7,21.0 76.3,21.9 78.0,23.0" style="stroke:var(--blue)"/></svg></td><td class="val">-0.582%p</td><td><span class="dn">▼16.2bp</span></td><td class="mo"><span class="dn">▼0.4bp</span></td><td class="mo"><span class="up">▲1.5bp</span></td></tr><tr><td><span class="nm">한미 10년 금리차</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,7.6 1.7,11.0 3.3,8.6 5.0,9.9 6.6,2.0 8.3,10.4 10.0,12.5 11.6,18.7 13.3,13.9 14.9,12.2 16.6,7.5 18.3,8.6 19.9,9.0 21.6,7.3 23.2,9.7 24.9,11.7 26.6,9.9 28.2,13.6 29.9,10.7 31.5,13.2 33.2,14.8 34.9,8.0 36.5,9.6 38.2,9.1 39.8,11.4 41.5,9.8 43.1,7.8 44.8,12.3 46.5,12.6 48.1,18.3 49.8,23.0 51.4,19.7 53.1,15.6 54.8,22.4 56.4,20.1 58.1,22.5 59.7,17.4 61.4,16.6 63.1,15.4 64.7,13.0 66.4,12.1 68.0,15.4 69.7,15.3 71.4,12.5 73.0,15.8 74.7,19.5 76.3,19.8 78.0,18.7 78,24" fill="var(--blue)"/><polyline points="0.0,7.6 1.7,11.0 3.3,8.6 5.0,9.9 6.6,2.0 8.3,10.4 10.0,12.5 11.6,18.7 13.3,13.9 14.9,12.2 16.6,7.5 18.3,8.6 19.9,9.0 21.6,7.3 23.2,9.7 24.9,11.7 26.6,9.9 28.2,13.6 29.9,10.7 31.5,13.2 33.2,14.8 34.9,8.0 36.5,9.6 38.2,9.1 39.8,11.4 41.5,9.8 43.1,7.8 44.8,12.3 46.5,12.6 48.1,18.3 49.8,23.0 51.4,19.7 53.1,15.6 54.8,22.4 56.4,20.1 58.1,22.5 59.7,17.4 61.4,16.6 63.1,15.4 64.7,13.0 66.4,12.1 68.0,15.4 69.7,15.3 71.4,12.5 73.0,15.8 74.7,19.5 76.3,19.8 78.0,18.7" style="stroke:var(--blue)"/></svg></td><td class="val">-0.419%p</td><td><span class="dn">▼9.9bp</span></td><td class="mo"><span class="up">▲1.7bp</span></td><td class="mo"><span class="up">▲37.6bp</span></td></tr></table></div><p class="note">국고채 − 미 국채(%p) · CRS 금리는 무료 공개 고시가 없어 금리차로 갈음합니다</p></section><section id="s5"><div class="sh"><span class="no">05</span><h2>원/달러</h2><span class="en">USD/KRW</span></div><div class="scroll"><table class="g mk"><colgroup><col class="c1"><col class="c2"><col><col><col><col></colgroup><tr><th>구분</th><th class="mo" style="text-align:left">12주</th><th>최근</th><th>주간</th><th class="mo">4주</th><th class="mo">연초 대비</th></tr><tr><td><span class="nm">USD/KRW</span></td><td class="spk mo"><svg class="sp" viewBox="0 0 78 24" aria-hidden="true"><polygon points="0,24 0.0,5.7 1.7,6.5 3.3,6.4 5.0,4.8 6.6,3.5 8.3,4.2 10.0,3.8 11.6,3.0 13.3,2.6 14.9,3.8 16.6,2.3 18.3,2.0 19.9,3.0 21.6,4.2 23.2,5.4 24.9,7.2 26.6,6.9 28.2,7.7 29.9,8.8 31.5,9.0 33.2,9.8 34.9,8.9 36.5,9.7 38.2,10.1 39.8,10.3 41.5,12.0 43.1,12.6 44.8,13.7 46.5,16.0 48.1,14.4 49.8,15.2 51.4,16.0 53.1,15.9 54.8,17.5 56.4,16.9 58.1,16.5 59.7,16.4 61.4,16.6 63.1,16.8 64.7,19.4 66.4,19.2 68.0,19.8 69.7,20.2 71.4,20.0 73.0,20.3 74.7,20.7 76.3,21.1 78.0,23.0 78,24" fill="var(--blue)"/><polyline points="0.0,5.7 1.7,6.5 3.3,6.4 5.0,4.8 6.6,3.5 8.3,4.2 10.0,3.8 11.6,3.0 13.3,2.6 14.9,3.8 16.6,2.3 18.3,2.0 19.9,3.0 21.6,4.2 23.2,5.4 24.9,7.2 26.6,6.9 28.2,7.7 29.9,8.8 31.5,9.0 33.2,9.8 34.9,8.9 36.5,9.7 38.2,10.1 39.8,10.3 41.5,12.0 43.1,12.6 44.8,13.7 46.5,16.0 48.1,14.4 49.8,15.2 51.4,16.0 53.1,15.9 54.8,17.5 56.4,16.9 58.1,16.5 59.7,16.4 61.4,16.6 63.1,16.8 64.7,19.4 66.4,19.2 68.0,19.8 69.7,20.2 71.4,20.0 73.0,20.3 74.7,20.7 76.3,21.1 78.0,23.0" style="stroke:var(--blue)"/></svg></td><td class="val">1,355.5</td><td><span class="dn">▼2.02%</span></td><td class="mo"><span class="dn">▼4.62%</span></td><td class="mo"><span class="dn">▼5.73%</span></td></tr></table></div></section><section id="s6"><div class="sh"><span class="no">06</span><h2>금주 전망</h2><span class="en">THE WEEK AHEAD</span></div><div class="item"><div class="n">09/03</div><div><span class="chip">★★</span><div class="ti">신규실업수당청구건수</div><div class="meta">21:30 한국시간</div></div></div><div class="item"><div class="n">09/04</div><div><span class="chip red">★★★</span><div class="ti">고용보고서 (비농업·실업률)</div><div class="meta">21:30 한국시간</div></div></div><div class="item"><div class="n">09/09</div><div><span class="chip">★</span><div class="ti">EIA 원유 재고</div><div class="meta">23:30 한국시간</div></div></div><p style="font-size:13.5px;line-height:1.9;color:var(--ink2);margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule-soft)">이번 주 발표되는 미국의 신규실업수당청구건수와 비농업 고용보고서 결과에 따라 미 연준의 통화정책 경로와 국채 금리 변동성이 확대될 전망임. 특히 고용 지표의 둔화 여부는 미 금리 하락 및 한미 금리차 축소, 원/달러 환율의 추가 하락 방향성을 결정할 핵심 분수령이 될 것으로 예상됨.</p><div class="subh" style="margin-top:20px"><h3>선물 내재 연준 경로</h3><span class="en">FED FUNDS FUTURES</span></div><div class="scroll"><table class="g"><tr><th>월물</th><th>내재금리</th><th>현월물 대비</th></tr><tr><td><span class="nm">9월</span></td><td class="val">3.69%</td><td><span class="flat">기준</span></td></tr><tr><td><span class="nm">10월</span></td><td class="val">3.77%</td><td><span class="up">▲7.7bp</span></td></tr><tr><td><span class="nm">11월</span></td><td class="val">3.83%</td><td><span class="up">▲13.7bp</span></td></tr><tr><td><span class="nm">12월</span></td><td class="val">3.92%</td><td><span class="up">▲23.2bp</span></td></tr><tr><td><span class="nm">'27 1월</span></td><td class="val">3.96%</td><td><span class="up">▲27.7bp</span></td></tr><tr><td><span class="nm">'27 2월</span></td><td class="val">4.01%</td><td><span class="up">▲32.2bp</span></td></tr></table></div><p class="note">연방기금 선물(ZQ) 가격의 월평균 내재금리 = 100 − 가격 · FedWatch 와 같은 원리의 단순판 — 시장 기대이지 전망 기관의 견해가 아닙니다</p></section>
+<footer><p class="w">자동 생성 브리핑 · 투자 권유 아님 · 수치 오류 가능성 있음</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     클릭을 가로채 직접 스크롤한다. scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  var nav=document.querySelector(".nav");
+  if(nav) nav.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+
+  /* 표 정렬 — th[data-k] 를 누르면 그 열 기준으로 재배열한다.
+     메일에서는 불가능했던 것: 오늘 많이 움직인 것부터 보기.
+     좁은 화면에서 접은 칸(.mper)은 행을 눌러 편다. 접힘은 행 안에 들어 있어
+     정렬로 순서가 바뀌어도 따라다닌다. */
+  document.querySelectorAll("table.g").forEach(function(tb){
+    var dir = {}, orig = null, mates = null;
+    tb.addEventListener("click", function(ev){
+      var tr = ev.target.closest("tr[data-v]");
+      if(tr){
+        var d = tr.nextElementSibling;
+        if(d && d.classList.contains("mrow")){ d.classList.toggle("op"); return; }
+      }
+      var th = ev.target.closest("th[data-k]");
+      if(!th) return;
+      var k = th.dataset.k, body = tb.tBodies[0] || tb;
+      if(!orig){
+        orig = [].slice.call(body.querySelectorAll("tr[data-v]"));
+        /* 접힘 줄은 제 행 바로 뒤에 붙어 있어야 한다 — 정렬할 때 짝으로 옮긴다 */
+        mates = new Map();
+        orig.forEach(function(r){
+          var d = r.nextElementSibling;
+          if(d && d.classList.contains("mrow")) mates.set(r, d);
+        });
+      }
+      dir[k] = dir[k] === -1 ? 1 : -1;
+      var rows = orig.slice().sort(function(a,b){
+        var x = parseFloat(a.dataset[k]), y = parseFloat(b.dataset[k]);
+        if(isNaN(x)) return 1;
+        if(isNaN(y)) return -1;
+        return (x - y) * dir[k];
+      });
+      tb.querySelectorAll("th .aw").forEach(function(s){ s.remove() });
+      var m = document.createElement("span");
+      m.className = "aw"; m.textContent = dir[k] < 0 ? "▼" : "▲";
+      th.appendChild(m);
+      rows.forEach(function(r){
+        body.appendChild(r);
+        var d = mates.get(r);
+        if(d) body.appendChild(d);
+      });
+    });
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
