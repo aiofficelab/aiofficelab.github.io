@@ -1,8 +1,9 @@
 name: 브리핑 깨우기
 
-# briefing-engine(비공개)의 예약 실행이 걸리지 않아 여기서 대신 깨운다.
-# 저장소 이름을 바꾼 뒤로 그쪽 schedule 이 한 번도 뜨지 않았다(수동 실행만 동작).
-# 공개 저장소인 이쪽 스케줄러로 시각을 잡고, repository_dispatch 로 일을 넘긴다.
+# 브리핑 다섯을 수동으로 깨우는 레버. 시계는 앱스크립트('브리핑 깨우기' 프로젝트,
+# 평일 아침 6~7시 트리거)가 맡는다 — GitHub 의 schedule 은 이 계정에서 비공개·공개
+# 모두 안정적으로 뜨지 않았다(9/1~9/2 실측: 슬롯 대부분 누락, 뜨면 30분~3시간 지각).
+# 여기 cron 을 되살리면 GAS 와 겹쳐 같은 브리핑이 두 번 발행되니 살리지 말 것.
 #
 # 필요한 시크릿: ENGINE_TOKEN
 #   반드시 fine-grained PAT 로 — Repository access 를 briefing-engine 하나로,
@@ -13,13 +14,6 @@ name: 브리핑 깨우기
 #   뚫렸을 때 피해가 계정 전체로 번진다. briefing-engine 하나로 좁혀 두면 거기서 끝난다.
 
 on:
-  schedule:
-    # cron 요일은 UTC 기준. 한국 월~금 아침은 UTC 일~목 밤(0-4)이다.
-    - cron: '3 22 * * 0-4'     # 한국 07:03  재경부+금감원
-    - cron: '9 22 * * 0-4'     # 한국 07:09  법률 모니터링
-    - cron: '17 22 * * 0-4'    # 한국 07:17  아침 시황 브리핑
-    - cron: '47 22 * * 0-4'    # 한국 07:47  IR 캘린더
-    - cron: '23 23 * * 0-4'    # 한국 08:23  관심종목 리포트
   workflow_dispatch:
     inputs:
       brief:
@@ -37,22 +31,9 @@ jobs:
       - name: 어느 브리핑인지 고른다
         id: pick
         env:
-          SCHED: ${{ github.event.schedule }}
           MANUAL: ${{ github.event.inputs.brief }}
         run: |
-          case "$SCHED" in
-            "3 22 * * 0-4")  t=econscan  ;;
-            "9 22 * * 0-4")  t=law       ;;
-            "17 22 * * 0-4") t=morning   ;;
-            "47 22 * * 0-4") t=ir        ;;
-            "23 23 * * 0-4") t=portfolio ;;
-            "")              t="${MANUAL:-all}" ;;   # 수동 실행일 때만 입력값 사용
-            *)
-              # 예약인데 목록에 없는 cron — all 로 떨어뜨리면 아침마다 5×5 발행이 된다.
-              # cron 을 고치면 여기 case 도 반드시 함께 고칠 것.
-              echo "::error::모르는 cron: '$SCHED' — case 목록과 어긋남"
-              exit 1 ;;
-          esac
+          t="${MANUAL:-all}"
           case "$t" in
             all|econscan|law|morning|ir|portfolio) ;;
             *) echo "::error::모르는 브리핑 이름: '$t'"; exit 1 ;;
