@@ -150,7 +150,7 @@
 var BRIEFS = [
   /* 앱스크립트의 '아침 시황'과 '경제 & 리스크' 브리핑을 합친 것 — 2026-08-30.
      지난 회차는 econrisk kind 에 남아 있으나 카드는 없앴다. */
-  { kind:"morning",  group:"market", no:"01", cad:"평일 아침 7시", title:"아침 시황 브리핑", kick:"MORNING BRIEFING", sum:"환율·증시·금리·원자재 + 오늘의 흐름 · 금융스트레스" },
+  { kind:"morning",  group:"market", no:"01", cad:"평일 오전 7시 · 오후 4시", title:"시황 브리핑", kick:"MARKET BRIEFING", sum:"환율·증시·금리·원자재 + 오늘의 흐름 · 금융스트레스" },
   { kind:"ir",       group:"market", no:"02", cad:"평일 아침 7시", title:"IR 캘린더", kick:"GLOBAL IR CALENDAR", sum:"실적발표 캘린더 · 주간 실적 리뷰" },
   /* weekly(MY 포트폴리오 대시보드) + finstats(주요 금융 통계) 통합 — 2026-08-30.
      시장 지표를 붙여둔 이유가 "내 종목이 어떤 지표를 따라 움직이나"였는데 둘이 떨어져 있어 그 연결을 볼 수 없었다.
@@ -247,11 +247,20 @@ fetch("market.json", { cache:"no-store" })
 fetch("lead.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(l){
-    if (l && l.text) { $("leadText").textContent = l.text; $("lead").hidden = false; }
+    if (l && l.text) {
+      var lk = l.ed === "pm" ? "오후 시장 한 줄" : (l.ed === "am" ? "오전 시장 한 줄" : "오늘 시장 한 줄");
+      document.querySelector("#lead .k").textContent = lk;
+      $("leadText").textContent = l.text; $("lead").hidden = false;
+    }
   })
   .catch(function(){});
 
 function dates(kind){ return state.manifest[kind] || []; }
+
+/* 하루 두 판 회차 키(2026-09-05-am/-pm)를 사람 말로 — 옛 키(날짜만)는 그대로 */
+function prettyDate(dd){
+  return String(dd).replace(/-am$/, " 오전").replace(/-pm$/, " 오후");
+}
 
 function renderHome(){
   ["gridMarket","gridReg"].forEach(function(id){ $(id).innerHTML = ""; });
@@ -263,7 +272,7 @@ function renderHome(){
       '<div class="head"><span class="no">' + b.no + '</span><span class="cad">' + (has ? b.cad : "준비 중") + '</span></div>' +
       '<div class="ttl">' + b.title + '</div>' +
       '<div class="sum">' + b.sum + '</div>' +
-      (has ? '<div class="meta">최신 <b>' + ds[0] + '</b> &nbsp;·&nbsp; <span class="go">브리핑 열기 →</span></div>' : '');
+      (has ? '<div class="meta">최신 <b>' + prettyDate(ds[0]) + '</b> &nbsp;·&nbsp; <span class="go">브리핑 열기 →</span></div>' : '');
     if (has) el.addEventListener("click", function(){ openReader(b.kind); });
     $(b.group === "market" ? "gridMarket" : "gridReg").appendChild(el);
   });
@@ -334,7 +343,7 @@ function renderReader(){
   ds.forEach(function(dd, i){
     var op = document.createElement("option");
     op.value = dd;
-    op.textContent = dd + (i === 0 ? "  (최신)" : "");
+    op.textContent = prettyDate(dd) + (i === 0 ? "  (최신)" : "");
     if (dd === state.date) op.selected = true;
     sel.appendChild(op);
   });
