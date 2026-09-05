@@ -273,18 +273,64 @@ fetch("weather.json", { cache:"no-store" })
   .catch(function(){});
 }
 
-/* '오늘 시장 한 줄' — 주요 금융 통계 발행 시 함께 올라오는 lead.json에서 읽는다 */
+/* '오늘 시장 한 줄' 자리는 전광판 — 시장 한 줄 → 빅테크·KT 최신 뉴스 → 오늘 발행 현황이
+   6초마다 돌아간다. 뉴스 줄은 기사 원문(새 탭), 나머지는 해당 게시판으로 이동. */
+var tick = { frames: [], i: 0 };
+function jget(u){ return fetch(u, { cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }); }
+
+function todayIso(){
+  var d = new Date(), p = function(n){ return (n < 10 ? "0" : "") + n; };
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+
+function buildFrames(lead, tech, kt){
+  var fr = [];
+  if (lead && lead.text) {
+    var lk = lead.ed === "pm" ? "오후 시장 한 줄" : (lead.ed === "am" ? "오전 시장 한 줄" : "오늘 시장 한 줄");
+    fr.push({ k: lk, t: lead.text, kind: "morning" });
+  }
+  ((tech && tech.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "빅테크·AI", t: a.t, href: a.l }); });
+  ((kt && kt.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "KT그룹 뉴스", t: a.t, href: a.l }); });
+  var td = todayIso(), fresh = BRIEFS.filter(function(b){
+    var ds = state.manifest[b.kind] || [];
+    return ds.length && String(ds[0]).indexOf(td) === 0;
+  }).map(function(b){ return b.title; });
+  if (fresh.length) {
+    var t = fresh.slice(0, 3).join(" · ") + (fresh.length > 3 ? " 외 " + (fresh.length - 3) + "종" : "");
+    fr.push({ k: "오늘 발행 " + fresh.length + "종", t: t });
+  }
+  return fr;
+}
+
+function showFrame(){
+  if (!tick.frames.length) return;
+  var f = tick.frames[tick.i % tick.frames.length], el = $("lead");
+  el.style.opacity = "0";
+  setTimeout(function(){
+    document.querySelector("#lead .k").textContent = f.k;
+    $("leadText").textContent = f.t;
+    el.dataset.href = f.href || ""; el.dataset.kind = f.kind || "";
+    el.style.cursor = (f.href || f.kind) ? "pointer" : "default";
+    el.hidden = false; el.style.opacity = "1";
+  }, 220);
+}
+
+$("lead").style.transition = "opacity .22s";
+$("lead").addEventListener("click", function(){
+  var h = this.dataset.href, k = this.dataset.kind;
+  if (h) window.open(h, "_blank", "noopener");
+  else if (k && (state.manifest[k] || []).length) openReader(k);
+});
+setInterval(function(){
+  if (tick.frames.length > 1) { tick.i++; showFrame(); }
+}, 6000);
+
 function loadLead(){
-fetch("lead.json", { cache:"no-store" })
-  .then(function(r){ return r.ok ? r.json() : null; })
-  .then(function(l){
-    if (l && l.text) {
-      var lk = l.ed === "pm" ? "오후 시장 한 줄" : (l.ed === "am" ? "오전 시장 한 줄" : "오늘 시장 한 줄");
-      document.querySelector("#lead .k").textContent = lk;
-      $("leadText").textContent = l.text; $("lead").hidden = false;
-    }
-  })
-  .catch(function(){});
+  Promise.all([jget("lead.json"), jget("briefs/tech/feed.json"), jget("briefs/ktnews/feed.json")])
+    .then(function(rs){
+      tick.frames = buildFrames(rs[0], rs[1], rs[2]);
+      if (tick.frames.length) showFrame();
+    });
 }
 
 function refreshLive(){ loadSnap(); loadWx(); loadLead(); }
