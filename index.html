@@ -157,9 +157,10 @@ var BRIEFS = [
      시장 지표를 붙여둔 이유가 "내 종목이 어떤 지표를 따라 움직이나"였는데 둘이 떨어져 있어 그 연결을 볼 수 없었다.
      지난 회차는 아래 두 kind에 그대로 남아 있어 예전 날짜를 고르면 계속 열린다. */
   { kind:"rates",    group:"market", no:"03", cad:"매주 월요일 아침", title:"주간 금리 동향", kick:"WEEKLY RATES", sum:"한국·미국 국채 금리 · 한미 금리차 · 원/달러" },
-  { kind:"portfolio", group:"market", no:"04", cad:"평일 아침 7시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
-  { kind:"econscan", group:"reg",    no:"05", cad:"평일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
-  { kind:"law",      group:"reg",    no:"06", cad:"평일 아침 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+  { kind:"dart",     group:"market", no:"04", cad:"평일 아침 7시", title:"DART 공시 감시", kick:"DART DISCLOSURE WATCH", sum:"KT그룹·통신3사·주요기업 60사 — 적신호 분류 · 최근 7일" },
+  { kind:"portfolio", group:"market", no:"05", cad:"평일 아침 7시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
+  { kind:"econscan", group:"reg",    no:"06", cad:"평일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
+  { kind:"law",      group:"reg",    no:"07", cad:"평일 아침 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
 ];
 var state = { kind:null, date:null, manifest:{} };
 var frameRO = null;
@@ -249,7 +250,11 @@ fetch("weather.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(w){
     if (!w || w.temp == null) return;
-    var t = (w.city || "서울") + " " + (w.desc ? w.desc + " " : "") + Math.round(w.temp) + "°";
+    var c = w.code, icon =
+      c === 0 ? "☀️" : c <= 2 ? "🌤️" : c === 3 ? "☁️" : c <= 48 ? "🌫️" :
+      c <= 57 ? "🌦️" : c <= 67 ? "🌧️" : c <= 77 ? "❄️" : c <= 82 ? "🌧️" :
+      c <= 86 ? "🌨️" : "⛈️";
+    var t = icon + " " + (w.city || "서울") + " " + Math.round(w.temp) + "°";
     if (w.tmin != null && w.tmax != null) t += " · " + Math.round(w.tmin) + "°/" + Math.round(w.tmax) + "°";
     if (w.pop != null && w.pop > 0) t += " · 강수 " + w.pop + "%";
     $("wx").textContent = t;
