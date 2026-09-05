@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KT그룹 뉴스</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#131211; --paper:#1b1918; --paper2:#232120;
+  --ink:#f2efed; --ink2:#b3aeab; --ink3:#8a8481;
+  --rule:rgba(242,239,237,.44); --rule-soft:rgba(242,239,237,.15);
+  --accent:#ff5330; --accent-700:#ff8062; --accent-100:#2c1a15;
+  --blue:#6ea3ff; --blue-700:#9dc0ff;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다 */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
+.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
+.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:32px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:17px}
+.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
+.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
+.note b{color:var(--ink2)}
+.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
+  font-size:14px;font-weight:700}
+
+/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
+  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
+/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+.item.side{grid-template-columns:34px minmax(0,1fr) auto}
+.item .ex{align-self:center;padding-left:14px}
+.item .ex .acts{margin-top:0;justify-content:flex-end}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
+.item .meta b{color:var(--ink2)}
+.chips{margin-bottom:5px}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
+.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+
+/* 링크 버튼 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
+.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
+.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
+  border-bottom:1px solid var(--rule)}
+.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
+.item.wide{grid-template-columns:96px minmax(0,1fr)}
+.item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
+/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
+.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){
+  .item.wide{grid-template-columns:72px minmax(0,1fr)}
+  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
+  .item.side{grid-template-columns:34px minmax(0,1fr)}
+  .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
+  .item .ex{grid-column:2;padding-left:0}
+  .item .ex .acts{margin-top:9px;justify-content:flex-start}
+}
+/* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
+table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g td.spk{text-align:left}
+/* 시장 표 — 절마다 라벨 길이가 달라 열이 어긋나던 것을 칸 너비로 고정한다 */
+table.g.mk{table-layout:fixed}
+/* 좁은 화면에서는 6개월·전월말비·작년말비를 접는다 — 가로 스크롤이 생기지 않게 */
+.mper{display:none}
+table.g.mk tr.mrow{display:none}
+@media(max-width:640px){
+  .mo{display:none}
+  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
+  table.g.mk{table-layout:auto;min-width:0}
+  table.g.mk col.c1,table.g.mk col.c2{width:auto}
+  table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
+  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
+  table.g.mk tr[data-v]{cursor:pointer}
+  table.g.mk tr.mrow.op{display:table-row}
+  table.g.mk tr.mrow > td{padding:0 0 10px}
+  table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--rule-soft)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink3);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+}
+table.g.mk col.c1{width:190px}
+table.g.mk col.c2{width:110px}
+@media(max-width:640px){table.g.mk col.c1{width:150px}}
+table.g tr:hover td{background:rgba(128,128,128,.07)}
+table.g .nm{font-weight:700;color:var(--ink)}
+table.g .em{margin-right:6px}
+table.g .val{font-weight:800;color:var(--ink)}
+svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
+svg.sp polyline{fill:none;stroke-width:1.5}
+svg.sp polygon{opacity:.13}
+/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
+  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
+.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .wd.we{opacity:.65}
+.cal .dy{min-height:86px;padding:6px 7px 9px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .dy.past{background:rgba(128,128,128,.05)}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
+.cal .dy.past .dn{color:var(--ink3)}
+.cal .dy.today .dn{color:var(--accent-700)}
+.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
+  text-decoration:none;background:var(--ink);color:var(--paper);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .tk.kr{background:var(--accent);color:#fff}
+.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
+.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
+/* 지표 타일 — 값 하나 + 등락 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
+.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+.tile .em{margin-right:5px}
+.tile .sp{display:block;margin-top:8px;width:100%;height:34px}
+.tile .sp polyline{fill:none;stroke-width:1.6}
+.tile .sp polygon{opacity:.13}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
+footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
+  color:var(--ink3);font-size:11px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:24px}
+  .item{grid-template-columns:26px 1fr}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">KT GROUP NEWS</div><h1>KT그룹 뉴스</h1><div class="dt">9/6(일) · 매일 아침 발행 · 최근 36시간 창 · NEW = 6시간 내</div></header>
+<div class="rule"></div>
+
+<style>.item .ti{font-size:14px;line-height:1.55}.item{padding:13px 0}</style><style>.coh{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:11px;border-top:1px solid var(--line)}.coh b{font-size:13.5px}.colead{margin:5px 0 0;font-size:12.5px;font-weight:700;color:var(--ink2)}.corep{margin:7px 0 2px;font-size:13px;line-height:1.95;color:var(--ink2)}.corep .ref{font-size:11px;color:var(--ink3);text-decoration:none;white-space:nowrap}.corep .ref:hover{text-decoration:underline}.crow{margin-top:6px;font-size:12.5px;line-height:1.55}.crow a{color:var(--ink);text-decoration:none}.crow a:hover{text-decoration:underline}.crow .cm{color:var(--ink3);font-size:11.5px;margin-left:6px;white-space:nowrap}.crow .chip{margin-right:6px}.cohist{margin:9px 0 2px;border-left:2px solid var(--line);padding-left:10px}.cohist .cht{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--ink3)}.thline{display:flex;gap:8px;align-items:baseline;margin-top:6px;font-size:12.5px;line-height:1.5}.thline .d{color:var(--ink3);font-variant-numeric:tabular-nums;min-width:30px}.thline a{color:var(--ink);text-decoration:none}.thline a:hover{text-decoration:underline}.thline .p{color:var(--ink3);white-space:nowrap}</style><div style="margin-top:18px;border-left:3px solid var(--accent);padding:2px 0 2px 14px;font-size:16px;font-weight:800;line-height:1.6">통신업계의 AI 데이터센터 및 서비스 청사진 공개와 KT 관련 스포츠 소식</div><p style="margin:10px 0 0;font-size:12.5px;line-height:1.8;color:var(--ink2)">SKT의 AI 데이터센터 전략을 다룬 2번 기사와 KT 해킹 보상 관련 개인정보 유출을 보도한 5번 기사를 먼저 주목해야 합니다. 통신사들의 미래 성장 동력인 AI 사업 현황과 고객 신뢰에 직결된 보안 이슈를 담고 있기 때문입니다</p><p class="note">Gemini 자동 요약 · 기사 제목만 근거 — 원문 확인 권장</p><div class="tiles"><div class="tile"><div class="l">전체</div><div class="v">14건</div><div class="c" style="color:var(--ink3)">최근 36시간</div></div><div class="tile"><div class="l">KT 리스크</div><div class="v" style="color:var(--accent)">2건</div><div class="c" style="color:var(--ink3)">규제기관·부정 신호</div></div><div class="tile"><div class="l">그룹사</div><div class="v">1건</div><div class="c" style="color:var(--ink3)">42사 감시</div></div><div class="tile"><div class="l">통신3사</div><div class="v">13건</div><div class="c" style="color:var(--ink3)">KT·SKT·LGU+</div></div><div class="tile"><div class="l">기업이슈</div><div class="v">0건</div><div class="c" style="color:var(--ink3)">감사의견·법정관리</div></div></div><p class="note">같은 사건 기사 1건은 대표 기사 아래 언론사 링크로 접음</p><section><div class="sh"><span class="no">01</span><h2>KT 리스크</h2><span class="en">RISK WATCH</span></div><p class="note">규제기관 언급(제목·요약) 또는 부정 신호어(제목) 기사 — 코드 판정, 원문 확인 권장</p><div class="item wide"><div class="n">KT</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip red">리스크</span></div><div class="ti"><a href="https://news.mtn.co.kr/news-detail/2026090514094840918" target="_blank" rel="noopener">KT 해킹 보상으로 티빙 봤다가…개인정보 52만건 또 유출</a></div><div class="meta">news.mtn.co.kr · 2시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">사업관리본부장/사진=뉴스1KT의 개인정보 유출 사고 보상으로 티빙을 이용한 고객 정보 52만7000건이 티빙 해킹으로 다시 유출된 것으로 확인됐다. KT 보상으로 받은 이용권을 등록한 고객들은 연이…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="chips"><span class="chip ink">규제기관</span></div><div class="ti"><a href="https://www.seoulfn.com/news/articleView.html?idxno=637258" target="_blank" rel="noopener">'모두의 AI' 연내 출시···SKT·카카오·KT 청사진 공개</a></div><div class="meta">seoulfn.com · 22시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">과학기술정보통신부가 4일 오전 서울 한국프레스센터에서 '모두의 AI' 프로젝트에 선정된 3개 컨소시엄의 서비스 개발 계획을 청취하고 협력 방안을 논의하는 사업자 간담회를 열었다. 이번 간담회는 연내…</span><span style="display:block;margin-top:4px;font-size:11.5px;color:var(--ink3)">같은 소식 1건 — <a href="https://www.businessplus.kr/news/articleView.html?idxno=116431" target="_blank" rel="noopener" style="color:var(--ink3)">businessplus.kr↗</a></span></div></div></div></section><section><div class="sh"><span class="no">02</span><h2>그룹사</h2><span class="en">SUBSIDIARIES</span></div><div class="subh"><h3>미디어</h3><span class="en">1건</span></div><div class="coh"><b>KT스튜디오지니</b><span class="en">1건</span></div><p class="colead">신병4 활용 한정판 텀블러 출시</p><div class="crow"><a href="http://www.lawissue.co.kr/view.php?ud=202609042338272545204ead0791_12" target="_blank" rel="noopener">KT알파 쇼핑, KT스튜디오지니 ‘신병4’ 활용 한정판 텀블러 선보여</a><span class="cm">lawissue.co.kr · 9/4 23:40</span></div><div class="cohist"><div class="cht">지난 흐름 · D+1 · 누적 5건</div><div class="thline"><span class="d">9/5</span><a href="http://www.lawissue.co.kr/view.php?ud=202609042338272545204ead0791_12" target="_blank" rel="noopener">KT알파 쇼핑, KT스튜디오지니 ‘신병4’ 활용 한정판 텀블러 선보여</a><span class="p">lawissue.co.kr</span></div></div></section><section><div class="sh"><span class="no">03</span><h2>통신3사</h2><span class="en">TELCO</span></div><div class="coh"><b>SKT</b><span class="en">4건</span></div><p class="colead">AI 데이터센터 및 글로벌 AI 전략 구체화</p><div class="corep"><span>15GW 규모의 AI 데이터센터 삼각편대 전략을 발표하고 연내 모두의 AI 출시 계획을 공개함 <a class="ref" href="https://www.yna.co.kr/view/AKR20260904128600017?input=1195m" target="_blank" rel="noopener">연합뉴스↗</a> <a class="ref" href="https://www.seoulfn.com/news/articleView.html?idxno=637258" target="_blank" rel="noopener">seoulfn.com↗</a></span> <span>미국 IT 매체로부터 글로벌 통신사 대상 AI 전략 청사진 제시로 호평을 받음 <a class="ref" href="https://www.news1.kr/it-science/cc-newmedia/6280714" target="_blank" rel="noopener">뉴스1↗</a></span> <span>구성원과 함께 자원순환 캠페인인 리파인 데이를 시행함 <a class="ref" href="https://www.thepublic.kr/news/articleView.html?idxno=317653" target="_blank" rel="noopener">thepublic.kr↗</a></span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.thepublic.kr/news/articleView.html?idxno=317653" target="_blank" rel="noopener">SKT, 구성원과 자원순환 캠페인 '리파인 데이' 시행</a><span class="cm">thepublic.kr · 12분 전</span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.yna.co.kr/view/AKR20260904128600017?input=1195m" target="_blank" rel="noopener">SKT, AI 데이터센터 '삼각편대' 띄웠다…15GW 승부수</a><span class="cm">연합뉴스 · 30분 전</span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.news1.kr/it-science/cc-newmedia/6280714" target="_blank" rel="noopener">美 IT 매체 "SKT AI 전략, 글로벌 통신사들에 청사진 제시"</a><span class="cm">뉴스1 · 1시간 전</span></div><div class="crow"><a href="https://www.ggilbo.com/news/articleView.html?idxno=1179069" target="_blank" rel="noopener">8월 소비자물가 3.1% 상승… SKT 요금 기저효과</a><span class="cm">ggilbo.com · 14시간 전</span></div><div class="cohist"><div class="cht">지난 흐름 · D+1 · 누적 2건</div><div class="thline"><span class="d">9/5</span><a href="https://www.webeconomy.co.kr/news/articleView.html?idxno=2291368" target="_blank" rel="noopener">SKT, 자원순환 캠페인 '리파인 데이'…전자폐기물 재활용</a><span class="p">webeconomy.co.kr</span></div></div><div class="coh"><b>KT</b><span class="en">3건</span></div><p class="colead">프로야구 순위 변동 및 개인정보 유출 논란</p><div class="corep"><span>해킹 보상으로 제공한 티빙 서비스에서 개인정보 52만 건이 유출되는 사고가 발생함 <a class="ref" href="https://news.mtn.co.kr/news-detail/2026090514094840918" target="_blank" rel="noopener">news.mtn.co.kr↗</a></span> <span>프로야구 경기 결과에 따라 순위가 하락하였으며 향후 롯데와의 경기 일정이 예정됨 <a class="ref" href="https://www.seoul.co.kr/news/sport/baseball/2026/09/05/20260905500039?wlog_tag3=naver" target="_blank" rel="noopener">seoul.co.kr↗</a> <a class="ref" href="https://www.maniareport.com/view.php?ud=202609060111052581dad9f33a29_19" target="_blank" rel="noopener">maniareport.com↗</a> <a class="ref" href="https://www.starnewskorea.com/sports/2026/09/06/2026090519400654909" target="_blank" rel="noopener">starnewskorea.com↗</a></span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.seoul.co.kr/news/sport/baseball/2026/09/05/20260905500039?wlog_tag3=naver" target="_blank" rel="noopener">“KIA 없이는 못 살아” 역대 기록 쓰더니 KT 끌어내렸다…‘9치올’ 이...</a><span class="cm">seoul.co.kr · 1시간 전</span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.maniareport.com/view.php?ud=202609060111052581dad9f33a29_19" target="_blank" rel="noopener">삼성, LG에 연장 접전 끝 4-3 승리...사흘 만에 kt 제치고 1위 복귀</a><span class="cm">maniareport.com · 2시간 전</span></div><div class="crow"><span class="chip red">NEW</span><a href="https://www.starnewskorea.com/sports/2026/09/06/2026090519400654909" target="_blank" rel="noopener">'혼자 KS 4승' 영원한 전설 벌써 15주기... 롯데, 11일 KT전서 최동원 다...</a><span class="cm">starnewskorea.com · 5시간 전</span></div><div class="coh"><b>KT CAPEX</b><span class="en">2건</span></div><p class="colead">5G 특화망 및 기지국 기반 AI 기술 변화</p><div class="corep"><span>공장 자동화를 위한 5G 특화망 활용과 기지국의 AI 데이터센터 전환 추세를 조명함 <a class="ref" href="https://www.hellot.net/news/article.html?no=114791" target="_blank" rel="noopener">hellot.net↗</a> <a class="ref" href="https://www.yna.co.kr/view/AKR20260904023000017?input=1195m" target="_blank" rel="noopener">연합뉴스↗</a></span></div><div class="crow"><a href="https://www.hellot.net/news/article.html?no=114791" target="_blank" rel="noopener">[헬로즈업] 로봇이 스스로 움직이는 공장…그 뒤엔 ‘5G 특화망’이 있...</a><span class="cm">hellot.net · 12시간 전</span></div><div class="crow"><a href="https://www.yna.co.kr/view/AKR20260904023000017?input=1195m" target="_blank" rel="noopener">[AI돋보기] 기지국이 AI 데이터센터로…통신사 '변신' 시작됐다</a><span class="cm">연합뉴스 · 9/5 06:33</span></div><div class="coh"><b>LGU+</b><span class="en">1건</span></div><p class="colead">다문화가족 및 1인 가구 AI 역량 강화 지원</p><div class="crow"><a href="https://www.theguru.co.kr/news/article.html?no=106726" target="_blank" rel="noopener">[통신리뷰] LG유플러스, 다문화가족·1인 가구 AI 역량 강화 나선다(9월...</a><span class="cm">theguru.co.kr · 22시간 전</span></div></section>
+<footer><p>감시 대상 — KT그룹 42사 · 통신3사 · 기업이슈(감사의견·법정관리)</p><p>데이터: 네이버 뉴스 검색 · 야구(KT wiz)·e스포츠·시세 기사는 자동 차단</p><p class="w">자동 생성 브리핑 · 투자 권유 아님</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     네비만이 아니라 문서 안의 모든 #앵커 클릭을 가로채 직접 스크롤한다.
+     scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  document.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+
+  /* 표 정렬 — th[data-k] 를 누르면 그 열 기준으로 재배열한다.
+     메일에서는 불가능했던 것: 오늘 많이 움직인 것부터 보기.
+     좁은 화면에서 접은 칸(.mper)은 행을 눌러 편다. 접힘은 행 안에 들어 있어
+     정렬로 순서가 바뀌어도 따라다닌다. */
+  document.querySelectorAll("table.g").forEach(function(tb){
+    var dir = {}, orig = null, mates = null;
+    tb.addEventListener("click", function(ev){
+      var tr = ev.target.closest("tr[data-v]");
+      if(tr){
+        var d = tr.nextElementSibling;
+        if(d && d.classList.contains("mrow")){ d.classList.toggle("op"); return; }
+      }
+      var th = ev.target.closest("th[data-k]");
+      if(!th) return;
+      var k = th.dataset.k, body = tb.tBodies[0] || tb;
+      if(!orig){
+        orig = [].slice.call(body.querySelectorAll("tr[data-v]"));
+        /* 접힘 줄은 제 행 바로 뒤에 붙어 있어야 한다 — 정렬할 때 짝으로 옮긴다 */
+        mates = new Map();
+        orig.forEach(function(r){
+          var d = r.nextElementSibling;
+          if(d && d.classList.contains("mrow")) mates.set(r, d);
+        });
+      }
+      dir[k] = dir[k] === -1 ? 1 : -1;
+      var rows = orig.slice().sort(function(a,b){
+        var x = parseFloat(a.dataset[k]), y = parseFloat(b.dataset[k]);
+        if(isNaN(x)) return 1;
+        if(isNaN(y)) return -1;
+        return (x - y) * dir[k];
+      });
+      tb.querySelectorAll("th .aw").forEach(function(s){ s.remove() });
+      var m = document.createElement("span");
+      m.className = "aw"; m.textContent = dir[k] < 0 ? "▼" : "▲";
+      th.appendChild(m);
+      rows.forEach(function(r){
+        body.appendChild(r);
+        var d = mates.get(r);
+        if(d) body.appendChild(d);
+      });
+    });
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
