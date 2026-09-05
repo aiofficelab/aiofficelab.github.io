@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KT그룹 뉴스</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#131211; --paper:#1b1918; --paper2:#232120;
+  --ink:#f2efed; --ink2:#b3aeab; --ink3:#8a8481;
+  --rule:rgba(242,239,237,.44); --rule-soft:rgba(242,239,237,.15);
+  --accent:#ff5330; --accent-700:#ff8062; --accent-100:#2c1a15;
+  --blue:#6ea3ff; --blue-700:#9dc0ff;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다 */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
+.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
+.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:32px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:17px}
+.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
+.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
+.note b{color:var(--ink2)}
+.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
+  font-size:14px;font-weight:700}
+
+/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
+  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
+/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+.item.side{grid-template-columns:34px minmax(0,1fr) auto}
+.item .ex{align-self:center;padding-left:14px}
+.item .ex .acts{margin-top:0;justify-content:flex-end}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
+.item .meta b{color:var(--ink2)}
+.chips{margin-bottom:5px}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
+.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+
+/* 링크 버튼 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
+.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
+.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
+  border-bottom:1px solid var(--rule)}
+.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
+.item.wide{grid-template-columns:96px minmax(0,1fr)}
+.item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
+/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
+.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){
+  .item.wide{grid-template-columns:72px minmax(0,1fr)}
+  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
+  .item.side{grid-template-columns:34px minmax(0,1fr)}
+  .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
+  .item .ex{grid-column:2;padding-left:0}
+  .item .ex .acts{margin-top:9px;justify-content:flex-start}
+}
+/* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
+table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g td.spk{text-align:left}
+/* 시장 표 — 절마다 라벨 길이가 달라 열이 어긋나던 것을 칸 너비로 고정한다 */
+table.g.mk{table-layout:fixed}
+/* 좁은 화면에서는 6개월·전월말비·작년말비를 접는다 — 가로 스크롤이 생기지 않게 */
+.mper{display:none}
+table.g.mk tr.mrow{display:none}
+@media(max-width:640px){
+  .mo{display:none}
+  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
+  table.g.mk{table-layout:auto;min-width:0}
+  table.g.mk col.c1,table.g.mk col.c2{width:auto}
+  table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
+  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
+  table.g.mk tr[data-v]{cursor:pointer}
+  table.g.mk tr.mrow.op{display:table-row}
+  table.g.mk tr.mrow > td{padding:0 0 10px}
+  table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--rule-soft)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink3);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+}
+table.g.mk col.c1{width:190px}
+table.g.mk col.c2{width:110px}
+@media(max-width:640px){table.g.mk col.c1{width:150px}}
+table.g tr:hover td{background:rgba(128,128,128,.07)}
+table.g .nm{font-weight:700;color:var(--ink)}
+table.g .em{margin-right:6px}
+table.g .val{font-weight:800;color:var(--ink)}
+svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
+svg.sp polyline{fill:none;stroke-width:1.5}
+svg.sp polygon{opacity:.13}
+/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
+  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
+.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .wd.we{opacity:.65}
+.cal .dy{min-height:86px;padding:6px 7px 9px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .dy.past{background:rgba(128,128,128,.05)}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
+.cal .dy.past .dn{color:var(--ink3)}
+.cal .dy.today .dn{color:var(--accent-700)}
+.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
+  text-decoration:none;background:var(--ink);color:var(--paper);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .tk.kr{background:var(--accent);color:#fff}
+.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
+.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
+/* 지표 타일 — 값 하나 + 등락 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
+.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+.tile .em{margin-right:5px}
+.tile .sp{display:block;margin-top:8px;width:100%;height:34px}
+.tile .sp polyline{fill:none;stroke-width:1.6}
+.tile .sp polygon{opacity:.13}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
+footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
+  color:var(--ink3);font-size:11px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:24px}
+  .item{grid-template-columns:26px 1fr}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">KT GROUP NEWS</div><h1>KT그룹 뉴스</h1><div class="dt">9/5(토) · 매일 아침 발행 · 최근 36시간 창 · NEW = 6시간 내</div></header>
+<div class="rule"></div>
+
+<style>.item .ti{font-size:14px;line-height:1.55}.item{padding:13px 0}</style><div style="margin-top:18px;border-left:3px solid var(--accent);padding:2px 0 2px 14px;font-size:16px;font-weight:800;line-height:1.6">KT그룹은 AI 서비스 청사진 공개와 계열사별 콘텐츠 및 금융 협업을 추진함</div><p style="margin:10px 0 0;font-size:12.5px;line-height:1.8;color:var(--ink2)">SKT와 KT 및 카카오의 연내 AI 서비스 출시 소식과 KT클라우드의 LS일렉트릭 협업을 통한 AI 데이터센터 기반시설 공급 기사 선정. KT알파 쇼핑의 드라마 신병4 협업 굿즈 출시와 BC카드의 케이뱅크 협업 및 AI 컴퍼니 속도 기사도 주목할 만함</p><p class="note">Gemini 자동 요약 · 기사 제목만 근거 — 원문 확인 권장</p><div class="tiles"><div class="tile"><div class="l">전체</div><div class="v">33건</div><div class="c" style="color:var(--ink3)">최근 36시간</div></div><div class="tile"><div class="l">그룹사</div><div class="v">19건</div><div class="c" style="color:var(--ink3)">42사 감시</div></div><div class="tile"><div class="l">통신3사</div><div class="v">13건</div><div class="c" style="color:var(--ink3)">KT·SKT·LGU+</div></div><div class="tile"><div class="l">기업이슈</div><div class="v">1건</div><div class="c" style="color:var(--ink3)">감사의견·법정관리</div></div></div><style>.sectabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:30px;padding-bottom:9px;border-bottom:2px solid var(--rule)}.sectabs button{font:700 12px/1 inherit;font-family:inherit;padding:8px 14px;cursor:pointer;border:1px solid var(--rule-soft);background:var(--paper);color:var(--ink2)}.sectabs button:hover{border-color:var(--ink);color:var(--ink)}.sectabs button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.secpane{margin-top:18px}</style><div class="sectabs"><button type="button" data-p="g" class="on">그룹사</button><button type="button" data-p="t">통신3사</button><button type="button" data-p="i">기업이슈</button></div><section id="g" class="secpane"><div class="sh"><span class="no">01</span><h2>그룹사</h2><span class="en">SUBSIDIARIES</span></div><div class="subh"><h3>미디어</h3><span class="en">12건</span></div><div class="item wide"><div class="n">KT스튜디오지니</div><div><div class="ti"><a href="http://www.lawissue.co.kr/view.php?ud=202609042338272545204ead0791_12" target="_blank" rel="noopener">KT알파 쇼핑, KT스튜디오지니 ‘신병4’ 활용 한정판 텀블러 선보여</a></div><div class="meta">lawissue.co.kr · 16시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">KT알파 쇼핑은 KT스튜디오지니의 드라마 ‘신병4 : 사보타주’를 활용한 한정판 협업 텀블러를 4일 선보였다. 이번 상품은 ‘신병4’의 군대 소재와 밀리터리 디자인을 바탕으로 제작됐다. KT알파 쇼…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="https://zdnet.co.kr/view/?no=20260904171024" target="_blank" rel="noopener">KT알파 쇼핑, 드라마 '신병4' 굿즈 내놓는다…한정판 텀블러 판매</a></div><div class="meta">ZDNet · 23시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">KT알파 쇼핑이 KT스튜디오지니의 드라마 ‘신병4 : 사보타주’ 지식재산권(IP)을 활용한 한정판 상품을 선보인다. KT그룹이 보유한 콘텐츠 IP를 커머스 상품으로 확장하는 시도다. KT알파 쇼핑은…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065598107519101" target="_blank" rel="noopener">KT알파 쇼핑, ‘신병4’ 협업 굿즈 선봬…한정판 텀블러 판매</a></div><div class="meta">megaeconomy.co.kr · 23시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">KT알파 쇼핑이 KT스튜디오지니의 드라마 IP ‘신병4’를 활용한 한정판 굿즈를 선보인다. KT알파 쇼핑은 ENA 월화드라마 ‘신병4 : 사보타주’와 협업한 커스텀 텀블러를 단독 판매한다고 4일 밝…</span></div></div></div><div class="item wide"><div class="n">KT지니뮤직</div><div><div class="ti"><a href="https://idsn.co.kr/news/view/1065577240148779" target="_blank" rel="noopener">KT지니뮤직-아이언이엔엠, 과거 음원 재조명 ‘리부트 프로젝트’ 추진</a></div><div class="meta">idsn.co.kr · 9/4 14:32<span style="display:block;margin-top:3px;color:var(--ink3)">KT지니뮤직과 콘텐츠 IP 기업 아이언이엔엠(Iron E&amp;M)은 기존 음원 자산을 재발굴하는 ‘리부트(Reboot) 프로젝트’를 공동 진행한다고 밝혔다. 이번 프로젝트는 이미 공개된 음악 가운데 대…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="https://www.newsworks.co.kr/news/articleView.html?idxno=852677" target="_blank" rel="noopener">[통신 풍향계] SKT '자원순환 캠페인' 시행·KT알파 '신병4 텀블러' 론칭...</a></div><div class="meta">newsworks.co.kr · 9/4 13:26<span style="display:block;margin-top:3px;color:var(--ink3)">4일 통신 업계에서는 SK텔레콤의 구성원 참여 E-Waste 자원순환 캠페인 '리파인 데이' 시행, KT알파의 드라마 '신병4' 한정판 커스텀 텀블러 단독 론칭, 우리넷의 한국지능정보사회진흥원 'K…</span></div></div></div><div class="item wide"><div class="n">KT지니뮤직</div><div><div class="ti"><a href="https://www.abcn.kr/news/articleView.html?idxno=91327" target="_blank" rel="noopener">아이언이엔엠, KT지니뮤직과 음원 콘텐츠 마케팅 협력</a></div><div class="meta">abcn.kr · 9/4 13:22<span style="display:block;margin-top:3px;color:var(--ink3)">ABC뉴스=김수찬 기자 / 콘텐츠 IP 기업 아이언이엔엠(Iron E&amp;M)이 KT지니뮤직과 손잡고 음악 지식재산권(IP)의 활용성을 높이는 '리부트(Reboot) 프로젝트'를 전개한다. 이번 협력은…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="https://www.etnews.com/20260904000181" target="_blank" rel="noopener">KT알파 쇼핑, '신병4' 한정판 굿즈 출시…콘텐츠 IP 커머스 확대</a></div><div class="meta">전자신문 · 9/4 13:08<span style="display:block;margin-top:3px;color:var(--ink3)">KT알파 쇼핑은 KT스튜디오지니의 대표 드라마 지식재산권(IP) '신병4'를 활용한 한정판 콜라보 굿즈를 단독 출시한다고 4일 밝혔다. 이번 상품은 '신병4'의 밀리터리 정체성을 담은 커스텀 텀블러…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="http://www.whitepaper.co.kr/news/articleView.html?idxno=266426" target="_blank" rel="noopener">KT알파 쇼핑, '신병4' 굿즈 꺼냈다…팬덤 넘어 캠핑족까지 겨냥</a></div><div class="meta">whitepaper.co.kr · 9/4 12:12<span style="display:block;margin-top:3px;color:var(--ink3)">화이트페이퍼, WHITEPAPER(사진=KT알파쇼핑) KT알파 쇼핑이 KT스튜디오지니의 드라마 IP '신병4'를 활용한 한정판 굿즈를 선보인다. 콘텐츠 팬덤을 실용 상품으로 연결해 드라마 시청자뿐 …</span></div></div></div><div class="item wide"><div class="n">KT지니뮤직</div><div><div class="ti"><a href="http://www.lawissue.co.kr/view.php?ud=2026090410455285719aeda69934_12" target="_blank" rel="noopener">KT지니뮤직-아이언이엔엠, '리부트 프로젝트' 추진</a></div><div class="meta">lawissue.co.kr · 9/4 11:16<span style="display:block;margin-top:3px;color:var(--ink3)">KT지니뮤직과 콘텐츠 IP 기업 아이언이엔엠(Iron E&amp;M)이 우수한 음악 IP의 새로운 성장 가능성을 발굴하는 '리부트(Reboot) 프로젝트'를 공동 추진한다고 밝혔다. 이번 프로젝트는 작품성…</span></div></div></div><div class="item wide"><div class="n">KT지니뮤직</div><div><div class="ti"><a href="https://www.epnc.co.kr/news/articleView.html?idxno=406542" target="_blank" rel="noopener">아이언이엔엠, KT지니뮤직과 음악 IP '리부트 프로젝트' 공동 추진</a></div><div class="meta">epnc.co.kr · 9/4 11:02<span style="display:block;margin-top:3px;color:var(--ink3)">콘텐츠 IP 기업 아이언이엔엠(Iron E&amp;M)과 KT지니뮤직이 기존 음악 IP의 새로운 활용 가능성을 모색하는 '리부트(Reboot) 프로젝트'를 공동 추진한다고 밝혔다. 이번 프로젝트는 작품성과…</span></div></div></div><div class="item wide"><div class="n">KT알파</div><div><div class="ti"><a href="https://www.delighti.co.kr/news/articleView.html?idxno=121303" target="_blank" rel="noopener">KT알파 쇼핑, '신병4' 협업 한정판 텀블러 출시</a></div><div class="meta">delighti.co.kr · 9/4 10:00<span style="display:block;margin-top:3px;color:var(--ink3)">KT알파 쇼핑이 KT스튜디오지니의 드라마 '신병4'를 활용한 한정판 협업 굿즈를 선보인다. KT알파 쇼핑은 오는 7일부터 ENA 월화드라마 '신병4: 사보타주'(이하 '신병4')와 협업한 커스텀 텀…</span></div></div></div><div class="item wide"><div class="n">KT밀리의서재</div><div><div class="ti"><a href="https://www.epnc.co.kr/news/articleView.html?idxno=406515" target="_blank" rel="noopener">밀리의서재, AI 시대 독서 방향 제시…"질문하고 생각하는 읽기 중요"</a></div><div class="meta">epnc.co.kr · 9/4 08:30<span style="display:block;margin-top:3px;color:var(--ink3)">kt 밀리의서재가 창립 10주년을 맞아 인공지능(AI) 확산에 따른 독서 경험의 변화를 짚고 AI 시대 읽기의 역할과 방향을 제시했다. 밀리의서재는 3일 창립 10주년 컨퍼런스 '읽는 미래: AI …</span></div></div></div><div class="subh"><h3>CT</h3><span class="en">2건</span></div><div class="item wide"><div class="n">KT M&amp;amp;S</div><div><div class="ti"><a href="https://www.e-science.co.kr/news/articleView.html?idxno=134752" target="_blank" rel="noopener">갤럭시 S26 FE AI·카메라 직접 써본다…kt m&amp;s, 전국 260곳 체험존</a></div><div class="meta">e-science.co.kr · 9/4 11:22<span style="display:block;margin-top:3px;color:var(--ink3)">kt m&amp;s는 갤럭시 S26 FE 출시일인 4일부터 전국 260여 개 KT플라자에 체험 공간을 운영한다. 매장 방문객은 블루베리와 그라파이트, 피스타치오 등 3가지 색상의 실물 디자인을 살펴보고 갤…</span></div></div></div><div class="item wide"><div class="n">KT M&amp;amp;S</div><div><div class="ti"><a href="https://www.etnews.com/20260904000103" target="_blank" rel="noopener">kt m&amp;s, 전국 KT플라자서 '갤럭시S26 FE' 체험존 운영</a></div><div class="meta">전자신문 · 9/4 10:44<span style="display:block;margin-top:3px;color:var(--ink3)">kt m&amp;s가 삼성전자 '갤럭시S26 FE' 국내 출시에 맞춰 전국 KT플라자에서 체험존을 운영한다. kt m&amp;s는 4일부터 전국 260여개 KT플라자에 갤럭시S26 FE 시연 단말을 배치했다. 방…</span></div></div></div><div class="subh"><h3>IT</h3><span class="en">1건</span></div><div class="item wide"><div class="n">KT클라우드</div><div><div class="ti"><a href="https://www.koreareport.co.kr/news/articleView.html?idxno=52614" target="_blank" rel="noopener">구자균 LS일렉트릭, KT클라우드와 맞손…AI 데이터센터 기반시설 공급 ...</a></div><div class="meta">koreareport.co.kr · 9/4 07:12<span style="display:block;margin-top:3px;color:var(--ink3)">LS일렉트릭이 KT클라우드와 손잡고 급성장하는 AI(인공지능) 데이터센터에 기반 시설을 공급한다. LS일렉트릭은 이를 위해 서울 LS용산타워에서 KT클라우드와 AI 데이터센터 전략적 파트너십 구축을…</span></div></div></div><div class="subh"><h3>금융</h3><span class="en">4건</span></div><div class="item wide"><div class="n">BC카드</div><div><div class="ti"><a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=446443" target="_blank" rel="noopener">[오늘Who] BC카드 '케이뱅크 협업 확대' 'AI컴퍼니 속도', 김영우 KT 색깔...</a></div><div class="meta">businesspost.co.kr · 23시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">김영우 BC카드 대표이사 사장이 BC카드에서 KT그룹 색깔을 뚜렷하게 내고 있다는 평가가 나온다. BC카드와 케이뱅크의 협업을 확대한다는 방향성을 분명히 하고 인공지능(AI) 사업 확대에도 속도를 …</span></div></div></div><div class="item wide"><div class="n">BC카드</div><div><div class="ti"><a href="https://www.mk.co.kr/article/12144472" target="_blank" rel="noopener">“카드 결제 알림 서비스가 공짜”…BC카드, 무료 서비스에 포인트까지</a></div><div class="meta">매일경제 · 9/4 14:58<span style="display:block;margin-top:3px;color:var(--ink3)">월 300원 결제알림 무료로 전환 광고 확인하면 리워드도 적립해줘 언레스 “다른 카드사로 확대 추진” BC카드가 카드 결제 알림을 무료로 제공하면서 광고를 확인한 이용자에게 리워드까지 적립해주는 ‘…</span></div></div></div><div class="item wide"><div class="n">BC카드</div><div><div class="ti"><a href="https://biz.newdaily.co.kr/site/data/html/2026/09/04/2026090400109.html" target="_blank" rel="noopener">BC카드, 서울 10개 지역 상권 활성화 이벤트 실시 … 3000개 가맹점 참여</a></div><div class="meta">biz.newdaily.co.kr · 9/4 11:00<span style="display:block;margin-top:3px;color:var(--ink3)">뉴데일리 박정연 기자 = BC카드는 골목 상권에 활력을 더하고 소상공인 매출 활성화 지원을 위해 ‘서울시 로컬브랜드 상권’ 할인 프로모션을 진행한다고 4일 밝혔다. ‘서울시 로컬브랜드 상권’은 서울…</span></div></div></div><div class="item wide"><div class="n">BC카드</div><div><div class="ti"><a href="http://www.bizwnews.com/news/articleView.html?idxno=145221" target="_blank" rel="noopener">BC카드, 서울시 10개 지역상권 활성화 지원</a></div><div class="meta">bizwnews.com · 9/4 09:44<span style="display:block;margin-top:3px;color:var(--ink3)">BC카드가 '서울시 로컬브랜드 상권' 할인 프로모션을 한다. 사진=BC카드 BC카드(사장 김영우)가 골목 상권에 활력을 더하고 소상공인 매출 활성화 지원을 위해 '서울시 로컬브랜드 상권' 할인 프로…</span></div></div></div></section><section id="t" class="secpane" hidden><div class="sh"><span class="no">02</span><h2>통신3사</h2><span class="en">TELCO</span></div><div class="item wide"><div class="n">KT</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.mk.co.kr/article/12145059" target="_blank" rel="noopener">롯데, 11일 홈 KT전서 최동원 15주기 추모 행사 진행</a></div><div class="meta">매일경제 · 1시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">롯데는 “오는 11일 부산 사직구장에서 열리는 2026 프로야구 KBO리그 KT위즈와 홈 경기에서 故 최동원 전 감독의 15주기 추모행사를 진행한다”고 5일 밝혔다. 행사는 오후 5시 10분, 사직…</span></div></div></div><div class="item wide"><div class="n">KT</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.businessplus.kr/news/articleView.html?idxno=116431" target="_blank" rel="noopener">[뉴스+]SKT는 '수요'·KT는 '이음'·카카오는 '편리'…'모두의 AI' 3色 경...</a></div><div class="meta">businessplus.kr · 2시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">(앞줄 왼쪽부터) 백준호 퓨리오사AI 대표, 김성훈 업스테이지 대표, 이경일 솔트룩스 대표, 박윤영 KT 대표... SK텔레콤(SKT)과 KT, 카카오 등 3개 컨소시엄은 각각 기존 서비스와 이용자…</span></div></div></div><div class="item wide"><div class="n">KT</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.starnewskorea.com/sports/2026/09/05/2026090512282938927" target="_blank" rel="noopener">5선발이 리그 에이스 맞먹는 피칭이라니... KT가 '왜' 우승 후보인가! '...</a></div><div class="meta">starnewskorea.com · 2시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">KT 위즈가 왜 올해 강력한 우승 후보로 꼽히는지 보여주는 경기였다. 5선발 배제성(30)이 리그 정상급... KT는 연장 10회 끝내기 희생플라이를 허용해 3-4로 패하면서 69승3무44패로 3연…</span></div></div></div><div class="item wide"><div class="n">KT</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.nocutnews.co.kr/news/6573531?utm_source=naver&amp;utm_medium=article&amp;utm_campaign=20260905125605" target="_blank" rel="noopener">'KS 4승의 에이스' 롯데, 11일 kt전에서 故 최동원 15주기 추모 행사</a></div><div class="meta">nocutnews.co.kr · 3시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">롯데는 5일 "오는 11일 부산 사직구장에서 열리는 kt wiz와 홈 경기에서 고 최동원의 15주기 추모 행사를 진행한다"고 밝혔다. 사직구장 광장에 위치한 최동원의 동상 앞 헌화식을 시작으로 경기…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.etnews.com/20260904000276" target="_blank" rel="noopener">SKT '수요'·KT '이음'·카카오 '편리'…모두의 AI 개발 시동</a></div><div class="meta">전자신문 · 4시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">국민 누구나 무료로 사용하는 인공지능(AI) 서비스 '모두의 AI' 개발이 시작됐다. SK텔레콤·KT·카카오 등 3개 컨소시엄은 각각 수요·편리·이음을 핵심 가치로, 외산과 차별화된 널리 선택 받을…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="ti"><a href="https://www.seoulfn.com/news/articleView.html?idxno=637258" target="_blank" rel="noopener">'모두의 AI' 연내 출시···SKT·카카오·KT 청사진 공개</a></div><div class="meta">seoulfn.com · 6시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">과학기술정보통신부가 4일 오전 서울 한국프레스센터에서 '모두의 AI' 프로젝트에 선정된 3개 컨소시엄의 서비스 개발 계획을 청취하고 협력 방안을 논의하는 사업자 간담회를 열었다. 이번 간담회는 연내…</span></div></div></div><div class="item wide"><div class="n">LGU+</div><div><div class="ti"><a href="https://www.theguru.co.kr/news/article.html?no=106726" target="_blank" rel="noopener">[통신리뷰] LG유플러스, 다문화가족·1인 가구 AI 역량 강화 나선다(9월...</a></div><div class="meta">theguru.co.kr · 6시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">◇LG유플러스, 다문화가족·1인 가구 AI 역량 강화 나선다 LG유플러스는 한국건강가정진흥원과 다문화가족 및 1인가구의 디지털 역량 강화를 위한 업무협약(MOU)을 체결했다고 밝혔다. 한국건강가정진…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="ti"><a href="https://www.asiaa.co.kr/news/articleView.html?idxno=261136" target="_blank" rel="noopener">SKT, '자원순환의 날' 맞아 폐 IT기기 수거...취약계층 아동에 재제조 기...</a></div><div class="meta">asiaa.co.kr · 7시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">SKT는 구성원과 미래세대가 함께 참여하는 E-Waste 자원순환 캠페인 '리파인 데이(RE:FINE Day)'를 지난 3일 진행했다고 5일 밝혔다. 이번 행사는 SKT 순환경제 전략인 '리파인(R…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="ti"><a href="https://www.webeconomy.co.kr/news/articleView.html?idxno=2291368" target="_blank" rel="noopener">SKT, 자원순환 캠페인 '리파인 데이'…전자폐기물 재활용</a></div><div class="meta">webeconomy.co.kr · 7시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">SK텔레콤은 4일 '자원순환의 날'을 맞아 구성원과 미래세대가 함께하는 전자폐기물 자원순환 캠페인 '리파인 데이'를 지난 3일 진행했다고 밝혔다. 이번 캠페인은 구성원과 가족이 사용하지 않는 스마트…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="ti"><a href="https://www.sisaon.co.kr/news/articleView.html?idxno=204059" target="_blank" rel="noopener">실적 회복 물꼬 텄다…SKT 정재헌 다음 과제는? [오늘의 리더]</a></div><div class="meta">sisaon.co.kr · 8시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">정재헌 SK텔레콤 대표가 사상 최악의 해킹 사태로 흔들린 회사의 경영 정상화를 이끌고 있다. 취임 첫해 뚜렷한 수익성 개선과 가입자 회복으로 위기 탈출의 발판을 마련한 정 대표는 이제 AI 데이터센…</span></div></div></div><div class="item wide"><div class="n">KT CAPEX</div><div><div class="ti"><a href="https://www.yna.co.kr/view/AKR20260904023000017?input=1195m" target="_blank" rel="noopener">[AI돋보기] 기지국이 AI 데이터센터로…통신사 '변신' 시작됐다</a></div><div class="meta">연합뉴스 · 9시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">SK텔레콤, KT, LG유플러스는 기지국을 단순 데이터 송수신 장비에 머물게 두지 않고 현장에서 연산까지 처리하는 거점으로 전환하는 작업을 진행 중이다. 기존 5G까지는 천문학적인 설비투자(CAPE…</span></div></div></div><div class="item wide"><div class="n">SKT</div><div><div class="ti"><a href="https://www.thedailypost.kr/news/articleView.html?idxno=115401" target="_blank" rel="noopener">SKT, 자원순환의 날 앞서 구성원과 '리파인 데이' 캠페인 진행</a></div><div class="meta">thedailypost.kr · 17시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">SKT는 회수된 기기의 가치에 상응하는 재제조 디지털 기기를 전국지역아동센터협의회를 거쳐 취약계층... 이번 캠페인은 SKT의 ESG 협약 파트너사인 유한킴벌리에서도 동시 실시됐다. 엄종환 SKT …</span></div></div></div><div class="item wide"><div class="n">KT CAPEX</div><div><div class="ti"><a href="https://www.newsway.co.kr/news/view?ud=2026090408412915909" target="_blank" rel="noopener">AI·6G 투자 시계 빨라진다…통신주 성장 기대감 '쑥'[애널리스트의 시...</a></div><div class="meta">newsway.co.kr · 9/4 08:54<span style="display:block;margin-top:3px;color:var(--ink3)">통신 3사의 합산 설비투자(CAPEX)는 2019년 9조6000억원에서 지난해 6조200억원까지 줄었다. 이에 협의체는 AI... 통신 3사 가운데서는 SK텔레콤의 투자 매력도를 가장 높게 평가하면…</span></div></div></div></section><section id="i" class="secpane" hidden><div class="sh"><span class="no">03</span><h2>기업이슈</h2><span class="en">CORPORATE ISSUES</span></div><div class="item wide"><div class="n">의견거절</div><div><div class="chips"><span class="chip ink">의견거절</span></div><div class="ti"><a href="https://biz.sbs.co.kr/article_hub/20000332863?division=NAVER" target="_blank" rel="noopener">이지스 '몰오브케이' 감사의견 거절…매각 추진 중 '암초'</a></div><div class="meta">biz.sbs.co.kr · 22시간 전<span style="display:block;margin-top:3px;color:var(--ink3)">이지스자산운용이 서울 광진구 자양동 복합쇼핑몰 '몰오브케이'의 정상 매각을 추진하는 가운데 해당 자산을 담은 부동산펀드가 감사의견 거절이라는 암초에 맞닥뜨렸습니다. 오늘(4일) 금융투자업계에 따르면…</span></div></div></div></section><script>(function(){
+var bar=document.querySelector(".sectabs");
+if(!bar)return;
+function show(id){
+ [].forEach.call(document.querySelectorAll(".secpane"),function(p){p.hidden=p.id!==id});
+ [].forEach.call(bar.querySelectorAll("button"),function(b){
+  b.classList.toggle("on",b.getAttribute("data-p")===id)});
+}
+bar.addEventListener("click",function(ev){
+ var b=ev.target.closest("button");if(b)show(b.getAttribute("data-p"));
+});
+document.addEventListener("click",function(ev){
+ var a=ev.target.closest("a");if(!a)return;
+ var h=a.getAttribute("href")||"";if(h.charAt(0)!=="#")return;
+ var el=document.getElementById(h.slice(1));if(!el)return;
+ var pane=el.closest(".secpane");
+ if(pane&&pane.hidden)show(pane.id);
+});
+})();</script>
+<footer><p>감시 대상 — KT그룹 42사 · 통신3사 · 기업이슈(감사의견·법정관리)</p><p>데이터: 네이버 뉴스 검색 · 야구(KT wiz)·e스포츠·시세 기사는 자동 차단</p><p class="w">자동 생성 브리핑 · 투자 권유 아님</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     네비만이 아니라 문서 안의 모든 #앵커 클릭을 가로채 직접 스크롤한다.
+     scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  document.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+
+  /* 표 정렬 — th[data-k] 를 누르면 그 열 기준으로 재배열한다.
+     메일에서는 불가능했던 것: 오늘 많이 움직인 것부터 보기.
+     좁은 화면에서 접은 칸(.mper)은 행을 눌러 편다. 접힘은 행 안에 들어 있어
+     정렬로 순서가 바뀌어도 따라다닌다. */
+  document.querySelectorAll("table.g").forEach(function(tb){
+    var dir = {}, orig = null, mates = null;
+    tb.addEventListener("click", function(ev){
+      var tr = ev.target.closest("tr[data-v]");
+      if(tr){
+        var d = tr.nextElementSibling;
+        if(d && d.classList.contains("mrow")){ d.classList.toggle("op"); return; }
+      }
+      var th = ev.target.closest("th[data-k]");
+      if(!th) return;
+      var k = th.dataset.k, body = tb.tBodies[0] || tb;
+      if(!orig){
+        orig = [].slice.call(body.querySelectorAll("tr[data-v]"));
+        /* 접힘 줄은 제 행 바로 뒤에 붙어 있어야 한다 — 정렬할 때 짝으로 옮긴다 */
+        mates = new Map();
+        orig.forEach(function(r){
+          var d = r.nextElementSibling;
+          if(d && d.classList.contains("mrow")) mates.set(r, d);
+        });
+      }
+      dir[k] = dir[k] === -1 ? 1 : -1;
+      var rows = orig.slice().sort(function(a,b){
+        var x = parseFloat(a.dataset[k]), y = parseFloat(b.dataset[k]);
+        if(isNaN(x)) return 1;
+        if(isNaN(y)) return -1;
+        return (x - y) * dir[k];
+      });
+      tb.querySelectorAll("th .aw").forEach(function(s){ s.remove() });
+      var m = document.createElement("span");
+      m.className = "aw"; m.textContent = dir[k] < 0 ? "▼" : "▲";
+      th.appendChild(m);
+      rows.forEach(function(r){
+        body.appendChild(r);
+        var d = mates.get(r);
+        if(d) body.appendChild(d);
+      });
+    });
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
