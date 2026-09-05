@@ -217,7 +217,10 @@ fetch("manifest.json", { cache:"no-store" })
   .catch(function(){ renderHome(); });
 
 /* 주요 지수 스냅샷 — 아침 시황 브리핑이 발행할 때 함께 올리는 market.json.
-   브리핑 HTML을 파싱하는 대신 작은 JSON 하나를 읽는다(발행 쪽이 바뀌어도 홈이 안 깨짐). */
+   브리핑 HTML을 파싱하는 대신 작은 JSON 하나를 읽는다(발행 쪽이 바뀌어도 홈이 안 깨짐).
+   서버는 30분마다 갱신하지만 열려 있는 탭은 스스로 다시 불러오지 않으면 옛 화면에
+   머문다 — 5분마다, 그리고 탭으로 돌아올 때 다시 읽는다. */
+function loadSnap(){
 fetch("market.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(m){
@@ -245,8 +248,10 @@ fetch("market.json", { cache:"no-store" })
     $("snap").hidden = false;
   })
   .catch(function(){});
+}
 
 /* 서울(광화문) 날씨 — 마켓 스냅샷이 30분마다 weather.json으로 올린다 */
+function loadWx(){
 fetch("weather.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(w){
@@ -262,8 +267,10 @@ fetch("weather.json", { cache:"no-store" })
     $("wx").hidden = false;
   })
   .catch(function(){});
+}
 
 /* '오늘 시장 한 줄' — 주요 금융 통계 발행 시 함께 올라오는 lead.json에서 읽는다 */
+function loadLead(){
 fetch("lead.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(l){
@@ -274,6 +281,14 @@ fetch("lead.json", { cache:"no-store" })
     }
   })
   .catch(function(){});
+}
+
+function refreshLive(){ loadSnap(); loadWx(); loadLead(); }
+refreshLive();
+setInterval(refreshLive, 5 * 60 * 1000);            /* 5분마다 */
+document.addEventListener("visibilitychange", function(){
+  if (!document.hidden) refreshLive();              /* 탭으로 돌아오면 즉시 */
+});
 
 function dates(kind){ return state.manifest[kind] || []; }
 
