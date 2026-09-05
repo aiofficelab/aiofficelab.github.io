@@ -26,9 +26,12 @@
   .subdomain{font-size:16px;font-weight:700;letter-spacing:1px;color:var(--mut);}
   .dateline{margin-top:14px;padding-top:0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
   .dateline .r{color:var(--mut);}
-  .lead{margin-top:14px;border-top:2px solid var(--ink);padding:13px 0 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;}
+  .lead{margin-top:14px;border-top:2px solid var(--ink);padding:13px 0 0;display:flex;gap:14px;align-items:baseline;flex-wrap:nowrap;}
   .lead .k{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--acc);white-space:nowrap;}
-  .lead .t{font-size:19px;font-weight:700;letter-spacing:-0.3px;}
+  /* 전광판: 프레임마다 줄 수가 달라 높이가 출렁이지 않게 항상 한 줄 + 말줄임 */
+  .lead .t{font-size:19px;font-weight:700;letter-spacing:-0.3px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lead .k,.lead .t{transition:opacity .38s ease,transform .38s ease;}
+  .lead.sw .k,.lead.sw .t{opacity:0;transform:translateY(5px);}
   .seclabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--mut);padding:28px 0 10px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 40px;}
   .cardx{border-top:2px solid var(--ink);padding:16px 0 26px;cursor:pointer;}
@@ -302,20 +305,25 @@ function buildFrames(lead, tech, kt){
   return fr;
 }
 
+function setFrame(f){
+  var el = $("lead");
+  document.querySelector("#lead .k").textContent = f.k;
+  $("leadText").textContent = f.t;
+  el.dataset.href = f.href || ""; el.dataset.kind = f.kind || "";
+  el.style.cursor = (f.href || f.kind) ? "pointer" : "default";
+}
+
 function showFrame(){
   if (!tick.frames.length) return;
   var f = tick.frames[tick.i % tick.frames.length], el = $("lead");
-  el.style.opacity = "0";
+  if (el.hidden) { setFrame(f); el.hidden = false; return; }
+  el.classList.add("sw");                       /* 내려가며 사라진 뒤 */
   setTimeout(function(){
-    document.querySelector("#lead .k").textContent = f.k;
-    $("leadText").textContent = f.t;
-    el.dataset.href = f.href || ""; el.dataset.kind = f.kind || "";
-    el.style.cursor = (f.href || f.kind) ? "pointer" : "default";
-    el.hidden = false; el.style.opacity = "1";
-  }, 220);
+    setFrame(f);                                /* 안 보일 때 글자를 갈고 */
+    el.classList.remove("sw");                  /* 제자리로 떠오른다 */
+  }, 390);
 }
 
-$("lead").style.transition = "opacity .22s";
 $("lead").addEventListener("click", function(){
   var h = this.dataset.href, k = this.dataset.kind;
   if (h) window.open(h, "_blank", "noopener");
