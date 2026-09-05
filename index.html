@@ -393,7 +393,12 @@ function renderReader(){
       } catch(e){}
     } catch(e){}
   };
-  f.src = "briefs/" + state.kind + "/" + state.date + ".html?v=" + Date.now();   /* 재발행분이 캐시에 가려지지 않게 */
+  /* 재발행분이 캐시에 가려지지 않게 ?v= 부여. src 대입 대신 location.replace —
+     iframe 이동이 브라우저 히스토리에 쌓이면 뒤로가기가 프레임의 빈 문서로
+     빠지며 막힌다(제목만 남고 아래가 백지가 되던 그 증상). */
+  var src = "briefs/" + state.kind + "/" + state.date + ".html?v=" + Date.now();
+  try { f.contentWindow.location.replace(src); }
+  catch (e) { f.src = src; }
 }
 
 /* 이메일용 고정폭 브리핑을 좁은 화면에 맞게 풀어준다 (원본 index.html 로직 유지) */
