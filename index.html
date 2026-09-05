@@ -127,6 +127,8 @@
     <div class="wrap">
       <div class="seclabel">DAILY MARKET</div>
       <div class="grid" id="gridMarket"></div>
+      <div class="seclabel">NEWS</div>
+      <div class="grid" id="gridNews"></div>
       <div class="seclabel">REGULATORY</div>
       <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
     </div>
@@ -159,9 +161,11 @@ var BRIEFS = [
   { kind:"dart",     group:"market", no:"03", cad:"매일 아침 7시", title:"기업공시 감시", kick:"CORPORATE DISCLOSURE WATCH", sum:"국내 60사 + 미국 70사 적신호 분류" },
   { kind:"rates",    group:"market", no:"04", cad:"매주 월요일 아침", title:"주간 금리 동향", kick:"WEEKLY RATES", sum:"한국·미국 국채 금리 · 한미 금리차 · 원/달러" },
   { kind:"portfolio", group:"market", no:"05", cad:"매일 아침 7시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
-  { kind:"econscan", group:"reg",    no:"06", cad:"매일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
-  { kind:"fss",      group:"reg",    no:"07", cad:"매일 아침 7시", title:"금감원 회계감독", kick:"FSS ACCOUNTING WATCH", sum:"감리제재 · 지적사례 · 내부회계 · IFRS · 세칙 제·개정" },
-  { kind:"law",      group:"reg",    no:"08", cad:"매일 아침 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+  { kind:"tech",     group:"news",   no:"06", cad:"매일 아침 7시", title:"빅테크·AI 동향", kick:"BIG TECH & AI", sum:"M7 + 오픈AI·앤트로픽 — 회사별·주제별 뉴스" },
+  { kind:"ktnews",   group:"news",   no:"07", cad:"매일 아침 7시", title:"KT그룹 뉴스", kick:"KT GROUP NEWS", sum:"그룹사 42사 · 통신3사 · 기업이슈 — 오탐 차단 스크랩" },
+  { kind:"econscan", group:"reg",    no:"08", cad:"매일 아침 7시", title:"재경부+금감원", kick:"DAILY FINANCIAL STATS SCANNER", sum:"일일/주간/월간 리포트 제공" },
+  { kind:"fss",      group:"reg",    no:"09", cad:"매일 아침 7시", title:"금감원 회계감독", kick:"FSS ACCOUNTING WATCH", sum:"감리제재 · 지적사례 · 내부회계 · IFRS · 세칙 제·개정" },
+  { kind:"law",      group:"reg",    no:"10", cad:"매일 아침 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
 ];
 var state = { kind:null, date:null, manifest:{} };
 var frameRO = null;
@@ -298,7 +302,7 @@ function prettyDate(dd){
 }
 
 function renderHome(){
-  ["gridMarket","gridReg"].forEach(function(id){ $(id).innerHTML = ""; });
+  ["gridMarket","gridNews","gridReg"].forEach(function(id){ $(id).innerHTML = ""; });
   BRIEFS.forEach(function(b){
     var ds = dates(b.kind), has = ds.length > 0;
     var el = document.createElement("div");
@@ -309,7 +313,7 @@ function renderHome(){
       '<div class="sum">' + b.sum + '</div>' +
       (has ? '<div class="meta">최신 <b>' + prettyDate(ds[0]) + '</b> &nbsp;·&nbsp; <span class="go">브리핑 열기 →</span></div>' : '');
     if (has) el.addEventListener("click", function(){ openReader(b.kind); });
-    $(b.group === "market" ? "gridMarket" : "gridReg").appendChild(el);
+    $(b.group === "market" ? "gridMarket" : b.group === "news" ? "gridNews" : "gridReg").appendChild(el);
   });
 }
 
