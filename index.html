@@ -292,8 +292,9 @@ function buildFrames(lead, tech, kt){
     var lk = lead.ed === "pm" ? "오후 시장 한 줄" : (lead.ed === "am" ? "오전 시장 한 줄" : "오늘 시장 한 줄");
     fr.push({ k: lk, t: lead.text, kind: "morning" });
   }
-  ((tech && tech.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "빅테크·AI", t: a.t, href: a.l }); });
-  ((kt && kt.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "KT그룹 뉴스", t: a.t, href: a.l }); });
+  /* 클릭하면 기사 원문이 아니라 해당 게시판으로 들어간다 */
+  ((tech && tech.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "빅테크·AI", t: a.t, kind: "tech" }); });
+  ((kt && kt.items) || []).slice(0, 3).forEach(function(a){ fr.push({ k: "KT그룹 뉴스", t: a.t, kind: "ktnews" }); });
   var td = todayIso(), fresh = BRIEFS.filter(function(b){
     var ds = state.manifest[b.kind] || [];
     return ds.length && String(ds[0]).indexOf(td) === 0;
