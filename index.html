@@ -16,10 +16,12 @@
   a{color:var(--acc7);} a:hover{color:var(--acc);}
   .wrap{max-width:1060px;margin:0 auto;padding:0 24px;width:100%;}
   .topbar{border-bottom:2px solid var(--ink);}
-  .topbar .wrap{padding-top:14px;padding-bottom:14px;font-size:12px;font-weight:700;letter-spacing:3px;}
-  /* 카테고리 드롭다운 — 제목과 한 줄 요약 사이의 가로 바(사용자 지정 위치) */
+  .topbar .wrap{padding-top:14px;padding-bottom:14px;font-size:12px;font-weight:700;letter-spacing:3px;
+    display:flex;align-items:center;gap:16px;}
+  /* 카테고리 드롭다운 — 홈에서는 제목과 한 줄 요약 사이의 가로 바,
+     브리핑을 읽는 중에는 상단 바 우측으로 옮겨 단다(placeMenu) */
   .menu{display:flex;gap:14px;align-items:center;position:relative;
-    margin-top:20px;border-top:2px solid var(--ink);padding:9px 0 3px;}
+    margin-top:16px;border-top:2px solid var(--ink);padding:7px 0 0;}
   .mtab{font:inherit;font-size:13.5px;font-weight:700;border:0;background:none;
     color:var(--ink);padding:5px 0;cursor:pointer;white-space:nowrap;}
   .mtab .cnt{font-size:11px;color:var(--mut);font-weight:700;margin-left:3px;}
@@ -29,6 +31,10 @@
   .mega{position:absolute;top:100%;left:0;min-width:320px;z-index:60;
     background:var(--paper,#fff);border:1px solid var(--line);border-top:2px solid var(--ink);
     box-shadow:0 3px 10px rgba(45,43,43,.16);padding:6px 0;}
+  /* 상단 바 안에 있을 때(읽기 화면) — 바 장식을 걷고 오른쪽 정렬 */
+  .menu.intop{margin:0 0 0 auto;border:0;padding:0;gap:2px;letter-spacing:0;}
+  .menu.intop .mtab{font-size:12px;letter-spacing:.5px;padding:6px 10px;}
+  .menu.intop .mega{left:auto;right:0;}
   .mega a{display:flex;gap:11px;align-items:baseline;padding:10px 18px;text-decoration:none;
     color:var(--ink);font-size:13.5px;font-weight:600;}
   .mega a:hover{background:rgba(32,30,29,.05);color:var(--acc);}
@@ -49,7 +55,8 @@
   .subdomain{font-size:16px;font-weight:700;letter-spacing:1px;color:var(--mut);}
   .dateline{margin-top:14px;padding-top:0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
   .dateline .r{color:var(--mut);}
-  .lead{margin-top:26px;border-top:2px solid var(--ink);padding:15px 0 0;display:flex;gap:14px;align-items:baseline;flex-wrap:nowrap;}
+  /* 메뉴 바가 위에서 구획을 이미 그어 주므로 간격을 줄인다(9/6) */
+  .lead{margin-top:14px;border-top:2px solid var(--ink);padding:13px 0 0;display:flex;gap:14px;align-items:baseline;flex-wrap:nowrap;}
   .lead .k{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--acc);white-space:nowrap;}
   /* 전광판: 프레임마다 줄 수가 달라 높이가 출렁이지 않게 항상 한 줄 + 말줄임 */
   .lead .t{font-size:19px;font-weight:700;letter-spacing:-0.3px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -408,19 +415,43 @@ function closeMenu(){
   menuG = null; $("mega").hidden = true;
   [].forEach.call(document.querySelectorAll(".mtab"), function(b){ b.classList.remove("on"); });
 }
+/* 탭→패널로 포인터가 건너가는 사이에 닫혀 클릭이 안 되던 문제 —
+   틈 없이 붙이고, 벗어나도 잠깐(220ms) 기다렸다가 닫는다 */
+var menuCloseT = null;
 [].forEach.call(document.querySelectorAll(".mtab"), function(b){
-  b.addEventListener("mouseenter", function(){ openMenu(this.getAttribute("data-g")); });
+  b.addEventListener("mouseenter", function(){
+    clearTimeout(menuCloseT); openMenu(this.getAttribute("data-g")); });
   b.addEventListener("click", function(){
+    clearTimeout(menuCloseT);
     menuG === this.getAttribute("data-g") ? closeMenu() : openMenu(this.getAttribute("data-g"));
   });
 });
-$("menu").addEventListener("mouseleave", closeMenu);
+$("menu").addEventListener("mouseleave", function(){
+  menuCloseT = setTimeout(closeMenu, 220);
+});
+$("menu").addEventListener("mouseenter", function(){ clearTimeout(menuCloseT); });
 document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeMenu(); });
 $("mega").addEventListener("click", function(e){
   var a = e.target && e.target.closest ? e.target.closest("a[data-k]") : null;
   if (!a) return;
-  e.preventDefault(); closeMenu(); openReader(a.getAttribute("data-k"));
+  e.preventDefault(); e.stopPropagation();
+  closeMenu(); openReader(a.getAttribute("data-k"));
 });
+
+/* 홈 = 제목 아래 가로 바 · 읽기 화면 = 상단 바 우측 (사용자 지정) */
+function placeMenu(inTop){
+  var m = $("menu");
+  if (inTop === m.classList.contains("intop")) return;
+  closeMenu();
+  if (inTop) {
+    m.classList.add("intop");
+    document.querySelector(".topbar .wrap").appendChild(m);
+  } else {
+    m.classList.remove("intop");
+    var dl = document.querySelector("#home .dateline");
+    dl.parentNode.insertBefore(m, dl.nextSibling);
+  }
+}
 
 function dates(kind){ return state.manifest[kind] || []; }
 
@@ -454,6 +485,7 @@ function route(){
     if (state.kind !== kind || $("reader").hidden) openReader(kind, true);
   } else if (!$("reader").hidden) {
     document.body.classList.remove("reading");
+    placeMenu(false);
     $("reader").hidden = true; $("home").hidden = false;
   }
 }
@@ -464,6 +496,7 @@ function openReader(kind, fromRoute){
     history.pushState(null, "", "#" + kind);   /* 브라우저 뒤로가기 = 허브로 */
   }
   document.body.classList.add("reading");
+  placeMenu(true);
   state.kind = kind; state.date = dates(kind)[0] || null;
   $("home").hidden = true; $("reader").hidden = false;
   var b = BRIEFS.filter(function(x){ return x.kind === kind; })[0];
@@ -499,6 +532,7 @@ $("homeLink").addEventListener("click", function(ev){
 
 $("back").addEventListener("click", function(){
   document.body.classList.remove("reading");
+    placeMenu(false);
   $("reader").hidden = true; $("home").hidden = false;
   if (location.hash) history.pushState(null, "", location.pathname + location.search);
 });
