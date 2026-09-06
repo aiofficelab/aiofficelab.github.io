@@ -46,6 +46,8 @@
   @media(max-width:640px){
     .topbar .wrap{letter-spacing:1.5px;}
     .mega{left:0;right:0;min-width:0;}
+    /* 모바일 읽기 화면에선 상단 드롭다운을 접는다 — 상단 바가 옆으로 늘어져 보기 나쁨(사용자 9/6) */
+    .menu.intop{display:none;}
   }
   /* 상단 바의 주소 = 홈 복귀 버튼. 브리핑을 읽다가 언제든 목록으로 돌아온다 */
   .brandlink{color:var(--acc);text-decoration:none;}
@@ -64,21 +66,29 @@
   .lead .k,.lead .t{transition:opacity .38s ease,transform .38s ease;}
   .lead.sw .k,.lead.sw .t{opacity:0;transform:translateY(5px);}
   .seclabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--mut);padding:28px 0 10px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 40px;}
-  .cardx{border-top:2px solid var(--ink);padding:16px 0 26px;cursor:pointer;}
+  /* 게시판 타일 — Grid Board 타일 채택(설명문 없음): 큰 번호 + 제목 + 상태 태그·열기 */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:1080px){.grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr;}}
+  .cardx{background:#fff;border:2px solid var(--ink);padding:16px 18px 14px;
+    min-height:148px;display:flex;flex-direction:column;cursor:pointer;}
   .cardx:hover{background:var(--tint);}
-  .cardx.off{cursor:default;}
-  .cardx.off:hover{background:transparent;}
-  .cardx .head{display:flex;gap:12px;align-items:baseline;}
-  .cardx .no{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--acc);}
+  .cardx.off{cursor:default;border-color:var(--line2);}
+  .cardx.off:hover{background:#fff;}
+  .cardx .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .cardx .no{font-size:24px;font-weight:800;color:var(--acc);}
   .cardx.off .no{color:#9a9694;}
-  .cardx .cad{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--mut);}
-  .cardx .ttl{padding-top:8px;font-size:22px;font-weight:800;letter-spacing:-0.4px;}
+  .cardx .cad{font-size:12px;color:var(--mut);white-space:nowrap;}
+  .cardx .ttl{padding-top:2px;font-size:20px;font-weight:800;letter-spacing:-0.4px;}
   .cardx.off .ttl{color:#9a9694;}
-  .cardx .sum{padding-top:8px;font-size:14px;line-height:1.6;color:#4d4a48;}
-  .cardx .meta{padding-top:12px;font-size:12px;color:var(--mut);}
-  .cardx .meta b{color:var(--ink);}
-  .cardx .meta .go{color:var(--acc7);font-weight:700;}
+  .cardx .foot{margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .tag{font-size:11px;font-weight:700;padding:3px 8px;white-space:nowrap;}
+  .tag.acc{background:#fff2ef;color:#7c1405;}
+  .tag.neu{background:#f3f0ef;color:#444141;}
+  .cardx .open{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .cardx:hover .open{color:var(--acc);}
+  .cardx .open .aw{font-size:13px;}
   .reader{padding-top:24px;}
   .backbtn{appearance:none;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;padding:8px 0;cursor:pointer;text-align:left;}
   .backbtn:hover{color:var(--acc7);}
@@ -467,11 +477,17 @@ function renderHome(){
     var ds = dates(b.kind), has = ds.length > 0;
     var el = document.createElement("div");
     el.className = "cardx" + (has ? "" : " off");
+    var latest = has ? String(ds[0]) : "";
+    var base = latest.replace(/-(am|pm)$/, "");
+    var isToday = base === todayIso();
+    var tag = !has ? '<span class="tag neu">준비 중</span>'
+      : isToday ? ('<span class="tag acc">오늘 ' + (/-am$/.test(latest) ? "오전" : /-pm$/.test(latest) ? "오후" : "발행") + '</span>')
+      : ('<span class="tag neu">최신 ' + base.slice(5) + '</span>');
     el.innerHTML =
-      '<div class="head"><span class="no">' + b.no + '</span><span class="cad">' + (has ? b.cad : "준비 중") + '</span></div>' +
+      '<div class="head"><span class="no">' + b.no + '</span><span class="cad">' + b.cad + '</span></div>' +
       '<div class="ttl">' + b.title + '</div>' +
-      '<div class="sum">' + b.sum + '</div>' +
-      (has ? '<div class="meta">최신 <b>' + prettyDate(ds[0]) + '</b> &nbsp;·&nbsp; <span class="go">브리핑 열기 →</span></div>' : '');
+      '<div class="foot">' + tag +
+      (has ? '<span class="open">열기 <span class="aw">↗</span></span>' : '') + '</div>';
     if (has) el.addEventListener("click", function(){ openReader(b.kind); });
     $(b.group === "market" ? "gridMarket" : b.group === "news" ? "gridNews" : "gridReg").appendChild(el);
   });
