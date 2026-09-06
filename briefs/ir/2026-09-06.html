@@ -2,6 +2,9 @@
 <html lang="ko"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <title>IR 캘린더</title>
 <style>
 :root{
@@ -256,6 +259,159 @@ footer .w{color:var(--ink2);margin-top:7px}
   .mast h1{font-size:24px}
   .item{grid-template-columns:26px 1fr}
 }
+
+/* AI Office Lab — 브리핑 본문 공통 리디자인 (Modernist)
+   brief_page.py / portfolio_page.py 의 <style> 뒤에 붙이거나, 그 안의 규칙을 이 파일로 교체한다.
+   기존 클래스 이름은 그대로 두고 토큰과 형태만 바꾼다. 상승 = 빨강(--accent), 하락 = 파랑(--blue). */
+
+:root{
+  --bg:#fff; --paper:#fff; --paper2:#f3f2f2;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#7d7979;
+  --rule:rgba(32,30,29,.4); --rule-soft:#d7d3d3; --line:#d7d3d3;
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96; --blue-100:#eef3fd;
+  --font:"Archivo","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+/* 사이트는 흰 바탕 한 가지 — 다크 모드는 끈다 */
+@media (prefers-color-scheme:dark){:root{
+  --bg:#fff; --paper:#fff; --paper2:#f3f2f2;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#7d7979;
+  --rule:rgba(32,30,29,.4); --rule-soft:#d7d3d3; --line:#d7d3d3;
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96; --blue-100:#eef3fd;
+}}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.55 var(--font);text-wrap:pretty}
+a{color:var(--accent-700)} a:hover{color:var(--accent)}
+.wrap{max-width:1200px;padding:28px 24px 48px}
+body.embed .wrap{padding-top:0}
+/* 부모(index.html)가 제목·면책 문구를 이미 보여준다 — 삽입 상태에선 머리와 푸터를 감춘다 */
+body.embed .mast,body.embed footer,body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--accent-700)}
+.mast h1{font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-.02em;margin:12px 0 0 -.03em}
+.mast .dt{margin-top:12px;font-size:14px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:20px 0 0}
+
+/* 섹션 이동 — 보조 버튼 모양 (라벨은 왼쪽 정렬) */
+.nav{gap:6px;padding:10px 0;margin:0;border-bottom:2px solid var(--rule);background:var(--paper)}
+.nav a{padding:6px 10px;font-size:13px;font-weight:800;color:var(--ink);border:1px solid var(--rule);background:transparent}
+.nav a:hover{background:rgba(32,30,29,.07);color:var(--ink);border-color:var(--rule)}
+body.embed .nav{position:sticky;top:0;z-index:10}
+
+/* 한 줄 요약 — 왼쪽 세로 막대 대신 빨간 네모 마크 */
+.lead{background:transparent;border-left:0;padding:0 0 0 28px;position:relative;margin-top:28px;
+  font-size:clamp(20px,2.2vw,26px);line-height:1.3;font-weight:800;letter-spacing:-.015em;max-width:40ch}
+.lead::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;background:var(--accent);transform:translateY(-50%)}
+.sumh{border-left:0;padding-left:0;font-size:clamp(19px,2vw,24px);line-height:1.35;max-width:44ch}
+.sump{font-size:15px;line-height:1.75;color:#444141;max-width:72ch}
+/* 요약 절 — 헤드라인 · 요약문 · 특이사항(아래 한 줄, 등락은 밝은 색) */
+.sump{max-width:72ch}
+.smrow{border-top:1px solid var(--rule-soft);font-size:14px;color:var(--ink);margin-top:16px;padding-top:12px}
+.smrow>b{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink2)}
+.smrow.alr{gap:6px 22px}
+.smrow .al{font-weight:700;font-size:15px}
+.smrow .up,.smrow .dn{font-size:15px;font-weight:800;margin-left:4px;font-variant-numeric:tabular-nums}
+.smrow .up{color:var(--accent)} .smrow .dn{color:var(--blue)}
+
+/* 섹션 머리 */
+section{margin-top:40px}
+.sh{gap:12px;border-bottom:2px solid var(--rule);padding-bottom:8px}
+.sh .no{font-size:13px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.sh h2{font-size:20px;letter-spacing:-.015em}
+.sh .en{font-size:11px;letter-spacing:.12em;font-weight:600;color:var(--ink3);text-transform:uppercase}
+.seccap{font-size:14px;font-weight:600;color:#444141;margin-top:12px}
+.note{font-size:12px;color:var(--ink3)}
+.subh{border-bottom:1px solid var(--rule);margin-top:28px}
+.subh h3{font-size:15px}
+
+/* 항목 — 번호 · 칩 · 제목 · 링크 버튼 */
+.item{border-bottom:1px solid var(--rule-soft);padding:14px 0;gap:0 10px}
+.item .n{font-size:13px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.item .ti{font-size:15px;font-weight:700;line-height:1.5}
+.item .ti a:hover{color:var(--accent-700)}
+.item .meta{font-size:12px;color:var(--ink3);margin-top:6px}
+.chip{font-size:11px;letter-spacing:.02em;padding:3px 9px;border:0;background:#f8f4f4;color:#444141;font-weight:600}
+.chip.red{background:var(--accent-100);color:#7c1405}
+.chip.ink{background:var(--ink);color:#fff}
+.chip.blue{background:var(--blue-100);color:var(--blue-700);border:0}
+.newb{border:1px solid var(--accent);color:var(--accent)}
+.acts a{padding:6px 12px;font-size:12px;font-weight:800;border:1px solid var(--rule);color:var(--ink);background:transparent}
+.acts a:hover{background:rgba(32,30,29,.07);border-color:var(--rule);color:var(--ink)}
+.acts a.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.acts a.pri:hover{background:#dd2b0f;border-color:#dd2b0f}
+.thumb{border:2px solid var(--ink)}
+
+/* 지표 표 — 2px 머리 규칙, 1px 행 규칙, 숫자는 등폭 */
+table.g{margin-top:12px;font-variant-numeric:tabular-nums}
+table.g th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink2);border-bottom:2px solid var(--rule);padding:8px 8px 6px}
+table.g td{font-size:14px;padding:8px;border-bottom:1px solid var(--rule-soft)}
+table.g tr:hover td{background:#eae7e7}
+table.g .val{font-weight:800}
+.up{color:var(--accent)} .dn{color:var(--blue)} .flat,.dash{color:var(--ink3)}
+table.g .up,table.g .dn,.tile .up,.tile .dn{font-weight:700}
+svg.sp polygon,.tile .sp polygon,.sn svg polygon{opacity:.14}
+/* 좁은 화면 아코디언(기존 동작 유지) — 펼친 칸은 1px 격자 */
+@media(max-width:640px){
+  table.g.mk tr.mrow .mper{border-top:1px solid var(--rule-soft);background:var(--rule-soft);gap:1px}
+  .mper .pc{background:var(--paper);border:0;font-size:14px}
+  .mper .pc b{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+  table.g.mk tr[data-v] td:first-child .nm::before{content:"";display:inline-block;width:6px;height:6px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(-45deg);margin:0 10px 1px 2px;vertical-align:middle;transition:transform .15s}
+  table.g.mk tr[data-v].op td:first-child .nm::before{transform:rotate(45deg)}
+}
+
+/* 지표 타일 — 1px 격자 */
+.tiles{border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft);margin-top:12px}
+.tile{border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft);padding:12px 14px 10px}
+.tile .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--ink2)}
+.tile .v{font-size:20px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile .c{font-size:12px;font-weight:700}
+
+/* 존 바 */
+.gauge{border-bottom:1px solid var(--rule-soft);padding:16px 0 18px}
+.gauge .gn{font-size:15px} .gauge .gs{font-size:12px} .gauge .gv{font-size:18px;font-variant-numeric:tabular-nums}
+.gauge .badge{font-size:11px;letter-spacing:.02em;padding:3px 9px;font-weight:600}
+.zbar{height:10px;gap:2px;margin-top:12px}
+.zbar .mk{border:0;width:2px;height:18px;top:-4px;margin-left:-1px;background:var(--ink)}
+.zleg{font-size:11px;gap:4px 14px}
+
+/* 뉴스 불릿 — 네모 마크, 리스크는 빨강 */
+.bul li{font-size:15px;line-height:1.6;padding-left:22px;margin:0;padding-top:10px;padding-bottom:10px;border-bottom:1px solid var(--rule-soft)}
+.bul li::before{top:18px;width:8px;height:8px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul a{font-size:12px;color:var(--ink3);margin-left:8px}
+.bul a:hover{color:var(--accent)}
+
+/* IR 달력 — 2px 위 규칙, 1px 격자, 오늘은 빨간 테두리 */
+.cal{border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
+.cal .wd{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .tk{font-size:11px;font-weight:700}
+
+/* 진행 단계 · 탭 · 범위 버튼 (법률·IR·공시) */
+.stage .st i{width:8px;height:8px}
+.sectabs,.scopebar,.rcbtns{gap:6px}
+.sectabs{border-bottom:2px solid var(--rule)}
+.sectabs button,.scopebar button,.rcbtns button,.tabs button{font-weight:800;border:1px solid var(--rule);background:transparent;color:var(--ink)}
+.sectabs button:hover,.scopebar button:hover,.rcbtns button:hover{background:rgba(32,30,29,.07);border-color:var(--rule);color:var(--ink)}
+.sectabs button.on,.rcbtns button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.scopebar button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 뉴스 게시판(tech·ktnews) 회사 요약 블록 */
+.aisum{background:var(--paper2);border-left:0;padding:12px 16px 13px;position:relative}
+.aisum::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ink)}
+.coh{border-top:2px solid var(--rule)}
+.rail{border-left:2px solid var(--ink)}
+
+/* 관심종목 카드·KPI */
+.card{border:1px solid var(--rule-soft);background:var(--paper)}
+.kpi .v{font-variant-numeric:tabular-nums}
+
+footer{border-top:2px solid var(--rule);margin-top:48px;padding-top:14px;font-size:12px;color:var(--ink2)}
+.totop{background:var(--paper);border:2px solid var(--ink)}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:rgba(236,48,19,.3)}
 </style>
 </head><body>
 <div class="wrap">
