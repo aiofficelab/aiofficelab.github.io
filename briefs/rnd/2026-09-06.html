@@ -2,6 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>기술 리포트</title>
 <style>
 :root{
@@ -12,13 +13,9 @@
   --blue:#1157cf; --blue-700:#0b3d96;
   --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root{
-  --bg:#131211; --paper:#1b1918; --paper2:#232120;
-  --ink:#f2efed; --ink2:#b3aeab; --ink3:#8a8481;
-  --rule:rgba(242,239,237,.44); --rule-soft:rgba(242,239,237,.15);
-  --accent:#ff5330; --accent-700:#ff8062; --accent-100:#2c1a15;
-  --blue:#6ea3ff; --blue-700:#9dc0ff;
-}}
+/* 다크 모드는 끈다 — 삼성 인터넷이 배경은 희게 두고 글자만 다크용 밝은 색으로
+   바꿔 '흰 바탕 흰 글자'가 되던 실사례(2026-09-06, 갤럭시). 항상 라이트. */
+:root{color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
   font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
