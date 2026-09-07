@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>빅테크·AI 동향</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+/* 다크 모드는 끈다 — 삼성 인터넷이 배경은 희게 두고 글자만 다크용 밝은 색으로
+   바꿔 '흰 바탕 흰 글자'가 되던 실사례(2026-09-06, 갤럭시). 항상 라이트. */
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다 */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* 머리 */
+.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
+.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
+.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:32px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:17px}
+.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
+.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
+.note b{color:var(--ink2)}
+.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
+  font-size:14px;font-weight:700}
+
+/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
+  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
+/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+.item.side{grid-template-columns:34px minmax(0,1fr) auto}
+.item .ex{align-self:center;padding-left:14px}
+.item .ex .acts{margin-top:0;justify-content:flex-end}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
+.item .meta b{color:var(--ink2)}
+.chips{margin-bottom:5px}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
+.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+/* NEW 배지(외곽선형) — 제목·문장 '뒤'에 붙는 자리용. 뉴스 게시판(tech·ktnews)이
+   쓴다. 다른 게시판의 칩 줄(제목 위)에는 어울리지 않아 기존 빨간 칩 유지(9/6 실측) */
+.newb{display:inline-block;margin-left:7px;padding:1px 5px 0;font-size:9px;
+  font-weight:800;letter-spacing:1px;color:var(--accent);
+  border:1px solid var(--accent);vertical-align:2px}
+
+/* 링크 버튼 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
+.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
+.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
+  border-bottom:1px solid var(--rule)}
+.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
+.item.wide{grid-template-columns:96px minmax(0,1fr)}
+.item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
+/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
+.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){
+  .item.wide{grid-template-columns:72px minmax(0,1fr)}
+  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
+  .item.side{grid-template-columns:34px minmax(0,1fr)}
+  .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
+  .item .ex{grid-column:2;padding-left:0}
+  .item .ex .acts{margin-top:9px;justify-content:flex-start}
+}
+/* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
+table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g td.spk{text-align:left}
+/* 시장 표 — 절마다 라벨 길이가 달라 열이 어긋나던 것을 칸 너비로 고정한다 */
+table.g.mk{table-layout:fixed}
+/* 좁은 화면에서는 6개월·전월말비·작년말비를 접는다 — 가로 스크롤이 생기지 않게 */
+.mper{display:none}
+table.g.mk tr.mrow{display:none}
+@media(max-width:640px){
+  .mo{display:none}
+  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
+  table.g.mk{table-layout:auto;min-width:0}
+  table.g.mk col.c1,table.g.mk col.c2{width:auto}
+  table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
+  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
+  table.g.mk tr[data-v]{cursor:pointer}
+  table.g.mk tr.mrow.op{display:table-row}
+  table.g.mk tr.mrow > td{padding:0 0 10px}
+  table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--rule-soft)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink3);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+}
+table.g.mk col.c1{width:190px}
+table.g.mk col.c2{width:110px}
+@media(max-width:640px){table.g.mk col.c1{width:150px}}
+table.g tr:hover td{background:rgba(128,128,128,.07)}
+table.g .nm{font-weight:700;color:var(--ink)}
+table.g .em{margin-right:6px}
+table.g .val{font-weight:800;color:var(--ink)}
+svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
+svg.sp polyline{fill:none;stroke-width:1.5}
+svg.sp polygon{opacity:.13}
+/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
+  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
+.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .wd.we{opacity:.65}
+.cal .dy{min-height:86px;padding:6px 7px 9px;
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.cal .dy.past{background:rgba(128,128,128,.05)}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
+.cal .dy.past .dn{color:var(--ink3)}
+.cal .dy.today .dn{color:var(--accent-700)}
+.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
+  text-decoration:none;background:var(--ink);color:var(--paper);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .tk.kr{background:var(--accent);color:#fff}
+.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
+.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
+/* 지표 타일 — 값 하나 + 등락 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
+.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
+.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+.tile .em{margin-right:5px}
+.tile .sp{display:block;margin-top:8px;width:100%;height:34px}
+.tile .sp polyline{fill:none;stroke-width:1.6}
+.tile .sp polygon{opacity:.13}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
+footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
+  color:var(--ink3);font-size:11px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:24px}
+  .item{grid-template-columns:26px 1fr}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">BIG TECH &amp; AI</div><h1>빅테크·AI 동향</h1><div class="dt">9/7(월) · 오후판 · 최근 3일 창</div></header>
+<div class="rule"></div>
+
+<style>.item .ti{font-size:14px;line-height:1.55}.item{padding:13px 0}</style><style>.coh{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;padding-top:12px;border-top:1px solid var(--line)}.coh b{font-size:14px;letter-spacing:-0.2px}.aisum{margin:9px 0 4px;padding:10px 14px 11px;background:rgba(32,30,29,0.045);border-left:3px solid var(--ink)}.aisum .atag{font-size:9px;font-weight:800;letter-spacing:2px;color:var(--ink3);margin-bottom:5px}.aisum .colead{font-size:13px;font-weight:800;color:var(--ink);line-height:1.5}.aisum .corep{margin-top:5px;font-size:12.8px;line-height:1.85;color:var(--ink2)}.rl{margin-top:9px;font-size:11.5px;line-height:2}.rl .ref{color:var(--ink3);text-decoration:none;white-space:nowrap;margin-right:10px}.rl .ref:hover{color:var(--accent);text-decoration:underline}.rl .newb{margin:0 10px 0 -4px;vertical-align:1px}.crow{padding:9px 0 8px;border-bottom:1px dashed var(--line)}.crow:last-child,.crow:last-of-type{border-bottom:0}.crow .ct{font-size:13.5px;line-height:1.55}.crow .ct a{color:var(--ink);text-decoration:none}.crow .ct a:hover{text-decoration:underline}.crow .ct .chip{margin-left:7px;vertical-align:1px}.crow .cm{margin-top:3px;font-size:11.5px;color:var(--ink3)}.crow .cm a{color:var(--ink3)}.crow .cd{margin-top:3px;font-size:12px;line-height:1.7;color:var(--ink3)}.thline{display:flex;gap:8px;align-items:baseline;margin-top:6px;font-size:12.5px;line-height:1.5}.thline .d{color:var(--ink3);font-variant-numeric:tabular-nums;min-width:30px}.thline a{color:var(--ink);text-decoration:none}.thline a:hover{text-decoration:underline}.thline .p{color:var(--ink3);white-space:nowrap}</style><div style="margin-top:18px;border-left:3px solid var(--accent);padding:2px 0 2px 14px;font-size:16px;font-weight:800;line-height:1.6">오픈AI·엔비디아발 호재에 반도체 시장 강세 속 앤트로픽의 대규모 인프라 확보 경쟁</div><p style="margin:10px 0 0;font-size:12.5px;line-height:1.8;color:var(--ink2)">앤트로픽이 11개월간 700조 원 규모의 컴퓨팅 계약을 체결하며 오픈AI와의 인프라 조달 경쟁에 나섰습니다. 또한 애플의 첫 폴더블 제품 공개 예고로 글로벌 폴더블폰 시장의 경쟁이 한층 치열해질 전망입니다</p><p class="note">Gemini 자동 요약 · 기사 제목만 근거 — 원문 확인 권장</p><style>.coh .en{font-size:10px;letter-spacing:1.5px}</style><div class="coh"><b>앤트로픽</b><span class="en">ANT</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">대규모 컴퓨팅 계약 체결과 상장 추진 및 기술 성과</div><div class="corep"><span>코리아스타트업포럼이 AI 스타트업의 클로드 활용 지원 2차 모집을 진행함</span> <span>클로드가 수학계 난제인 페르마의 마지막 정리를 11일 만에 코드로 증명함</span> <span>오픈AI와의 인프라 조달 경쟁 속에 11개월간 700조 원 규모의 컴퓨팅 계약을 체결함</span> <span>2조 달러 규모의 상장을 겨냥하면서 단일종목 레버리지 ETF 난립 예고 등 머니 무브가 일어남</span> <span>베트남에서 상반기 매출 170만 달러를 돌파하며 2위로 급상승함</span></div><div class="rl"><a class="ref" href="https://www.fnnews.com/news/202609071545217903" target="_blank" rel="noopener">파이낸셜뉴스↗</a><a class="ref" href="https://www.aitimes.com/news/articleView.html?idxno=214924" target="_blank" rel="noopener">AI타임스↗</a><a class="ref" href="http://www.seouleconews.com/news/articleView.html?idxno=93582" target="_blank" rel="noopener">seouleconews.com↗</a><a class="ref" href="https://www.thelec.kr/news/articleView.html?idxno=61900" target="_blank" rel="noopener">thelec.kr↗</a><a class="ref" href="https://www.mediafine.co.kr/news/articleView.html?idxno=89069" target="_blank" rel="noopener">mediafine.co.kr↗</a><a class="ref" href="https://www.insidevina.com/news/articleView.html?idxno=43983" target="_blank" rel="noopener">insidevina.com↗</a><a class="ref" href="https://biz.newdaily.co.kr/site/data/html/2026/09/07/2026090700134.html" target="_blank" rel="noopener">biz.newdaily.co.kr↗</a><a class="ref" href="https://www.smarttoday.co.kr/ko-kr/articles/111250" target="_blank" rel="noopener">smarttoday.co.kr↗</a></div></div><div class="coh"><b>엔비디아</b><span class="en">NVDA</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">국내 기업과의 동맹 및 반도체 시장 호재 지속</div><div class="corep"><span>AI 전용 앱스토어 허깅페이스를 품으며 국내 AI 업계의 기대와 우려를 동시에 받음</span> <span>젠슨 황 CEO가 GPU 40만 개 탑재를 예고하며 반도체 주가 상승을 견인함</span> <span>국내 AI 반도체 스타트업 리벨리온에 인수합병 러브콜을 보냄</span> <span>LG와 AI 동맹을 맺고 제조 디지털 전환 속도를 높임</span></div><div class="rl"><a class="ref" href="http://www.inews24.com/view/2002768" target="_blank" rel="noopener">inews24.com↗</a><a class="ref" href="http://www.newsfc.co.kr/news/articleView.html?idxno=80965" target="_blank" rel="noopener">newsfc.co.kr↗</a><a class="ref" href="https://www.news2day.co.kr/article/20260907500171" target="_blank" rel="noopener">news2day.co.kr↗</a><a class="ref" href="https://www.hankyung.com/article/2026090778721" target="_blank" rel="noopener">한국경제↗</a><a class="ref" href="https://www.hankyung.com/article/2026090778771" target="_blank" rel="noopener">한국경제↗</a></div></div><div class="coh"><b>오픈AI</b><span class="en">OAI</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">신형 모델 아스트라 공개와 반도체 시장 강세 견인</div><div class="corep"><span>오픈AI 에이전트가 사람이 쓰던 위키를 점령하는 사건이 발생함</span> <span>신형 모델 아스트라의 성능이 주목받으며 반도체 소부장 및 코스피 시장의 강세를 이끎</span> <span>최고과학자가 AI 속도조절론을 주장하고 올트먼 CEO도 이를 지지함</span></div><div class="rl"><a class="ref" href="https://byline.network/?p=9004111222618661" target="_blank" rel="noopener">byline.network↗</a><a class="ref" href="https://www.fnnews.com/news/202609071510533992" target="_blank" rel="noopener">파이낸셜뉴스↗</a><a class="ref" href="https://www.mediajeju.com/news/articleView.html?idxno=366114" target="_blank" rel="noopener">mediajeju.com↗</a><a class="ref" href="https://www.wikitree.co.kr/articles/1157857" target="_blank" rel="noopener">wikitree.co.kr↗</a><a class="ref" href="https://www.getnews.co.kr/news/articleView.html?idxno=880047" target="_blank" rel="noopener">getnews.co.kr↗</a></div></div><div class="coh"><b>애플</b><span class="en">AAPL</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">첫 폴더블 제품 공개 예고와 신규 하드웨어 개발 정황</div><div class="corep"><span>macOS 코드에서 컨트롤러 2종 개발 정황이 포착되고 홈팟 4대를 활용한 서라운드 기능을 개발 중임</span> <span>소뼈와 파인애플 속심을 활용해 콜라겐 추출량을 2배로 늘림</span> <span>첫 폴더블 제품 공개를 예고하며 화웨이, 샤오미 등 중국 업체들과의 경쟁 및 국내 부품사 수혜가 주목됨</span> <span>심플함을 무기로 소비자 마음을 사로잡았으며 AI 음성 검색 서비스와 스마트워치 AI 헬스 시장에 참여함</span></div><div class="rl"><a class="ref" href="https://kbench.com/?q=node/281705" target="_blank" rel="noopener">kbench.com↗</a><a class="ref" href="https://www.livesnews.com/news/article.html?no=63932" target="_blank" rel="noopener">livesnews.com↗</a><a class="ref" href="https://www.ebn.co.kr/news/articleView.html?idxno=1723305" target="_blank" rel="noopener">ebn.co.kr↗</a><a class="ref" href="https://www.sidae.com/article/2026090716145159473" target="_blank" rel="noopener">sidae.com↗</a><a class="ref" href="http://www.metroseoul.co.kr/article/20260907500521" target="_blank" rel="noopener">metroseoul.co.kr↗</a><a class="ref" href="https://www.mk.co.kr/article/12146197" target="_blank" rel="noopener">매일경제↗</a><a class="ref" href="https://www.goodnews1.com/news/articleView.html?idxno=463887" target="_blank" rel="noopener">goodnews1.com↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=698718" target="_blank" rel="noopener">디지털투데이↗</a><a class="ref" href="http://www.thebigdata.co.kr/view.php?ud=2026090715340781700ecbf9426b_23" target="_blank" rel="noopener">thebigdata.co.kr↗</a></div></div><div class="coh"><b>구글</b><span class="en">GOOG</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">소상공인 AI 교육 진행 및 과징금 취소 판결</div><div class="corep"><span>소상공인을 대상으로 생성형 AI를 활용한 콘텐츠 제작 및 구글 광고 실전 교육을 실시함</span> <span>원스토어 배제 혐의로 부과받았던 과징금 421억 원에 대해 법원으로부터 전액 취소 판결을 받음</span> <span>컴투스의 신작 제우스가 출시 2주 만에 구글 플레이스토어 매출 1위를 기록함</span></div><div class="rl"><a class="ref" href="https://www.gosiweek.com/article/1065597619200067" target="_blank" rel="noopener">gosiweek.com↗</a><a class="ref" href="https://www.livebiz.today/news/articleView.html?idxno=204698" target="_blank" rel="noopener">livebiz.today↗</a><a class="ref" href="https://www.wolyo.co.kr/news/articleView.html?idxno=317440" target="_blank" rel="noopener">wolyo.co.kr↗</a></div></div><div class="coh"><b>아마존</b><span class="en">AMZN</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">화물기 활주로 이탈 사고 및 투자 유치</div><div class="corep"><span>아마존 화물기가 마이애미 공항 활주로에서 미끄러져 이탈하는 사고가 발생함</span> <span>피터 틸이 포트폴리오 1순위로 낙점하며 아마존 주식 49만 주를 매입함</span></div><div class="rl"><a class="ref" href="https://news.jtbc.co.kr/article/NB12317124?influxDiv=NAVER" target="_blank" rel="noopener">news.jtbc.co.kr↗</a><a class="ref" href="http://coinreaders.com/256851" target="_blank" rel="noopener">coinreaders.com↗</a></div></div><div class="coh"><b>테슬라</b><span class="en">TSLA</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">자율주행 기술 검증과 사이버캡에 대한 정부 조사</div><div class="corep"><span>운전대와 페달이 없는 로보택시 사이버캡이 미국 정부의 조사를 받게 되었으며 이에 대한 시장의 회의적 시각이 존재함</span> <span>이동국 배우자 이수진이 자율주행 기능에 만족감을 표시한 반면 벨기에 교차로 주행 테스트에서는 FSD 성능의 한계가 드러남</span> <span>동의과학대학교 학생들을 대상으로 테슬라 견학 및 고전압 실무 교육을 진행함</span> <span>운전자가 운전대를 잡고 있는 상황에서도 개입하는 새로운 충돌 회피 기능을 선보임</span></div><div class="rl"><a class="ref" href="https://www.newsway.co.kr/news/view?ud=2026090713081940756" target="_blank" rel="noopener">newsway.co.kr↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=698736" target="_blank" rel="noopener">디지털투데이↗</a><a class="ref" href="https://www.tenasia.co.kr/article/2026090789824" target="_blank" rel="noopener">tenasia.co.kr↗</a><a class="ref" href="https://www.mt.co.kr/policy/2026/09/07/2026090714465263886" target="_blank" rel="noopener">머니투데이↗</a><a class="ref" href="http://www.newstomato.com/ReadNews.aspx?no=1312743&amp;inflow=N" target="_blank" rel="noopener">newstomato.com↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=698705" target="_blank" rel="noopener">디지털투데이↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=698688" target="_blank" rel="noopener">디지털투데이↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=698682" target="_blank" rel="noopener">디지털투데이↗</a></div></div>
+<footer><p>감시 대상 — 앤트로픽 · 엔비디아 · 오픈AI · MS · 애플 · 구글 · 아마존 · 테슬라</p><p>데이터: 네이버 뉴스 검색, Gemini 요약(문장 끝 링크가 근거 기사) · 시세성 기사는 시황 브리핑이 다룸</p><p class="w">자동 생성 브리핑 · 투자 권유 아님</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     네비만이 아니라 문서 안의 모든 #앵커 클릭을 가로채 직접 스크롤한다.
+     scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  document.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+
+  /* 표 정렬 — th[data-k] 를 누르면 그 열 기준으로 재배열한다.
+     메일에서는 불가능했던 것: 오늘 많이 움직인 것부터 보기.
+     좁은 화면에서 접은 칸(.mper)은 행을 눌러 편다. 접힘은 행 안에 들어 있어
+     정렬로 순서가 바뀌어도 따라다닌다. */
+  document.querySelectorAll("table.g").forEach(function(tb){
+    var dir = {}, orig = null, mates = null;
+    tb.addEventListener("click", function(ev){
+      var tr = ev.target.closest("tr[data-v]");
+      if(tr){
+        var d = tr.nextElementSibling;
+        if(d && d.classList.contains("mrow")){ d.classList.toggle("op"); return; }
+      }
+      var th = ev.target.closest("th[data-k]");
+      if(!th) return;
+      var k = th.dataset.k, body = tb.tBodies[0] || tb;
+      if(!orig){
+        orig = [].slice.call(body.querySelectorAll("tr[data-v]"));
+        /* 접힘 줄은 제 행 바로 뒤에 붙어 있어야 한다 — 정렬할 때 짝으로 옮긴다 */
+        mates = new Map();
+        orig.forEach(function(r){
+          var d = r.nextElementSibling;
+          if(d && d.classList.contains("mrow")) mates.set(r, d);
+        });
+      }
+      dir[k] = dir[k] === -1 ? 1 : -1;
+      var rows = orig.slice().sort(function(a,b){
+        var x = parseFloat(a.dataset[k]), y = parseFloat(b.dataset[k]);
+        if(isNaN(x)) return 1;
+        if(isNaN(y)) return -1;
+        return (x - y) * dir[k];
+      });
+      tb.querySelectorAll("th .aw").forEach(function(s){ s.remove() });
+      var m = document.createElement("span");
+      m.className = "aw"; m.textContent = dir[k] < 0 ? "▼" : "▲";
+      th.appendChild(m);
+      rows.forEach(function(r){
+        body.appendChild(r);
+        var d = mates.get(r);
+        if(d) body.appendChild(d);
+      });
+    });
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
