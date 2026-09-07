@@ -118,6 +118,8 @@
   .sn:nth-child(4n){border-right:0;}
   .sn:nth-last-child(-n+4){border-bottom:0;}
   .sn .l{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mut2);}
+  /* 30분마다 갱신되지 않는 항목(국고채·미 국채는 하루 한 번 고시)은 그 값의 날짜를 적는다 */
+  .sn .l .as{font-weight:500;letter-spacing:0;opacity:.85;margin-left:4px;white-space:nowrap;}
   .sn .v{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-top:3px;line-height:1.1;}
   .sn .c{font-size:12px;font-weight:700;margin-top:2px;}
   .sn .up{color:var(--acc7);} .sn .dn{color:#1a56db;} .sn .fl{color:var(--mut);}
@@ -298,7 +300,8 @@ fetch("market.json", { cache:"no-store" })
              '<polygon points="0,30 ' + pts + ' 100,30" fill="' + col + '"/>' +
              '<polyline points="' + pts + '" stroke="' + col + '"/></svg>';
       }
-      return '<div class="sn"><div class="l">' + it.label + '</div>' +
+      var asOf = it.as ? '<span class="as">' + it.as + ' 종가</span>' : "";
+      return '<div class="sn"><div class="l">' + it.label + asOf + '</div>' +
              '<div class="v">' + val + '</div>' +
              '<div class="c ' + cls + '">' + arrow + pct + '</div>' + sp + '</div>';
     }).join("");
