@@ -213,7 +213,7 @@ var BRIEFS = [
   /* weekly(MY 포트폴리오 대시보드) + finstats(주요 금융 통계) 통합 — 2026-08-30.
      시장 지표를 붙여둔 이유가 "내 종목이 어떤 지표를 따라 움직이나"였는데 둘이 떨어져 있어 그 연결을 볼 수 없었다.
      지난 회차는 아래 두 kind에 그대로 남아 있어 예전 날짜를 고르면 계속 열린다. */
-  { kind:"dart",     group:"market", no:"04", cad:"매일 오전 7시", title:"기업공시 감시", kick:"CORPORATE DISCLOSURE WATCH", sum:"국내 60사 + 미국 70사 적신호 분류" },
+  { kind:"dart",     group:"market", no:"04", cad:"매일 오전 7시", title:"기업공시 감시", kick:"CORPORATE DISCLOSURE WATCH", sum:"국내 60사 + 미국 70사 적신호 분류 · 기업이슈 뉴스" },
   { kind:"econscan", group:"market", no:"05", cad:"매일 오전 7시", title:"경제·금융 동향", kick:"DAILY SCAN", sum:"재경부 경제지표 + 금감원 금융시장 동향 — 일일/주간/월간" },
   { kind:"portfolio", group:"market", no:"06", cad:"매일 오전 7시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
   { kind:"ktnews",   group:"news",   no:"07", cad:"매일 오전 7시 · 오후 4시", title:"KT그룹 뉴스", kick:"KT GROUP NEWS", sum:"KT 리스크 · 그룹사 42사 · 통신3사 — 오탐 차단 스크랩" },
@@ -239,8 +239,11 @@ function fitFrame(){
          반대로 재기 전에 프레임을 접으면 문서가 짧아진 순간 창 스크롤이
          맨 위로 당겨진다 — 모바일에서 주소창 때문에 resize 가 잦아 특히 심하다. */
       var b = doc.body, cs = doc.defaultView.getComputedStyle(b);
-      var h = Math.max(b.scrollHeight, b.getBoundingClientRect().height) +
-              (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+      /* body 의 '높이'가 아니라 문서 기준 '아랫변'을 잰다. 본문 첫 요소의 위 여백이
+         body 밖으로 붕괴해 body 가 16px 내려앉는데, 높이만 재면 그만큼 프레임이 짧아
+         본문 끝에 프레임 자체 스크롤이 생겼다(2026-09-11, 전 브리핑 공통). */
+      var r = b.getBoundingClientRect(), sy = doc.defaultView.scrollY || 0;
+      var h = Math.max(r.bottom, r.top + b.scrollHeight) + sy + (parseFloat(cs.marginBottom) || 0);
       h = h > 0 ? Math.ceil(h) + 2 : 600;
       if (Math.abs(h - (parseFloat(f.style.height) || 0)) > 1) f.style.height = h + "px";
     } catch(e){}
