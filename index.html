@@ -632,6 +632,56 @@ function mobilize(doc){
     "white-space:normal !important;box-sizing:border-box;}";
   (doc.head || doc.documentElement).appendChild(st);
 }
+
+/* ── 방문 집계 ────────────────────────────────────────────────────
+   화면에는 아무것도 그리지 않는다. 방문 사실만 앱스크립트 웹앱으로 보내고
+   숫자는 내 구글 시트에만 쌓인다(로그인해야 보임).
+   · HIT 가 비어 있으면 아무 일도 하지 않는다 — 배포 URL 을 넣어야 켜진다
+   · ?me=1 로 한 번 들어오면 그 브라우저는 계속 집계에서 빠진다(?me=0 해제)
+   · 방문자 구분용 ID 는 이 브라우저에만 두는 난수 — 이름·IP 는 보내지 않는다
+   · 보내기가 실패해도 조용히 넘어간다(페이지 동작에는 영향 없음) */
+(function(){
+  var HIT = "https://script.google.com/macros/s/AKfycbwEB7CjVYA3DxVQZVi2xo2l_o11eSUWZkN-c2ZAfRuHgZvsrBZ-gr5j4SwBBl4nM9z-/exec";
+  if (!HIT) return;
+
+  var ls = null; try { ls = window.localStorage; } catch(e){}   /* 시크릿 창 대비 */
+  var me = /[?&]me=([01])/.exec(location.search);
+  if (ls && me) {
+    if (me[1] === "1") ls.setItem("aol_off", "1"); else ls.removeItem("aol_off");
+  }
+  if (ls && ls.getItem("aol_off")) return;                      /* 내 방문은 빼고 센다 */
+
+  var uid = "", isNew = "0";
+  if (ls) {
+    uid = ls.getItem("aol_uid") || "";
+    if (!uid) {
+      uid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      ls.setItem("aol_uid", uid); isNew = "1";
+    }
+  }
+
+  var first = "1", last = null, timer = 0;
+  function hit(kind){
+    kind = kind || "home";
+    if (kind === last) return;           /* 같은 화면을 다시 그린 것은 세지 않는다 */
+    last = kind;
+    clearTimeout(timer);                 /* 딥링크(#rates)로 들어오면 홈 대신 그 게시판만 */
+    timer = setTimeout(function(){
+      var u = HIT + "?k=" + encodeURIComponent(kind) + "&u=" + encodeURIComponent(uid) +
+              "&f=" + first + "&n=" + isNew +
+              "&w=" + (screen.width || 0) + "x" + (screen.height || 0) +
+              "&l=" + encodeURIComponent((navigator.language || "").slice(0, 8));
+      if (first === "1") u += "&r=" + encodeURIComponent((document.referrer || "").slice(0, 200));
+      first = "0"; isNew = "0";
+      try { fetch(u, { mode:"no-cors", cache:"no-store", keepalive:true })["catch"](function(){}); }
+      catch(e){ try { new Image().src = u; } catch(e2){} }
+    }, 500);
+  }
+
+  hit("home");
+  var openOrig = openReader;             /* 브리핑을 열 때도 한 줄 — 어느 게시판을 보는지 */
+  openReader = function(kind, fromRoute){ openOrig(kind, fromRoute); hit(kind); };
+})();
 </script>
 </body>
 </html>
