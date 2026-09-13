@@ -1,0 +1,16 @@
+{
+ "kind": "fss",
+ "at": "2026-09-14 07:01",
+ "runs": [
+  [
+   "sanction",
+   "rule",
+   "klca"
+  ]
+ ],
+ "labels": {
+  "sanction": "제재·조치",
+  "rule": "규정 제·개정",
+  "klca": "상장협"
+ }
+}
