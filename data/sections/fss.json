@@ -1,9 +1,14 @@
 {
  "kind": "fss",
- "at": "2026-09-30 07:01",
+ "at": "2026-10-01 07:01",
  "runs": [
   [
    "sanction",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
    "klca"
   ],
   [
@@ -46,10 +51,6 @@
    "sanction",
    "rule",
    "notice",
-   "klca"
-  ],
-  [
-   "sanction",
    "klca"
   ]
  ],
