@@ -638,6 +638,8 @@ function mobilize(doc){
    숫자는 내 구글 시트에만 쌓인다(로그인해야 보임).
    · HIT 가 비어 있으면 아무 일도 하지 않는다 — 배포 URL 을 넣어야 켜진다
    · ?me=1 로 한 번 들어오면 그 브라우저는 계속 집계에서 빠진다(?me=0 해제)
+     브라우저 표시와 함께 이 브라우저의 ID 를 서버 '제외' 목록에도 올린다 — 표시가
+     지워져도 ID 가 남아 있는 한 서버가 거른다. 적용되면 아래에 한 줄 띄워 알린다.
    · 방문자 구분용 ID 는 이 브라우저에만 두는 난수 — 이름·IP 는 보내지 않는다
    · 보내기가 실패해도 조용히 넘어간다(페이지 동작에는 영향 없음) */
 (function(){
@@ -645,12 +647,6 @@ function mobilize(doc){
   if (!HIT) return;
 
   var ls = null; try { ls = window.localStorage; } catch(e){}   /* 시크릿 창 대비 */
-  var me = /[?&]me=([01])/.exec(location.search);
-  if (ls && me) {
-    if (me[1] === "1") ls.setItem("aol_off", "1"); else ls.removeItem("aol_off");
-  }
-  if (ls && ls.getItem("aol_off")) return;                      /* 내 방문은 빼고 센다 */
-
   var uid = "", isNew = "0";
   if (ls) {
     uid = ls.getItem("aol_uid") || "";
@@ -659,6 +655,31 @@ function mobilize(doc){
       ls.setItem("aol_uid", uid); isNew = "1";
     }
   }
+
+  function send(u){
+    try { fetch(u, { mode:"no-cors", cache:"no-store", keepalive:true })["catch"](function(){}); }
+    catch(e){ try { new Image().src = u; } catch(e2){} }
+  }
+  function notice(msg){                      /* ?me= 가 먹었는지 보여 주는 한 줄 — 4초 뒤 사라진다 */
+    var d = document.createElement("div");
+    d.textContent = msg;
+    d.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;" +
+      "background:#1f2937;color:#fff;font:14px/1.4 sans-serif;padding:10px 16px;border-radius:8px;" +
+      "box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:90vw;";
+    document.body.appendChild(d);
+    setTimeout(function(){ if (d.parentNode) d.parentNode.removeChild(d); }, 4000);
+  }
+
+  var me = /[?&]me=([01])/.exec(location.search);
+  if (me) {
+    if (!ls) { notice("이 창에서는 저장 공간을 쓸 수 없어 제외 설정이 남지 않습니다."); }
+    else {
+      if (me[1] === "1") ls.setItem("aol_off", "1"); else ls.removeItem("aol_off");
+      send(HIT + "?me=" + me[1] + "&u=" + encodeURIComponent(uid));
+      notice(me[1] === "1" ? "이 브라우저의 방문은 이제 집계에서 빠집니다." : "이 브라우저의 방문을 다시 집계합니다.");
+    }
+  }
+  if (ls && ls.getItem("aol_off")) return;                      /* 내 방문은 빼고 센다 */
 
   var first = "1", last = null, timer = 0;
   function hit(kind){
@@ -673,8 +694,7 @@ function mobilize(doc){
               "&l=" + encodeURIComponent((navigator.language || "").slice(0, 8));
       if (first === "1") u += "&r=" + encodeURIComponent((document.referrer || "").slice(0, 200));
       first = "0"; isNew = "0";
-      try { fetch(u, { mode:"no-cors", cache:"no-store", keepalive:true })["catch"](function(){}); }
-      catch(e){ try { new Image().src = u; } catch(e2){} }
+      send(u);
     }, 500);
   }
 
