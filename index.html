@@ -21,7 +21,7 @@
     display:flex;align-items:center;gap:16px;}
   /* 카테고리 드롭다운 — 홈에서는 제목과 한 줄 요약 사이의 가로 바,
      브리핑을 읽는 중에는 상단 바 우측으로 옮겨 단다(placeMenu) */
-  .menu{display:flex;gap:14px;align-items:center;position:relative;
+  .menu{display:flex;gap:2px 14px;align-items:center;position:relative;flex-wrap:wrap;
     margin-top:16px;border-top:2px solid var(--ink);padding:7px 0 0;}
   .mtab{font:inherit;font-size:13.5px;font-weight:700;border:0;background:none;
     color:var(--ink);padding:5px 0;cursor:pointer;white-space:nowrap;}
@@ -44,6 +44,9 @@
   .mega .dd{margin-left:auto;font-size:11px;color:var(--mut);font-weight:600;white-space:nowrap;}
   .mega .dd.today{color:var(--acc);font-weight:800;}
   @media(max-width:640px){
+    /* 탭이 넷이라 폰 폭에서 한 줄에 들어가도록 조금 좁힌다(팟캐스트 추가, 10/5) */
+    .menu{gap:2px 8px;}
+    .mtab{font-size:12.5px;}
     .topbar .wrap{letter-spacing:1.5px;}
     .mega{left:0;right:0;min-width:0;}
     /* 모바일 읽기 화면에선 상단 드롭다운을 접는다 — 상단 바가 옆으로 늘어져 보기 나쁨(사용자 9/6) */
@@ -165,6 +168,7 @@
         <button type="button" class="mtab" data-g="market">데일리 마켓 <span class="cnt">6</span><i>▾</i></button>
         <button type="button" class="mtab" data-g="news">뉴스 <span class="cnt">3</span><i>▾</i></button>
         <button type="button" class="mtab" data-g="reg">규제·회계 <span class="cnt">2</span><i>▾</i></button>
+        <button type="button" class="mtab" data-g="audio">팟캐스트 <span class="cnt">1</span><i>▾</i></button>
         <div class="mega" id="mega" hidden></div>
       </nav>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
@@ -182,7 +186,9 @@
       <div class="seclabel">NEWS</div>
       <div class="grid" id="gridNews"></div>
       <div class="seclabel">REGULATORY</div>
-      <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
+      <div class="grid" id="gridReg"></div>
+      <div class="seclabel">PODCAST</div>
+      <div class="grid" id="gridAudio" style="padding-bottom:8px"></div>
     </div>
   </section>
   <section id="reader" class="wrap reader" hidden>
@@ -222,8 +228,17 @@ var BRIEFS = [
   { kind:"ipo",      group:"news",   no:"09", cad:"평일 오전 7시", title:"상장(IPO) 동향", kick:"IPO WATCH", sum:"Anthropic·OpenAI 상장 준비 타임라인 + 주목받는 상장 · 최근 뉴스" },
   { kind:"rnd",      group:"news",   no:"10", cad:"평일 오전 7시", title:"기술 리포트", kick:"TECH REPORTS", sum:"SPRi·KISTEP 새 간행물 + 기술 정보 사이트 바로가기" },
   { kind:"fss",      group:"reg",    no:"11", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
-  { kind:"law",      group:"reg",    no:"12", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+  { kind:"law",      group:"reg",    no:"12", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" },
+  /* 팟캐스트 — 2026-10-05 추가. Gemini Notebook 음성 브리핑의 링크 모음(엔진 podcast.py).
+     에이전트가 구글 시트에 한 줄 적으면 시트의 앱스크립트가 엔진을 깨운다 — 새 에피소드가 있을 때만 발행 */
+  { kind:"podcast",  group:"audio",  no:"13", cad:"매일 오전 7:30 · 오후 6:20", title:"팟캐스트", kick:"PODCAST", sum:"Gemini Notebook 음성 브리핑 — 아침 투자 · 출퇴근길 · 관심기업" }
 ];
+var GRID = { market:"gridMarket", news:"gridNews", reg:"gridReg", audio:"gridAudio" };
+/* 상단 탭의 게시판 수는 BRIEFS 에서 센다 — 손으로 적어 두면 게시판을 더할 때 어긋난다 */
+[].forEach.call(document.querySelectorAll(".mtab"), function(t){
+  var g = t.getAttribute("data-g");
+  t.querySelector(".cnt").textContent = BRIEFS.filter(function(b){ return b.group === g; }).length;
+});
 var state = { kind:null, date:null, manifest:{} };
 var frameRO = null;
 
@@ -482,7 +497,7 @@ function prettyDate(dd){
 }
 
 function renderHome(){
-  ["gridMarket","gridNews","gridReg"].forEach(function(id){ $(id).innerHTML = ""; });
+  Object.keys(GRID).forEach(function(g){ $(GRID[g]).innerHTML = ""; });
   BRIEFS.forEach(function(b){
     var ds = dates(b.kind), has = ds.length > 0;
     var el = document.createElement("div");
@@ -499,7 +514,7 @@ function renderHome(){
       '<div class="foot">' + tag +
       (has ? '<span class="open">열기 <span class="aw">↗</span></span>' : '') + '</div>';
     if (has) el.addEventListener("click", function(){ openReader(b.kind); });
-    $(b.group === "market" ? "gridMarket" : b.group === "news" ? "gridNews" : "gridReg").appendChild(el);
+    $(GRID[b.group] || "gridReg").appendChild(el);
   });
 }
 
