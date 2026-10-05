@@ -662,6 +662,10 @@ function mobilize(doc){
 (function(){
   var HIT = "https://script.google.com/macros/s/AKfycbwEB7CjVYA3DxVQZVi2xo2l_o11eSUWZkN-c2ZAfRuHgZvsrBZ-gr5j4SwBBl4nM9z-/exec";
   if (!HIT) return;
+  /* 로컬 사본과 자동화 브라우저(화면 검증)는 세지 않는다 — 앱(visit.ts)과 같은 규칙.
+     2026-10-05 팟캐스트 게시판을 검증하던 헤드리스 크롬 16건이 방문으로 찍혔다(800x600, 흉내 낸 390x844 포함).
+     검증용 크롬은 --enable-automation 으로 띄워야 navigator.webdriver 가 켜진다(원격 디버깅 포트만으로는 안 켜진다) */
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || navigator.webdriver) return;
 
   var ls = null; try { ls = window.localStorage; } catch(e){}   /* 시크릿 창 대비 */
   var uid = "", isNew = "0";
