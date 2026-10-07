@@ -142,6 +142,87 @@
   @media (max-width:640px){ .totop{right:12px;bottom:12px;width:38px;height:38px;} }
   .empty{padding:70px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.8;}
   .empty b{color:var(--ink);}
+  /* ── 팟캐스트 — 셸이 feed.json 을 읽어 직접 그린다 (2026-10-05 리디자인) ──
+     iframe 으로 엔진 HTML 을 끼우던 것을 걷고, 오늘 발행 패널 + 시리즈 필터 + 전체 목록 세 덩어리로 줄였다.
+     타일 색·글자는 아래 스크립트의 POD_SERIES 에서 고친다 */
+  .pod{display:flex;flex-direction:column;gap:38px;padding:0 0 44px;}
+  .pod .phead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;
+    border-top:2px solid var(--ink);padding-top:14px;}
+  .pod .pdesc{margin:0;font-size:14px;line-height:1.6;color:var(--mut);max-width:560px;}
+  .pod .pstats{display:flex;gap:28px;}
+  .pod .pstat{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--mut);}
+  .pod .pstat b{font-size:22px;letter-spacing:-0.5px;color:var(--ink);font-weight:800;line-height:1;}
+  .pod .psh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px;}
+  .pod .psh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--acc);}
+  .pod .psh h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-0.4px;}
+  .pod .psh .sub{font-size:13px;color:var(--mut);}
+  .pod .psh .en{margin-left:auto;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--mut);}
+  /* 오늘 발행 — 검은 패널에 큰 카드. 화면에서 가장 먼저 보이는 덩어리 */
+  .pod .ptoday{margin-top:16px;background:var(--ink);color:#fff;padding:22px;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:16px;}
+  .pod .pcard{border:1px solid rgba(255,255,255,.22);padding:20px;display:flex;gap:18px;flex-wrap:wrap;}
+  .pod .ptile{width:104px;height:104px;flex:0 0 auto;color:#fff;display:flex;flex-direction:column;
+    justify-content:space-between;padding:10px;}
+  .pod .ptile .m{font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1;}
+  .pod .ptile svg{display:block;width:84px;height:18px;}
+  .pod .pbody{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:10px;}
+  .pod .pchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .pod .pnew{font-size:10px;font-weight:800;letter-spacing:1px;background:#fff;color:var(--acc7);padding:3px 6px;line-height:1;}
+  .pod .pslot{font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.35);padding:2px 7px;line-height:1.3;}
+  .pod .ptime{font-size:11.5px;color:rgba(255,255,255,.72);letter-spacing:.5px;}
+  .pod .pcard h3{margin:0;font-size:22px;font-weight:800;letter-spacing:-0.5px;line-height:1.3;}
+  .pod .pcard h3 a{color:#fff;text-decoration:none;}
+  .pod .pcard h3 a:hover{color:var(--acc);}
+  .pod .psum{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.72);}
+  .pod .pacts{margin-top:auto;padding-top:4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .pod .pbtn{display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 16px;font-size:13px;font-weight:800;
+    text-decoration:none;background:#fff;color:var(--ink);border:2px solid #fff;white-space:nowrap;}
+  .pod .pbtn:hover{background:var(--acc);border-color:var(--acc);color:#fff;}
+  .pod .pbtn svg{width:11px;height:11px;}
+  .pod .pvia{font-size:11.5px;color:rgba(255,255,255,.62);}
+  /* 시리즈 필터 — 통계 카드와 칩을 하나로 합쳤다: 색 견본 + 이름 + 편수 */
+  .pod .pfilters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;}
+  .pod .pfilters .lbl{font-size:12px;color:var(--mut);margin-right:2px;}
+  .pod .pf{font:inherit;font-size:13px;font-weight:700;height:42px;padding:0 14px 0 10px;display:inline-flex;align-items:center;gap:9px;
+    border:2px solid var(--line2);background:#fff;color:var(--ink);cursor:pointer;}
+  .pod .pf .sw{width:18px;height:18px;display:inline-block;}
+  .pod .pf .cnt{font-size:11px;color:var(--mut);font-weight:700;}
+  .pod .pf:hover{border-color:var(--ink);}
+  .pod .pf.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .pod .pf.on .cnt{color:rgba(255,255,255,.7);}
+  .pod .pgroups{display:flex;flex-direction:column;gap:24px;margin-top:18px;}
+  .pod .pdh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:2px solid var(--ink);}
+  .pod .pdh b{font-size:15px;font-weight:800;}
+  .pod .pdh .td{font-size:11px;font-weight:800;color:var(--acc);margin-left:8px;letter-spacing:.5px;}
+  .pod .pdh .iso{font-size:11px;color:var(--mut);letter-spacing:.5px;}
+  .pod .prow{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line2);flex-wrap:wrap;}
+  .pod .prow .ptile{width:52px;height:52px;padding:0;align-items:center;justify-content:center;}
+  .pod .prow .ptile .m{font-size:14px;}
+  .pod .prow .pbody{gap:5px;flex:1 1 260px;}
+  .pod .prow .pnew{background:#fff2ef;color:#7c1405;}
+  .pod .prow .pslot{border-color:var(--line2);color:var(--ink);}
+  .pod .prow .ptime{color:var(--mut);}
+  .pod .prow .ti{font-size:16px;font-weight:800;letter-spacing:-0.3px;line-height:1.35;}
+  .pod .prow .ti a{color:var(--ink);text-decoration:none;}
+  .pod .prow .ti a:hover{color:var(--acc7);}
+  .pod .prow .psum{color:var(--mut);}
+  .pod .prow .pbtn{background:var(--ink);color:#fff;border-color:var(--ink);height:40px;}
+  .pod .prow .pbtn:hover{background:var(--acc);border-color:var(--acc);}
+  .pod .pfoot{margin:0;font-size:11.5px;color:var(--mut);line-height:1.7;}
+  .pod .pfoot b{color:var(--ink);}
+  @media (max-width:640px){
+    .pod{gap:30px;}
+    .pod .ptoday{padding:14px;gap:12px;}
+    .pod .pcard{padding:16px;gap:14px;}
+    .pod .ptile{width:84px;height:84px;}
+    .pod .pcard h3{font-size:19px;}
+    .pod .pstats{gap:20px;}
+    .pod .pstat b{font-size:19px;}
+    /* 목록 줄: 폰에서도 듣기 버튼이 제목 옆에 남게 본문 최소폭을 줄인다 */
+    .pod .prow{gap:12px;}
+    .pod .prow .pbody{flex:1 1 150px;}
+    .pod .prow .pbtn{height:38px;padding:0 12px;font-size:12px;}
+  }
   footer{margin-top:auto;background:var(--acc7);}
   footer .wrap{padding-top:22px;padding-bottom:22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#fff;}
   footer .b{font-size:13px;font-weight:800;letter-spacing:1px;}
@@ -198,7 +279,9 @@
     <div class="archive"><span class="lbl">아카이브</span>
       <select id="dates" class="dsel" aria-label="회차 선택"></select>
       <span class="dnote" id="dnote"></span></div>
-    <div class="frame-card">
+    <!-- 팟캐스트는 iframe 대신 여기에 그린다(renderPodcast). 다른 게시판에서는 숨김 -->
+    <div class="pod" id="pod" hidden></div>
+    <div class="frame-card" id="frameCard">
       <div class="empty" id="empty" hidden><b>아직 발행된 브리핑이 없습니다.</b><br>발행이 시작되면 자동으로 올라옵니다.</div>
       <iframe id="frame" title="브리핑 본문" hidden></iframe>
     </div>
@@ -580,6 +663,12 @@ $("back").addEventListener("click", function(){
 });
 
 function renderReader(){
+  /* 팟캐스트는 회차 HTML 을 끼우지 않고 feed.json 으로 셸이 직접 그린다 — 아카이브 줄과 프레임을 접는다 */
+  var isPod = state.kind === "podcast";
+  $("pod").hidden = !isPod;
+  document.querySelector("#reader .archive").hidden = isPod;
+  $("frameCard").hidden = isPod;
+  if (isPod) { renderPodcast(); return; }
   /* 회차는 최신이 위. manifest 가 unshift 로 쌓아 이미 내림차순이지만 한 번 더 정렬해 둔다 */
   var ds = dates(state.kind).slice().sort().reverse(), sel = $("dates");
   sel.innerHTML = "";
@@ -648,6 +737,171 @@ function mobilize(doc){
     "td span{max-width:100% !important;word-break:break-all !important;" +
     "white-space:normal !important;box-sizing:border-box;}";
   (doc.head || doc.documentElement).appendChild(st);
+}
+
+/* ── 팟캐스트 — 셸이 직접 그린다 (2026-10-05 리디자인) ─────────────────
+   엔진(podcast.py)이 올리는 briefs/podcast/<회차>.html 은 더 이상 끼우지 않고,
+   같이 올라오는 briefs/podcast/feed.json(누적 목록)만 읽는다. 엔진이 다시 발행해도
+   이 화면은 그대로다. 항목: t 제목 · l 링크 · d 날짜 · e 시간대(am/pm/'') · s 시리즈 · n 메모(있으면 한 줄로 보임)
+   시리즈별 타일 글자·색은 POD_SERIES 에 적는다. 없는 시리즈는 규칙대로 — 아침=빨강, 저녁=남색, 그 외는 POD_COLORS 순서 */
+var POD_SERIES = {
+  "아침 투자 브리핑":     { mark:"아침", color:"#c9290e" },
+  "관심기업 저녁 브리핑": { mark:"저녁", color:"#1f2a5c" },
+  "액센츄어 재무 공부":   { mark:"재무", color:"#0f6e56" }
+};
+var POD_COLORS = ["#6b3fa0", "#8a5a00", "#0b6e8f", "#9b2c5a"];
+var POD_TIME = { am:"오전 7:30", pm:"오후 6:20" };
+var podState = { filter:"", items:[], bound:false };
+
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+  });
+}
+/* "2026-10-05" → "10/5 (월)" */
+function podDay(iso){
+  var p = String(iso).split("-"), y = +p[0], m = +p[1], d = +p[2];
+  if (!y || !m || !d) return String(iso);
+  return m + "/" + d + " (" + "일월화수목금토"[new Date(y, m - 1, d).getDay()] + ")";
+}
+/* 타일 아래 파형 — 시리즈마다 모양이 다르게, 매번 같게(seed) */
+function podWave(seed){
+  var bars = "", x = 0, v = (seed * 9301 + 49297) % 233280;
+  for (var i = 0; i < 14; i++) {
+    v = (v * 9301 + 49297) % 233280;
+    var h = 4 + Math.floor(v / 233280 * 14);
+    bars += '<rect x="' + x + '" y="' + (18 - h) + '" width="3" height="' + h + '"/>';
+    x += 6;
+  }
+  return '<svg viewBox="0 0 84 18" aria-hidden="true"><g fill="#fff" fill-opacity=".85">' + bars + '</g></svg>';
+}
+var POD_PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1v10l8-5z" fill="currentColor"/></svg>';
+
+function renderPodcast(){
+  var box = $("pod");
+  if (!podState.items.length) box.innerHTML = '<div class="empty">불러오는 중…</div>';
+  else drawPodcast();
+  jget("briefs/podcast/feed.json?v=" + Date.now()).then(function(f){
+    podState.items = (f && f.items) || [];
+    if (state.kind === "podcast") drawPodcast();
+  });
+  if (!podState.bound) {
+    podState.bound = true;
+    box.addEventListener("click", function(e){
+      var b = e.target && e.target.closest ? e.target.closest("button.pf") : null;
+      if (!b) return;
+      podState.filter = b.getAttribute("data-s") || "";
+      [].forEach.call(box.querySelectorAll("button.pf"), function(x){ x.classList.toggle("on", x === b); });
+      [].forEach.call(box.querySelectorAll(".prow"), function(r){
+        r.hidden = !!podState.filter && r.getAttribute("data-s") !== podState.filter;
+      });
+      [].forEach.call(box.querySelectorAll(".pdg"), function(g){
+        g.hidden = !g.querySelector(".prow:not([hidden])");
+      });
+    });
+  }
+}
+
+function drawPodcast(){
+  var box = $("pod"), items = podState.items.slice();
+  if (!items.length) {
+    box.innerHTML = '<div class="empty"><b>아직 올라온 에피소드가 없습니다.</b><br>새 에피소드가 발행되면 자동으로 올라옵니다.</div>';
+    return;
+  }
+  /* 날짜 내림차순. 같은 날 안에서는 feed 순서(발행 순) 유지 */
+  items.sort(function(a, b){ return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+  var latest = items[0].d, td = todayIso(), isToday = latest === td;
+
+  /* 시리즈 — 처음 나온 순서로, 편수와 함께 */
+  var series = [], sidx = {}, extra = 0;
+  items.forEach(function(it){
+    var s = it.s || it.t;
+    if (sidx[s] == null) { sidx[s] = series.length; series.push({ name:s, e:it.e || "", n:0 }); }
+    series[sidx[s]].n++;
+  });
+  series.forEach(function(s, i){
+    var c = POD_SERIES[s.name] || {};
+    s.mark  = c.mark  || (s.e === "am" ? "아침" : s.e === "pm" ? "저녁" : s.name.slice(0, 2));
+    s.color = c.color || (s.e === "am" ? "#c9290e" : s.e === "pm" ? "#1f2a5c" : POD_COLORS[extra++ % POD_COLORS.length]);
+    s.seed  = i + 1;
+  });
+  function S(it){ return series[sidx[it.s || it.t]]; }
+
+  var monthKey = String(latest).slice(0, 7);
+  var inMonth = items.filter(function(it){ return String(it.d).indexOf(monthKey) === 0; }).length;
+  var first = items[items.length - 1].d;
+  var todays = items.filter(function(it){ return it.d === latest; });
+
+  function chips(it, dark){
+    var h = "";
+    if (it.d === latest) h += '<span class="pnew">NEW</span>';
+    if (it.e === "am") h += '<span class="pslot">아침</span>';
+    else if (it.e === "pm") h += '<span class="pslot">저녁</span>';
+    if (POD_TIME[it.e]) h += '<span class="ptime">' + POD_TIME[it.e] + '</span>';
+    return h;
+  }
+  function tile(it, big){
+    var s = S(it);
+    return '<div class="ptile" style="background:' + s.color + '"><div class="m">' + esc(s.mark) + '</div>' +
+           (big ? podWave(s.seed) : "") + '</div>';
+  }
+  function listen(it, via){
+    return '<a class="pbtn" href="' + esc(it.l) + '" target="_blank" rel="noopener">' + POD_PLAY + '듣기 ↗</a>' +
+           (via ? '<span class="pvia">Gemini Notebook · 새 창</span>' : "");
+  }
+
+  var h = "";
+  /* 머리 — 설명 한 줄 + 작은 숫자 셋 (전에는 큰 카드 넷) */
+  h += '<div class="phead"><p class="pdesc">Gemini Notebook 음성 브리핑 — 제목이나 듣기를 누르면 새 창으로 열림</p>' +
+       '<div class="pstats"><div class="pstat"><span>누적</span><b>' + items.length + '편</b></div>' +
+       '<div class="pstat"><span>이번 달</span><b>' + inMonth + '편</b></div>' +
+       '<div class="pstat"><span>시작</span><b>' + esc(String(first).slice(5).replace(/^0/, "").replace("-0", "/").replace("-", "/")) + '</b></div></div></div>';
+
+  /* 01 오늘 발행 — 검은 패널 */
+  h += '<section><div class="psh"><span class="no">01</span><h2>' + (isToday ? "오늘 발행" : "최신 발행") + '</h2>' +
+       '<span class="sub">' + podDay(latest) + ' · ' + todays.length + '편</span><span class="en">LATEST</span></div>' +
+       '<div class="ptoday">' +
+       todays.map(function(it){
+         return '<article class="pcard">' + tile(it, true) +
+           '<div class="pbody"><div class="pchips">' + chips(it, true) + '</div>' +
+           '<h3><a href="' + esc(it.l) + '" target="_blank" rel="noopener">' + esc(it.t) + '</a></h3>' +
+           (it.n ? '<p class="psum">' + esc(it.n) + '</p>' : "") +
+           '<div class="pacts">' + listen(it, true) + '</div></div></article>';
+       }).join("") + '</div></section>';
+
+  /* 02 전체 에피소드 — 시리즈 필터 + 날짜별 묶음 */
+  h += '<section><div class="psh"><span class="no">02</span><h2>전체 에피소드</h2>' +
+       '<span class="sub">' + items.length + '편 · 최신이 위</span><span class="en">ARCHIVE</span></div>' +
+       '<div class="pfilters"><span class="lbl">시리즈</span>' +
+       '<button type="button" class="pf' + (podState.filter ? "" : " on") + '" data-s="">전체<span class="cnt">' + items.length + '</span></button>' +
+       series.map(function(s){
+         return '<button type="button" class="pf' + (podState.filter === s.name ? " on" : "") + '" data-s="' + esc(s.name) + '">' +
+                '<span class="sw" style="background:' + s.color + '"></span>' + esc(s.name) + '<span class="cnt">' + s.n + '</span></button>';
+       }).join("") + '</div>';
+
+  var groups = [], gidx = {};
+  items.forEach(function(it){
+    if (gidx[it.d] == null) { gidx[it.d] = groups.length; groups.push({ d:it.d, items:[] }); }
+    groups[gidx[it.d]].items.push(it);
+  });
+  h += '<div class="pgroups">' + groups.map(function(g){
+    var vis = g.items.some(function(it){ return !podState.filter || (it.s || it.t) === podState.filter; });
+    return '<div class="pdg"' + (vis ? "" : " hidden") + '><div class="pdh"><span><b>' + podDay(g.d) + '</b>' +
+      (g.d === td ? '<span class="td">오늘</span>' : g.d === latest ? '<span class="td">최신</span>' : "") +
+      '</span><span class="iso">' + esc(g.d) + '</span></div>' +
+      g.items.map(function(it){
+        var hid = !!podState.filter && (it.s || it.t) !== podState.filter;
+        return '<div class="prow" data-s="' + esc(it.s || it.t) + '"' + (hid ? " hidden" : "") + '>' + tile(it, false) +
+          '<div class="pbody"><div class="pchips">' + chips(it, false) + '</div>' +
+          '<div class="ti"><a href="' + esc(it.l) + '" target="_blank" rel="noopener">' + esc(it.t) + '</a></div>' +
+          (it.n ? '<p class="psum">' + esc(it.n) + '</p>' : "") + '</div>' + listen(it, false) + '</div>';
+      }).join("") + '</div>';
+  }).join("") + '</div></section>';
+
+  h += '<p class="pfoot">Gemini Notebook(구 NotebookLM)의 음성 개요 링크 모음 — 음성은 구글 쪽에서 재생되며 구글 계정 로그인이 필요할 수 있음<br>' +
+       '아침 7시 30분 · 저녁 6시 20분에 새 에피소드가 올라오면 목록에 더해짐<br>' +
+       '<b>AI 가 자료를 바탕으로 만든 음성</b> — 수치와 사실은 원자료로 확인 · 투자 판단의 참고 자료</p>';
+  box.innerHTML = h;
 }
 
 /* ── 방문 집계 ────────────────────────────────────────────────────
