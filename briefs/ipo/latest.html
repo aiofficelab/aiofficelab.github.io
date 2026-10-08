@@ -8,28 +8,29 @@
 :root{
   --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
   --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
-  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
-  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
-  --blue:#1157cf; --blue-700:#0b3d96;
-  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+  --line:#d8d4d3; --line2:#eceae9;
+  --rule:var(--ink); --rule-soft:var(--line);
+  --accent:#ec3013; --accent-700:#a02008; --accent-100:#fff2ef;
+  --blue:#1a56db; --blue-700:#0b3d96; --blue-100:#eef3ff;
+  --navy:#1f2a5c; --teal:#0f6e56; --plum:#6b3fa0; --brick:#c9290e;
+  --font:"Archivo","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
 }
 /* 다크 모드는 끈다 — 삼성 인터넷이 배경은 희게 두고 글자만 다크용 밝은 색으로
    바꿔 '흰 바탕 흰 글자'가 되던 실사례(2026-09-06, 갤럭시). 항상 라이트. */
 :root{color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
-  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+  font:400 13.5px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
 h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
 a{color:var(--accent-700);text-underline-offset:3px}
 a:hover{color:var(--accent)}
 b,strong{font-weight:700}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+.wrap{max-width:1012px;margin:0 auto;padding:26px 20px 44px}
 
 /* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다.
    위 여백은 없앤다: 머리글(.mast)을 접었는데도 26px 이 남아 사이트의 '아카이브'
-   줄과 본문 첫 줄 사이가 40px 가까이 벌어졌다(사용자 2026-09-07).
-   관심종목 셸(portfolio_page)에는 진작 들어가 있던 규칙이라 그쪽에 맞춘다. */
+   줄과 본문 첫 줄 사이가 40px 가까이 벌어졌다(사용자 2026-09-07). */
 body.embed{--paper:#fff}
 body.embed .wrap{max-width:none;padding-left:0;padding-right:0;padding-top:0}
 body.embed .mast{display:none}
@@ -37,64 +38,174 @@ body.embed .nav{position:static;margin-top:0}
 body.embed section{scroll-margin-top:8px}
 body.embed .totop{display:none}
 
-/* 머리 */
-.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
-.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
-.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
-.rule{height:2px;background:var(--rule);margin:16px 0 0}
+/* ── 2026-10 리디자인 — 사이트 셸(index.html)과 같은 어휘로 맞춘다 ──
+   검은 선 2px 섹션 머리 · 검은 요약 패널(.hero/.lead) · 칩·버튼은 각진 테두리 ·
+   목록은 타일 + 본문 + 오른쪽 검은 버튼. 둥근 모서리와 왼쪽 색 띠 상자는 쓰지 않는다. */
 
-/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
-.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
-.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
-  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
-.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+/* 머리 */
+.kick{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--accent)}
+.mast h1{font-size:34px;line-height:1.1;letter-spacing:-.8px;margin:6px 0 0}
+.mast .dt{margin-top:8px;font-size:13px;color:var(--ink2)}
+.rule{height:2px;background:var(--ink);margin:14px 0 0}
+
+/* 네비 — 칩 모양 버튼 한 줄 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:8px;
+  margin:16px 0 0;padding:10px 0;background:var(--paper);border-bottom:2px solid var(--ink)}
+.nav a{display:inline-flex;align-items:center;height:40px;padding:0 14px;font-size:13px;font-weight:700;
+  color:var(--ink);text-decoration:none;white-space:nowrap;border:2px solid var(--line);background:#fff}
+.nav a:hover{border-color:var(--ink)}
 .nav .sep{flex:1;border:0}
 
-/* 섹션 */
-section{margin-top:32px;scroll-margin-top:46px}
-.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+/* 섹션 머리 — 번호(빨강) · 제목 · 보조 · 영문 라벨, 검은 선 2px */
+section{margin-top:40px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
 .sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
-.sh h2{font-size:17px}
-.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
-.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
-.note b{color:var(--ink2)}
-.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
-  font-size:14px;font-weight:700}
+.sh h2{font-size:19px;letter-spacing:-.4px}
+.sh .sub{font-size:13px;color:var(--ink2)}
+.sh .en{margin-left:auto;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--ink2)}
+.note{color:var(--ink2);font-size:11.5px;line-height:1.7;margin:10px 0 0}
+.note b{color:var(--ink)}
 
-/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
-.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
-  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
-/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+/* 검은 요약 패널 — page(lead=) 한 줄짜리 */
+.lead{background:var(--ink);color:#fff;padding:22px 24px;margin:16px 0 0;
+  font-size:21px;font-weight:800;line-height:1.35;letter-spacing:-.4px;text-wrap:pretty}
+/* 검은 요약 패널 — hero(): 왼쪽 큰 카드(요약) + 오른쪽 카드(바로가기·주요 항목) */
+.hero{margin-top:16px;background:var(--ink);color:#fff;padding:22px;display:flex;flex-wrap:wrap;gap:18px}
+.hero .hc{flex:1 1 440px;min-width:0;border:1px solid rgba(255,255,255,.22);padding:20px 22px;
+  display:flex;flex-direction:column;gap:11px}
+.hero .hc.aside{flex:1 1 300px}
+.hero .htag{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:rgba(255,255,255,.72);letter-spacing:.5px}
+.hero .htag b{font-size:10px;font-weight:800;letter-spacing:1px;background:#fff;color:var(--ink);padding:3px 6px;line-height:1}
+.hero .htag b.red{background:var(--accent);color:#fff}
+.hero h3{font-size:22px;font-weight:800;line-height:1.3;letter-spacing:-.4px;text-wrap:pretty}
+.hero .big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.hero p{margin:0;font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);text-wrap:pretty}
+.hero p.wh{color:#fff}
+.hero .hnote{margin-top:auto;padding-top:6px;font-size:11.5px;color:rgba(255,255,255,.62)}
+.hero .hsub{font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.72)}
+.hero a{color:#fff}
+.hero .hsep{border-top:1px solid rgba(255,255,255,.22);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.hero .hbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  background:#fff;color:var(--ink);text-decoration:none;align-self:flex-start;margin-top:auto}
+.hero .hbtn:hover{background:var(--accent);color:#fff}
+.hero .hlist{display:flex;flex-direction:column}
+.hero .hlist>*{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.22);
+  color:#fff;text-decoration:none;font-size:13.5px;line-height:1.4}
+.hero .hlist .tl{width:40px;height:40px;font-size:11px}
+.hero .hlist .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.hero .hlist small{font-size:11.5px;color:rgba(255,255,255,.72)}
+.hero .hlist .hd{font-size:12px;font-weight:800;flex:0 0 64px}
+.hero .hlist .sw{width:10px;height:10px;flex:none}
+.hero .hlist .hm{color:rgba(255,255,255,.72)}
+.hero .hlist .arr{margin-left:auto;font-weight:800}
+.hero .hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hero .hgrid a{display:flex;flex-direction:column;gap:5px;padding:10px;background:#fff;color:var(--ink);text-decoration:none;min-height:44px}
+.hero .hgrid a:hover{background:var(--accent);color:#fff}
+.hero .hgrid b{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.hero .hgrid small{font-size:11px;font-weight:500}
+
+/* 숫자 줄 — 큰 카드 넷 대신 라벨 + 숫자 */
+.stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:14px}
+.stats .st{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--ink2)}
+.stats .st b{font-size:22px;letter-spacing:-.5px;color:var(--ink);font-weight:800;line-height:1}
+.stats .st.hot b{color:var(--accent)}
+
+/* 구분 필터 칩 — 색 견본 + 이름 + 건수. 누르면 .on 이 옮겨가고 [data-f] 줄만 남는다 */
+.pf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.pf .lbl{font-size:12px;color:var(--ink2);margin-right:2px}
+.pf button,.pf a{font:700 13px/1 var(--font);height:42px;padding:0 14px 0 10px;display:inline-flex;align-items:center;gap:9px;
+  border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.pf .sw{width:18px;height:18px;display:inline-block;flex:none}
+.pf .cnt{font-size:11px;color:var(--ink2);font-weight:700}
+.pf button:hover,.pf a:hover{border-color:var(--ink)}
+.pf .on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pf .on .cnt{color:rgba(255,255,255,.7)}
+.pf .on .sw{outline:2px solid #fff;outline-offset:-2px}
+
+/* 타일 — 색 사각형 + 짧은 글자(티커·구분) */
+.tl{width:56px;height:56px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:#fff;font-size:12px;font-weight:800;letter-spacing:-.3px;line-height:1.1;
+  text-align:center;padding:0 4px;overflow:hidden;word-break:break-all}
+.tl.sm{width:40px;height:40px;font-size:10px;padding:0 2px;letter-spacing:-.5px}
+.tl.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.tl.gray{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+
+/* 목록 줄 — 타일 · 본문 · 오른쪽 버튼 */
+.row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:5px}
+.row .rh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row .rh .nm{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.row .rh .nm a{color:var(--ink);text-decoration:none}
+.row .rh .nm a:hover{color:var(--accent-700)}
+.row .rh .tm{font-size:11.5px;color:var(--ink2);letter-spacing:.3px}
+.row .rt{font-size:13.5px;line-height:1.5}
+.row .rt .pl{color:var(--ink2)}
+.row .rm{font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.row .rm b{color:var(--ink)}
+.row .acts{margin:0}
+.row.dim{opacity:.72}
+.row[hidden]{display:none}
+
+/* 회사 카드·회사 줄 — AI 요약(한 줄 + 문장) + 근거 링크 칩 */
+.cogrid{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:16px}
+.cocard{border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.corow{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.corow .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.coh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.coh .nm{display:flex;flex-direction:column;gap:3px;min-width:0}
+.coh .nm b{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.coh .nm small{font-size:11px;color:var(--ink2)}
+.coh .cnt{margin-left:auto;font-size:11px;font-weight:700;border:1px solid var(--line);padding:3px 8px;color:var(--ink2);white-space:nowrap}
+.coh .chip{margin:0}
+.cocard .coh .tl{width:48px;height:48px}
+.colead{font-size:14.5px;font-weight:800;line-height:1.45;letter-spacing:-.2px}
+.corep{display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:#444141}
+.corep span{display:flex;gap:10px}
+.corep span::before{content:"";flex:none;width:6px;height:6px;margin-top:7px;background:var(--mk,var(--accent))}
+.rl{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.rl .ref{font-size:11px;font-weight:700;border:1px solid var(--line);padding:4px 8px;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.rl .ref:hover{border-color:var(--ink);color:var(--ink)}
+.flow{display:flex;gap:10px;align-items:baseline;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+.flow .k{font-weight:700;letter-spacing:.5px}
+.flow a{font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap}
+
+/* 항목 카드(기존 item) — 번호 · 칩 · 제목 · 날짜 · 링크. 새 톤으로만 손본다 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;
+  padding:14px 0;border-bottom:1px solid var(--line)}
 .item.side{grid-template-columns:34px minmax(0,1fr) auto}
 .item .ex{align-self:center;padding-left:14px}
 .item .ex .acts{margin-top:0;justify-content:flex-end}
 .item:last-child{border-bottom:0}
-.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:3px}
 .item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
 .item .ti a{color:inherit;text-decoration:none}
 .item .ti a:hover{color:var(--accent-700);text-decoration:underline}
-.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
-.item .meta b{color:var(--ink2)}
-.chips{margin-bottom:5px}
-.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
-  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
-.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.item .meta{margin-top:5px;font-size:12px;color:var(--ink2)}
+.item .meta b{color:var(--ink)}
+.chips{margin-bottom:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0;
+  padding:2px 7px;margin:0;border:1px solid var(--line);color:var(--ink);line-height:1.3}
+.chip.red{background:var(--accent-100);border-color:var(--accent-100);color:#7c1405}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:#fff}
 .chip.blue{border-color:var(--blue);color:var(--blue-700)}
-/* NEW 배지(외곽선형) — 제목·문장 '뒤'에 붙는 자리용. 뉴스 게시판(tech·ktnews)이
-   쓴다. 다른 게시판의 칩 줄(제목 위)에는 어울리지 않아 기존 빨간 칩 유지(9/6 실측) */
-.newb{display:inline-block;margin-left:7px;padding:1px 5px 0;font-size:9px;
-  font-weight:800;letter-spacing:1px;color:var(--accent);
-  border:1px solid var(--accent);vertical-align:2px}
+.chip.gray{color:var(--ink2)}
+/* NEW 배지 — 제목·문장 뒤에 붙는 자리용 */
+.newb{display:inline-block;margin-left:7px;padding:3px 6px;font-size:10px;line-height:1;
+  font-weight:800;letter-spacing:1px;color:#7c1405;background:var(--accent-100);vertical-align:2px}
 
-/* 링크 버튼 */
+/* 링크 버튼 — 오른쪽 검은 버튼 하나(.pri) + 외곽선 보조 */
 .acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
-.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
-  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
-.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
-.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  border:2px solid var(--line);color:var(--ink);text-decoration:none;background:#fff;white-space:nowrap}
+.acts a:hover{border-color:var(--ink)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:#fff}
 .acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* 더 보기 — 접힌 묶음을 편다(data-more=대상 id) */
+.morebtn{margin-top:12px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;
+  font:800 13px/1 var(--font);border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none}
+.morebtn:hover{background:var(--ink);color:#fff}
+.morebtn.ghost{border-color:var(--line);font-weight:700;color:var(--ink2)}
+.morebtn.ghost:hover{border-color:var(--ink);background:#fff;color:var(--ink)}
 
 /* 원페이지 미리보기 */
 .thumb{margin-top:12px;border:2px solid var(--ink)}
@@ -102,28 +213,28 @@ section{margin-top:32px;scroll-margin-top:46px}
 
 /* 진행 단계 */
 .stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
-.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);
   padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
-.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st i{width:7px;height:7px;background:var(--line);display:inline-block}
 .stage .st.on{color:var(--ink)}
 .stage .st.on i{background:var(--accent)}
 .stage .st.done{color:var(--ink2)}
 .stage .st.done i{background:var(--ink2)}
 
-/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
-.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
-  border-bottom:1px solid var(--rule)}
-.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
-.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등), 검은 선 2px */
+.subh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:24px 0 0;padding:6px 0;
+  border-bottom:2px solid var(--ink)}
+.subh h3{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.subh .sub{font-size:12px;color:var(--ink2)}
+.subh .en{margin-left:auto;font-size:11px;letter-spacing:.5px;color:var(--ink2);font-weight:700}
+.subh .chip{vertical-align:1px}
 /* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
 .item.wide{grid-template-columns:96px minmax(0,1fr)}
 .item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
-/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
-.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+.item.wide .n{color:var(--ink);font-size:13px;line-height:1.4;letter-spacing:-.2px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:640px){
   .item.wide{grid-template-columns:72px minmax(0,1fr)}
-  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
   .item.side{grid-template-columns:34px minmax(0,1fr)}
   .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
   .item .ex{grid-column:2;padding-left:0}
@@ -132,13 +243,13 @@ section{margin-top:32px;scroll-margin-top:46px}
 /* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
-table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
-  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th{font-size:10px;letter-spacing:.1em;font-weight:700;color:var(--ink2);
+  padding:10px 7px 6px;border-bottom:2px solid var(--ink);text-align:right;white-space:nowrap}
 table.g th:first-child{text-align:left}
 table.g th.s{cursor:pointer;user-select:none}
 table.g th.s:hover{color:var(--ink)}
 table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
-table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+table.g td{font-size:12.5px;padding:8px 7px;border-bottom:1px solid var(--line);
   text-align:right;white-space:nowrap}
 table.g td:first-child{text-align:left}
 table.g td.spk{text-align:left}
@@ -149,21 +260,19 @@ table.g.mk{table-layout:fixed}
 table.g.mk tr.mrow{display:none}
 @media(max-width:640px){
   .mo{display:none}
-  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
   table.g.mk{table-layout:auto;min-width:0}
   table.g.mk col.c1,table.g.mk col.c2{width:auto}
   table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
-  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
   table.g.mk tr[data-v]{cursor:pointer}
   table.g.mk tr.mrow.op{display:table-row}
   table.g.mk tr.mrow > td{padding:0 0 10px}
   table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
-    border-top:1px solid var(--rule-soft)}
+    border-top:1px solid var(--line)}
   .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
-    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
-  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+    border-bottom:1px solid var(--line);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--line)}
   .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
-    color:var(--ink3);margin-bottom:3px}
+    color:var(--ink2);margin-bottom:3px}
   .mper .pc.w6{flex:1 1 100%;border-right:0}
   .mper .pc.w6 svg{display:block;width:100%;height:36px}
 }
@@ -177,56 +286,68 @@ table.g .val{font-weight:800;color:var(--ink)}
 svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
 svg.sp polyline{fill:none;stroke-width:1.5}
 svg.sp polygon{opacity:.13}
-/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+/* 달력 격자 — IR 캘린더용. 폰에서도 7칸을 유지하고 칸·글자만 폭에 비례해 줄인다(가로 스크롤 없음) */
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
-  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
-.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
-  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.cal .wd.we{opacity:.65}
-.cal .dy{min-height:86px;padding:6px 7px 9px;
-  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.cal .dy.past{background:rgba(128,128,128,.05)}
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cal .wd{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ink2);padding:8px 10px;background:#f6f5f5;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .wd.we{color:var(--accent-700)}
+.cal .dy{min-height:176px;padding:8px;min-width:0;display:flex;flex-direction:column;gap:4px;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .dy.past{background:#f6f5f5}
 .cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
-.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
-.cal .dy.past .dn{color:var(--ink3)}
+.cal .dn{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.cal .dy.past .dn{color:var(--ink2)}
 .cal .dy.today .dn{color:var(--accent-700)}
-.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
-  text-decoration:none;background:var(--ink);color:var(--paper);
+.cal .tk{display:block;font-size:11px;font-weight:700;padding:3px 6px;
+  text-decoration:none;background:var(--ink);color:#fff;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal .tk.kr{background:var(--accent);color:#fff}
-.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk.kr{background:var(--brick);color:#fff}
+.cal .tk.done{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.cal .tk.hol{background:transparent;color:var(--ink2);border:1px dashed var(--ink3);font-weight:700}
+.cal .tk.kr.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.cal .dy.past .tk.kr.lite{color:var(--ink2);border-color:var(--line)}
+.cal .tk.more{background:transparent;color:#444141;border:1px dotted var(--ink3);text-align:center}
 .cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
-.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
-.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
-@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
-/* 지표 타일 — 값 하나 + 등락 */
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:11.5px;color:var(--ink2)}
+.calleg i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-2px}
+@media(max-width:640px){
+  .cal .wd{font-size:10px;padding:4px 4px}
+  .cal .dy{min-height:64px;padding:3px;gap:2px}
+  .cal .dn{font-size:11px;margin-bottom:1px}
+  .cal .tk{font-size:9px;padding:1px 2px}
+}
+/* 지표 타일 — 값 하나 + 등락 (시황·금리 등). 건수 타일은 .stats 로 바꾼다 */
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
-  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
-.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
-.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
-.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.tile{padding:12px 14px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.tile .l{font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1px}
+.tile .v{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-top:4px;line-height:1.1}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:3px}
 .tile .em{margin-right:5px}
 .tile .sp{display:block;margin-top:8px;width:100%;height:34px}
 .tile .sp polyline{fill:none;stroke-width:1.6}
 .tile .sp polygon{opacity:.13}
 .up{color:var(--accent-700)}
-.dn{color:var(--blue-700)}
-.flat,.dash{color:var(--ink3)}
+.dn{color:var(--blue)}
+.flat,.dash{color:var(--ink2)}
+.sur{display:inline-block;font-size:11px;font-weight:800;padding:3px 7px;line-height:1.3}
+.sur.up{background:var(--accent-100)}
+.sur.dn{background:var(--blue-100)}
 
 /* 존 바 — 현재 값이 어느 구간에 있는지 */
-.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge{padding:14px 0;border-bottom:1px solid var(--line)}
 .gauge:last-child{border-bottom:0}
 .gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
 .gauge .gn{font-size:13.5px;font-weight:800}
-.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gs{font-size:11px;color:var(--ink2)}
 .gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
 .gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
 .zbar{position:relative;height:12px;display:flex;margin-top:10px}
 .zbar .z{height:100%}
 .zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
   border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
-.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink2)}
 .zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
 
 /* 뉴스 불릿 */
@@ -235,34 +356,47 @@ svg.sp polygon{opacity:.13}
 .bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
 .bul li.risk::before{background:var(--accent)}
 .bul li.risk{font-weight:700}
-.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink2);white-space:nowrap}
 .bul a:hover{color:var(--accent)}
 
-.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
-footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
-  color:var(--ink3);font-size:11px;line-height:1.75}
+.empty{padding:26px 0;color:var(--ink2);font-size:13px}
+footer{border-top:2px solid var(--ink);margin-top:44px;padding-top:14px;
+  color:var(--ink2);font-size:11.5px;line-height:1.75}
 footer p{margin:0}
-footer .w{color:var(--ink2);margin-top:7px}
+footer .w{color:var(--ink);margin-top:7px}
 
 /* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
 .totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
-  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  display:grid;place-items:center;background:#fff;color:var(--ink);
   border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
   opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
 .totop.on{opacity:1;visibility:visible}
 .totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 [hidden]{display:none!important}
 @media(max-width:640px){
-  .mast h1{font-size:24px}
+  .mast h1{font-size:26px}
   .item{grid-template-columns:26px 1fr}
+  .hero{padding:14px;gap:12px}
+  .hero .hc{padding:16px}
+  .hero h3{font-size:19px}
+  .hero .big{font-size:28px}
+  .hero .hgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stats{gap:10px 20px}
+  .stats .st b{font-size:19px}
+  .row{gap:12px}
+  .row .rb{flex-basis:150px}
+  .row.tall .rb{flex-basis:200px}
+  .row.tall .acts{flex-basis:100%}
+  .row .acts a,.acts a{height:38px;padding:0 12px;font-size:12px}
+  .cocard{padding:16px}
 }
 </style>
 </head><body>
 <div class="wrap">
-<header class="mast"><div class="kick">IPO WATCH</div><h1>상장(IPO) 동향</h1><div class="dt">10/8(목) · 평일 아침 발행 · 뉴스 최근 7일 · 타임라인 2026-10-04 조사</div></header>
+<header class="mast"><div class="kick">IPO WATCH</div><h1>상장(IPO) 동향</h1><div class="dt">10/9(금) · 평일 아침 발행 · 뉴스 최근 7일 · 타임라인 2026-10-04 조사</div></header>
 <div class="rule"></div>
 <nav class="nav"><a href="#news" target="_self">최근 뉴스</a><a href="#c-anthropic" target="_self">Anthropic</a><a href="#c-openai" target="_self">OpenAI</a><a href="#others" target="_self">주목받는 상장</a><span class="sep"></span></nav>
-<style>.item .ti{font-size:14px;line-height:1.6}.item{padding:12px 0}.item .meta{line-height:1.7}.src{font-size:11.5px;color:var(--ink3)}.src a{color:inherit}.st{border:1px solid var(--line);padding:14px 16px;margin-top:12px}.st h3{font-size:16px;font-weight:800;margin:0 0 6px}.st .s{font-size:12px;font-weight:700;margin-bottom:8px}.st p{font-size:13px;line-height:1.75;margin:0;color:var(--ink2)}.ocs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:14px}.oc{border:1px solid var(--line);padding:12px 14px}.oc .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.oc .h b{font-size:14px}.oc .d{font-size:12px;font-weight:700;color:var(--ink2);margin-top:3px}.oc p{font-size:12.5px;line-height:1.65;margin:6px 0;color:var(--ink2)}.nl{font-size:12.5px;line-height:1.8;color:var(--ink2);padding-left:18px}</style><div class="tiles"><div class="tile"><div class="l">최근 뉴스</div><div class="v">35건</div><div class="c" style="color:var(--ink3)">최근 7일</div></div><div class="tile"><div class="l">상장 신청</div><div class="v">4곳</div><div class="c" style="color:var(--ink3)">신청·심사 단계</div></div><div class="tile"><div class="l">준비 보도</div><div class="v">4곳</div><div class="c" style="color:var(--ink3)">관측 단계</div></div></div><div class="st"><h3>Anthropic</h3><div class="s">비상장 · 2026-06-01 SEC에 S-1 초안 비공개 제출 · 공개 S-1·티커·공모가·상장일 미확정</div><p>2026-06-01 S-1 초안을 SEC에 비공개 제출했다고 회사가 직접 발표했고, 직전 시리즈H(650억 달러)에서 기업가치 9,650억 달러를 인정받음. 이후 보도는 주관사(모건스탠리·골드만삭스 주도, JP모건 참여), 나스닥 선택, 최대 1,000억 달러 조달·약 2조 달러 가치 논의로 이어졌으나 회사가 확인한 것은 없음. 일정 관측은 10월 → 10월 중순 마케팅 → 11월 9일 주 로드쇼·추수감사절 전 거래로 계속 밀렸고, 조사일 현재 공개 S-1은 확인되지 않음</p></div><div class="st"><h3>OpenAI</h3><div class="s">비상장 · 2026-06-08 SEC에 등록신청서 초안 비공개 제출 · CEO가 2026년 상장 배제, CFO는 2027년 상장 언급</div><p>2025-10-28 공익법인(OpenAI Group PBC) 전환을 마친 뒤 2026-03-31 1,220억 달러를 투자 후 가치 8,520억 달러에 조달했고, 2026-06-08 IPO 서류를 비공개 제출했다고 밝힘. 이후 올트먼 CEO가 1조 달러 가치를 고수해 2027년으로 미룬다는 보도가 나왔고, 9월에는 본인이 안전 문제를 이유로 2026년 상장은 없다고 발언. 9월 말에는 IPO 전 300억 달러 이상을 약 1조 4,000억 달러 가치로 조달하는 초기 협의 보도가 나옴</p></div><section id="news"><div class="sh"><span class="no">01</span><h2>최근 뉴스</h2><span class="en">LATEST NEWS</span></div><p class="note">네이버 뉴스 검색 · 최근 7일 · 제목에 회사 이름과 상장 관련 낱말이 함께 있는 기사만 · NEW = 24시간 내</p><div class="subh"><h3>Anthropic</h3><span class="en">10건</span></div><div class="item wide"><div class="n">토큰포스트</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.tokenpost.kr/news/ai/419500" target="_blank" rel="noopener">앤트로픽 비공개 S-1 제출…연환산 매출 300억달러 넘어</a></div><div class="meta">5시간 전</div></div></div><div class="item wide"><div class="n">토큰포스트</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.tokenpost.kr/news/insights/419175" target="_blank" rel="noopener">앤트로픽 IPO 기대에 선물 미결제약정 5배…카이코 리서치, 거래소 간 가...</a></div><div class="meta">19시간 전</div></div></div><div class="item wide"><div class="n">한국경제</div><div><div class="ti"><a href="https://www.hankyung.com/article/2026100663461" target="_blank" rel="noopener">[데스크 칼럼] 앤트로픽의 이상한 IPO</a></div><div class="meta">10/7 01:01</div></div></div><div class="item wide"><div class="n">economytalk.kr</div><div><div class="ti"><a href="http://www.economytalk.kr/news/articleView.html?idxno=424503" target="_blank" rel="noopener">11월 상장 앞둔 앤트로픽, 눈덩이 적자에 美 국방부 사용 중단까지 '겹악...</a></div><div class="meta">10/6 16:52</div></div></div><div class="item wide"><div class="n">segyebiz.com</div><div><div class="ti"><a href="http://www.segyebiz.com/newsView/20261005505722?OutUrl=naver" target="_blank" rel="noopener">[오현승의 IT 스토리] 기업가치 2조달러?…‘AI 공룡’ 앤트로픽 IPO 초읽...</a></div><div class="meta">10/5 14:02</div></div></div><div class="item wide"><div class="n">ajunews.com</div><div><div class="ti"><a href="https://www.ajunews.com/view/20261004161541017" target="_blank" rel="noopener">[인문자의 앤트로픽 이야기 | 인간·문화·자연] 앤트로픽 상장, 반도체...</a></div><div class="meta">10/4 16:24</div></div></div><div class="item wide"><div class="n">coinreaders.com</div><div><div class="ti"><a href="http://coinreaders.com/261504" target="_blank" rel="noopener">앤트로픽 IPO 앞두고 '2조 달러' 베팅…하이퍼리퀴드 프리IPO 상품, 사도...</a></div><div class="meta">10/4 10:08</div></div></div><div class="item wide"><div class="n">cbci.co.kr</div><div><div class="ti"><a href="https://www.cbci.co.kr/news/articleView.html?idxno=612233" target="_blank" rel="noopener">[기업家] 앤트로픽 ㅣ 천문학적 투자·신모델 승부수…IPO 앞두고 '총력...</a></div><div class="meta">10/4 08:06</div></div></div><div class="item wide"><div class="n">coinreaders.com</div><div><div class="ti"><a href="http://coinreaders.com/261382" target="_blank" rel="noopener">앤트로픽, 기업가치 2조 달러 평가...추수감사절 전 IPO 추진</a></div><div class="meta">10/2 19:22</div></div></div><div class="item wide"><div class="n">banronbodo.com</div><div><div class="ti"><a href="https://www.banronbodo.com/news/articleView.html?idxno=33120" target="_blank" rel="noopener">상반기 침체 딛고 IPO 기지개......무신사·엘리스·앤트로픽 줄줄이 대...</a></div><div class="meta">10/2 15:16</div></div></div><div class="subh"><h3>OpenAI</h3><span class="en">5건</span></div><div class="item wide"><div class="n">etoday.co.kr</div><div><div class="ti"><a href="https://www.etoday.co.kr/news/view/2632892" target="_blank" rel="noopener">오픈AI, IPO 미루고 몸값 높이나⋯“300억달러 조달 추진” [금리 넘어선...</a></div><div class="meta">10/6 15:10</div></div></div><div class="item wide"><div class="n">dt.co.kr</div><div><div class="ti"><a href="https://www.dt.co.kr/article/12087516?ref=naver" target="_blank" rel="noopener">“IPO 미룬 오픈AI, 300억달러 투자 유치 논의 중”</a></div><div class="meta">10/6 08:19</div></div></div><div class="item wide"><div class="n">ddaily.co.kr</div><div><div class="ti"><a href="https://www.ddaily.co.kr/page/view/2026100608055809289" target="_blank" rel="noopener">상장 미룬 오픈AI, UAE 펀드와 300억달러 투자 협상…블랙록도 참여 논의</a></div><div class="meta">10/6 08:07</div></div></div><div class="item wide"><div class="n">biz.sbs.co.kr</div><div><div class="ti"><a href="https://biz.sbs.co.kr/article_hub/20000338344?division=NAVER" target="_blank" rel="noopener">블룸버그 "IPO 미룬 오픈AI, 40조원 투자 유치 논의중"</a></div><div class="meta">10/6 07:58</div></div></div><div class="item wide"><div class="n">연합뉴스</div><div><div class="ti"><a href="https://www.yna.co.kr/view/AKR20261006016500009?input=1195m" target="_blank" rel="noopener">"IPO 미룬 오픈AI, 40조원 투자 유치 논의중"</a></div><div class="meta">10/6 07:55</div></div></div><div class="subh"><h3>그 밖의 상장</h3><span class="en">20건</span></div><div class="item wide"><div class="n">etoday.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.etoday.co.kr/news/view/2633408" target="_blank" rel="noopener">고객 편중 티에스모스트…IPO서 매출처 다변화 시험대 [IPO 엑스레이]</a></div><div class="meta">14분 전</div></div></div><div class="item wide"><div class="n">newspim.com</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.newspim.com/news/view/20261007000494" target="_blank" rel="noopener">기술특례 상장사 8할이 적자…A·A 받은 10곳도 관리종목·거래정지</a></div><div class="meta">1시간 전</div></div></div><div class="item wide"><div class="n">startuptoday.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.startuptoday.co.kr/news/articleView.html?idxno=815288" target="_blank" rel="noopener">[분석] IPO 보릿고개 끝나나…10월 공모주 봇물 속 '대어' 대기중</a></div><div class="meta">2시간 전</div></div></div><div class="item wide"><div class="n">todaykorea.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.todaykorea.co.kr/news/articleView.html?idxno=406894" target="_blank" rel="noopener">[이슈PICK+] "4분기는 다르다"···IPO 시장, 10월 상장 러시에 반등 모...</a></div><div class="meta">13시간 전</div></div></div><div class="item wide"><div class="n">metroseoul.co.kr</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip ink">무신사</span></div><div class="ti"><a href="http://www.metroseoul.co.kr/article/20261007500403" target="_blank" rel="noopener">매출 늘고 이익 줄고…IPO 앞둔 무신사, 8조 몸값 '시험대'</a></div><div class="meta">15시간 전</div></div></div><div class="item wide"><div class="n">daily.hankooki.com</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://daily.hankooki.com/news/articleView.html?idxno=1412794" target="_blank" rel="noopener">공모주 시장 살아나나…이달 대어급 IPO에 수급 분산 변수</a></div><div class="meta">15시간 전</div></div></div><div class="item wide"><div class="n">newswell.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="http://www.newswell.co.kr/news/articleView.html?idxno=22499" target="_blank" rel="noopener">'티에스모스트·키노톤·뱅크샐러드' 코스닥 상장</a></div><div class="meta">19시간 전</div></div></div><div class="item wide"><div class="n">kukinews.com</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.kukinews.com/article/view/kuk202610070053" target="_blank" rel="noopener">‘1조 대어’ 엘리스그룹, 일반공모 돌입…“기업가치 변수는 사업 확장...</a></div><div class="meta">20시간 전</div></div></div><div class="item wide"><div class="n">thebell.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610060914251720106013" target="_blank" rel="noopener">[더벨]노벨티노빌리티, c-Kit ADC 기술이전 '상장 재도전' 근거</a></div><div class="meta">23시간 전</div></div></div><div class="item wide"><div class="n">newspim.com</div><div><div class="ti"><a href="https://www.newspim.com/news/view/20261006001045" target="_blank" rel="noopener">[솔리다임 IPO 논란] ① 10조원 주고 산 회사…쪼개기 상장 아니다</a></div><div class="meta">10/7 06:00</div></div></div><div class="item wide"><div class="n">중앙일보</div><div><div class="chips"><span class="chip ink">무신사</span></div><div class="ti"><a href="https://www.joongang.co.kr/article/25467643" target="_blank" rel="noopener">10조 몸값 도전 무신사…상장 흥행 ‘글로벌 확장성’에 달렸다</a></div><div class="meta">10/7 00:02</div></div></div><div class="item wide"><div class="n">서울경제</div><div><div class="ti"><a href="https://www.sedaily.com/article/20098736?ref=naver" target="_blank" rel="noopener">엘리스그룹 올해 코스닥 IPO ‘첫 1조’…공모가 상단 확정 [시그널]</a></div><div class="meta">10/6 18:48</div></div></div><div class="item wide"><div class="n">biz.sbs.co.kr</div><div><div class="ti"><a href="https://biz.sbs.co.kr/article_hub/20000338577?division=NAVER" target="_blank" rel="noopener">티에스모스트 등 3개사, 코스닥 상장예비심사 신청</a></div><div class="meta">10/6 18:29</div></div></div><div class="item wide"><div class="n">greened.kr</div><div><div class="ti"><a href="https://www.greened.kr/news/articleView.html?idxno=351524" target="_blank" rel="noopener">대형사 틈서 존재감 키운 대신증권...IPO 후속 물량 13곳 '두둑'</a></div><div class="meta">10/6 18:23</div></div></div><div class="item wide"><div class="n">한국경제</div><div><div class="ti"><a href="https://www.hankyung.com/article/202610066474r" target="_blank" rel="noopener">엘리스그룹, 공모가 상단 9만500원 확정…코스닥 '1조 대어' 등판</a></div><div class="meta">10/6 18:11</div></div></div><div class="item wide"><div class="n">newspim.com</div><div><div class="ti"><a href="https://www.newspim.com/news/view/20261006001270" target="_blank" rel="noopener">IPO 시장 4분기 '기지개'…AI·로봇 앞세워 22곳 상장 채비</a></div><div class="meta">10/6 16:47</div></div></div><div class="item wide"><div class="n">sisajournal.com</div><div><div class="ti"><a href="https://www.sisajournal.com/news/articleView.html?idxno=389247" target="_blank" rel="noopener">뱅크샐러드, 코스닥 상장 도전…낮아진 '몸값' 회복할까</a></div><div class="meta">10/6 15:46</div></div></div><div class="item wide"><div class="n">greened.kr</div><div><div class="chips"><span class="chip ink">무신사</span></div><div class="ti"><a href="https://www.greened.kr/news/articleView.html?idxno=351501" target="_blank" rel="noopener">'10조 IPO' 무신사, 공정위·국세청 동시 검증…정부는 '소공인 지원 파...</a></div><div class="meta">10/6 15:30</div></div></div><div class="item wide"><div class="n">ajunews.com</div><div><div class="ti"><a href="https://www.ajunews.com/view/20261006151004163" target="_blank" rel="noopener">문샷AI·딥시크, 내년 IPO 앞두고 자금조달 속도</a></div><div class="meta">10/6 15:24</div></div></div><div class="item wide"><div class="n">lawissue.co.kr</div><div><div class="ti"><a href="http://www.lawissue.co.kr/view.php?ud=202610061330291696f4ab64559d_12" target="_blank" rel="noopener">[단독] 코스닥 상장 앞둔 오토핸즈, '3일 한정' 할인 48.2%가 '기만 할인...</a></div><div class="meta">10/6 14:06</div></div></div></section><section id="c-anthropic"><div class="sh"><span class="no">02</span><h2>Anthropic 타임라인</h2><span class="en">TIMELINE</span></div><p class="note">조사해 둔 기록 · 최신 순 · 기업가치와 상장 시기는 보도 기준이며 확정이 아님</p><div class="item wide"><div class="n">2026-10-01</div><div><div class="ti">10월 14일 투자자 행사, 11월 9일 주 로드쇼 관측</div><div class="meta">블룸버그 보도. 10월 14일 샌프란시스코 본사에서 투자자 행사, 이르면 11월 9일 주 공식 마케팅 개시·추수감사절 전 거래 관측. 잠재 투자자들은 1조 8,000억~2조 달러를 적정 가치로 봄. 대변인은 논평 거부<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-10-01/anthropic-is-said-to-plan-pre-ipo-investor-day-as-listing-nears" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-28</div><div><div class="ti">투자설명서 초안 내용 보도</div><div class="meta">로이터가 입수한 261쪽 초안 기준 2025년 매출 약 46억 달러(12배 성장), 영업손실 80억 달러 이상, 순손실 420억 달러, 클라우드·컴퓨팅 약정 5,180억 달러. 매출의 약 4분의 1이 고객 2곳에서 발생<br><span class="src"><a href="https://www.cnbc.com/2026/09/28/anthropics-ipo-prospectus-shows-sweeping-ai-vision-surging-costs-reuters.html" target="_blank" rel="noopener">Reuters(CNBC 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-09-13</div><div><div class="ti">상장 거래소로 나스닥 선택 보도</div><div class="meta">블룸버그 보도. 스페이스X 이상 규모 조달을 목표로 나스닥을 선택. 회사는 거래소·일정을 공식 확인하지 않음<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-09-13/anthropic-said-to-choose-nasdaq-for-much-anticipated-ipo-listing" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-11</div><div><div class="ti">엔비디아, IPO에 최대 100억 달러 투자 검토 보도</div><div class="meta">로이터 보도. 앤트로픽은 최대 1,000억 달러 조달·약 2조 달러 기업가치를 논의 중이며 엔비디아가 앵커 투자자 참여를 협의. 양사 모두 확인하지 않음<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-09-11/nvidia-in-talks-to-invest-up-to-10b-in-anthropic-ipo-reuters" target="_blank" rel="noopener">Bloomberg(로이터 인용) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-05</div><div><div class="ti">IPO 개시 10월 중순으로 이동 보도</div><div class="meta">로이터 보도. 투자설명서 공개가 9월 말로 미뤄지고 IPO 마케팅은 10월 중순 개시 관측<br><span class="src"><a href="https://www.cnbc.com/2026/09/05/anthropic-ipo-launch-shifts-toward-mid-october-reuters.html" target="_blank" rel="noopener">Reuters(CNBC 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-04</div><div><div class="ti">주관사로 모건스탠리·골드만삭스 선정 보도</div><div class="meta">블룸버그 보도. 모건스탠리와 골드만삭스가 주도하고 JP모건도 참여, 이르면 10월 상장 검토. 은행 추가 가능성 언급<br><span class="src"><a href="https://finance.yahoo.com/markets/stocks/articles/anthropic-said-pick-morgan-stanley-175802678.html" target="_blank" rel="noopener">Bloomberg(Yahoo Finance 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-01</div><div><div class="ti">SEC에 S-1 초안 비공개 제출 공식 발표</div><div class="meta">보통주 IPO를 위한 Form S-1 등록신청서 초안을 SEC에 비공개 제출. 주식 수와 공모가는 미정이며 상장은 시장 상황 등에 달렸다고 명시<br><span class="src"><a href="https://www.anthropic.com/news/confidential-draft-s1-sec" target="_blank" rel="noopener">Anthropic ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-05-28</div><div><div class="ti">시리즈H 650억 달러, 기업가치 9,650억 달러</div><div class="meta">알티미터·드래고니어·그리노크스·세쿼이아 주도. 하이퍼스케일러의 기존 약정 150억 달러(아마존 50억 달러 포함) 포함. 투자 후 기업가치 9,650억 달러<br><span class="src"><a href="https://www.orrick.com/en/News/2026/05/Anthropic-Raises-65B-Series-H-at-965B-Post-Money-Valuation" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-04</div><div><div class="ti">텐더 오퍼 종료, 목표 규모에 못 미침</div><div class="meta">투자 전 3,500억 달러 가치로 마감. 50억~60억 달러 매각을 준비했으나 직원들이 IPO를 앞두고 보유를 택해 매물이 투자 수요보다 적었음<br><span class="src"><a href="https://www.tipranks.com/news/anthropic-wraps-up-tender-offer-as-employees-resist-selling-shares-ahead-of-ipo" target="_blank" rel="noopener">TipRanks ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-02-12</div><div><div class="ti">시리즈G 300억 달러, 기업가치 3,800억 달러</div><div class="meta">GIC·코투 주도로 300억 달러 조달, 투자 후 기업가치 3,800억 달러. 앞서 발표된 마이크로소프트·엔비디아 투자 일부 포함<br><span class="src"><a href="https://www.orrick.com/en/News/2026/02/Anthropic-Raises-30B-Series-G-at-380B-Post-Money-Valuation" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-02-04</div><div><div class="ti">직원 지분 매각(텐더 오퍼) 계획 보도</div><div class="meta">투자 전 기업가치 3,500억 달러 기준으로 직원이 주식을 팔 수 있게 하는 거래 추진. 200억 달러 이상 규모의 자금 조달과 병행<br><span class="src"><a href="https://news.bloomberglaw.com/tech-and-telecom-law/anthropic-plans-employee-tender-offer-at-350-billion-valuation" target="_blank" rel="noopener">Bloomberg ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-12-02</div><div><div class="ti">IPO 준비 위해 로펌 윌슨 손시니 선임 보도</div><div class="meta">FT 보도를 로이터가 전함. 이르면 2026년 상장 가능성, 투자은행과 초기 논의 중이나 주관사는 미선정. 회사 대변인은 "상장 시기나 여부를 결정하지 않았다"고 밝힘<br><span class="src"><a href="https://www.marketscreener.com/news/anthropic-plans-an-ipo-as-early-as-2026-ft-reports-ce7d51d9d08cf326" target="_blank" rel="noopener">Reuters(MarketScreener 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-11-18</div><div><div class="ti">마이크로소프트·엔비디아 최대 150억 달러 투자 발표</div><div class="meta">엔비디아 최대 100억 달러, 마이크로소프트 최대 50억 달러 투자. 앤트로픽은 애저 컴퓨팅 300억 달러 구매 약정<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2025-11-18/microsoft-nvidia-to-invest-up-to-15-billion-in-anthropic" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-09-02</div><div><div class="ti">시리즈F 130억 달러, 기업가치 1,830억 달러</div><div class="meta">ICONIQ 주도, 피델리티·라이트스피드 공동 주도로 130억 달러 조달, 투자 후 기업가치 1,830억 달러<br><span class="src"><a href="https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation" target="_blank" rel="noopener">Anthropic ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-03</div><div><div class="ti">시리즈E 35억 달러, 기업가치 615억 달러</div><div class="meta">라이트스피드 벤처 파트너스 주도로 35억 달러 조달, 투자 후 기업가치 615억 달러<br><span class="src"><a href="https://orrick.com/News/2025/03/Anthropic-Raises-3-point-5-Billion-to-Advance-AI-Development-and-Expand-Compute-Capacity" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div></section><section id="c-openai"><div class="sh"><span class="no">03</span><h2>OpenAI 타임라인</h2><span class="en">TIMELINE</span></div><p class="note">조사해 둔 기록 · 최신 순 · 기업가치와 상장 시기는 보도 기준이며 확정이 아님</p><div class="item wide"><div class="n">2026-09-29</div><div><div class="ti">IPO 전 300억 달러 이상 조달 협의 보도</div><div class="meta">투자 전 기업가치 약 1조 4,000억 달러로 최소 300억 달러를 조달하는 초기 협의. 조건은 바뀔 수 있음<br><span class="src"><a href="https://www.rdworldonline.com/openai-reportedly-seeks-30-billion-after-delaying-ipo/" target="_blank" rel="noopener">R&amp;D World(블룸버그 인용) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-09-11</div><div><div class="ti">올트먼 "2026년 상장은 없다"</div><div class="meta">포천 인터뷰에서 "안전과 관련해 벌어지는 일을 고려하면 지금 상장하는 것은 부적절"하다고 발언. 2027년 여부는 확답하지 않음<br><span class="src"><a href="https://www.cnbc.com/2026/09/12/anthropics-amodei-proposes-plan-to-slow-the-pace-of-advancing-ai-capabilities.html" target="_blank" rel="noopener">CNBC ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-08-19</div><div><div class="ti">CFO, 직원들에게 "2027년에 상장사가 될 것"</div><div class="meta">프라이어 CFO가 전사 회의에서 2027년 상장을 언급하고 사업이 계속 가속하면 더 빨라질 수 있다고 발언. "IPO는 결승선이 아니라 또 한 번의 자금 조달"<br><span class="src"><a href="https://www.cnbc.com/2026/08/19/open-ai-ipo-timing-2027-friar.html" target="_blank" rel="noopener">CNBC ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-26</div><div><div class="ti">IPO 2027년으로 연기 관측 보도</div><div class="meta">뉴욕타임스 보도 인용. 자문단이 2027년 1조 달러 상장과 가치를 낮춘 조기 상장 두 안을 제시했고 올트먼은 1조 달러 미만은 "논외"라는 입장<br><span class="src"><a href="https://the-decoder.com/altman-wont-go-public-for-less-than-1-trillion-so-openais-ipo-may-slip-to-2027/" target="_blank" rel="noopener">The Decoder(NYT 인용) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-08</div><div><div class="ti">SEC에 IPO 서류 비공개 제출 발표</div><div class="meta">등록신청서 초안을 SEC에 비공개 제출. 회사는 "시기는 정하지 않았고 꽤 걸릴 수 있다"고 밝힘. 직전 기업가치는 투자 후 8,520억 달러<br><span class="src"><a href="https://techcrunch.com/2026/06/08/following-anthropic-openai-files-confidentially-for-ipo/" target="_blank" rel="noopener">TechCrunch ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-05-21</div><div><div class="ti">9월 상장 목표·IPO 신청 임박 보도</div><div class="meta">CNBC·WSJ 인용 보도. 이르면 그 주에 비공개 제출, 9월 상장 목표이나 계획은 유동적. 올트먼 CEO는 빠른 상장, 프라이어 CFO는 신중론<br><span class="src"><a href="https://news.mtn.co.kr/news-detail/2026052104373670130" target="_blank" rel="noopener">머니투데이방송(MTN) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-03-31</div><div><div class="ti">1,220억 달러 조달 마감, 기업가치 8,520억 달러</div><div class="meta">아마존 500억 달러(150억 달러 우선), 엔비디아·소프트뱅크 각 300억 달러 등. 은행 채널로 개인 투자자에게서 약 30억 달러 유치. 월 매출 20억 달러<br><span class="src"><a href="https://finance.yahoo.com/markets/stocks/articles/openai-closes-122bn-funding-round-093126735.html" target="_blank" rel="noopener">Yahoo Finance ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-10-29</div><div><div class="ti">최대 1조 달러 가치 IPO 준비 보도</div><div class="meta">로이터 보도. 이르면 2026년 하반기 신청 검토, 최소 600억 달러 조달 초기 논의. 프라이어 CFO는 2027년 상장 목표를 주변에 언급. 대변인은 "IPO는 우리의 초점이 아니다"라고 밝힘<br><span class="src"><a href="https://www.marketscreener.com/news/openai-lays-groundwork-for-juggernaut-ipo-at-up-to-1-trillion-valuation-ce7d5dd2d089f626" target="_blank" rel="noopener">Reuters(MarketScreener 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-10-28</div><div><div class="ti">자본 재편 완료, OpenAI Group PBC 출범</div><div class="meta">비영리는 OpenAI 재단으로 개칭해 PBC를 통제하고 1,300억 달러 이상 가치의 지분 보유. 마이크로소프트 지분은 약 27%(약 1,350억 달러)<br><span class="src"><a href="https://dc.fortune.com/2025/10/28/openai-for-profit-restructuring-microsoft-stake/" target="_blank" rel="noopener">Fortune ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-10</div><div><div class="ti">직원 지분 약 66억 달러 매각, 기업가치 5,000억 달러</div><div class="meta">전·현직 직원이 스라이브·소프트뱅크·드래고니어·MGX·티로프라이스 등에 약 66억 달러어치 매각. 승인 한도 100억 달러 이상 중 일부만 매각<br><span class="src"><a href="https://www.nst.com.my/amp/business/corporate/2025/10/1285828/openai-hits-us500-billion-valuation-after-share-sale-softbank" target="_blank" rel="noopener">Reuters(NST 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-05-05</div><div><div class="ti">비영리가 통제권 유지, 영리 부문은 PBC로 전환 발표</div><div class="meta">영리 LLC를 공익법인(PBC)으로 바꾸되 비영리가 계속 통제하고 대주주로 남는다고 발표. 기존의 통제권 이전 계획 철회<br><span class="src"><a href="https://openai.com/index/evolving-our-structure/" target="_blank" rel="noopener">OpenAI ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-03-31</div><div><div class="ti">소프트뱅크 주도 최대 400억 달러 조달, 기업가치 3,000억 달러</div><div class="meta">소프트뱅크가 4월 중순 100억 달러, 12월 300억 달러를 투입하되 연말까지 영리 전환이 조건<br><span class="src"><a href="https://fidelity.com/news/article/default/202503312313RTRSNEWSCOMBINED_L3N3QE1DP_1" target="_blank" rel="noopener">Reuters(Fidelity 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2024-10-02</div><div><div class="ti">66억 달러 조달, 기업가치 1,570억 달러</div><div class="meta">스라이브 캐피털 주도, 마이크로소프트·엔비디아·소프트뱅크·MGX 참여<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2024-10-02/openai-has-closed-new-funding-round-raising-over-6-5-billion" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2024-02-17</div><div><div class="ti">직원 지분 매각, 기업가치 860억 달러</div><div class="meta">스라이브 캐피털 주도의 텐더 오퍼 완료, 기업가치 860억 달러<br><span class="src"><a href="https://www.bnnbloomberg.ca/openai-deal-lets-employees-sell-shares-at-86-billion-valuation-1.2036074" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div></section><section id="others"><div class="sh"><span class="no">04</span><h2>주목받는 상장</h2><span class="en">IPO WATCH</span></div><p class="note">신청 · 준비 보도 — 조사해 둔 기록 · 상장을 마친 회사는 뺌</p><div class="ocs"><div class="oc"><div class="h"><b>Nscale</b><span class="chip red">상장 신청</span></div><div class="d">2026-09-18</div><p>SEC에 S-1 공개 제출, 뉴욕증권거래소 NSCL로 상장 신청. 주관사 골드만삭스·JP모건·모건스탠리. 2026년 상반기 매출 1억 4,060만 달러, 순손실 10억 2,000만 달러. 공모 규모 확인 못 함</p><div class="src"><a href="https://www.sec.gov/Archives/edgar/data/0002110365/000119312526395475/ck0002110365-20260918.htm" target="_blank" rel="noopener">SEC EDGAR ↗</a> · 확인 막힘</div></div><div class="oc"><div class="h"><b>무신사</b><span class="chip red">상장 신청</span></div><div class="d">2026-09-07</div><p>한국거래소에 유가증권시장 상장예비심사 신청. 상장 예정 2억 2,783만 주 중 2,660만 주 공모, 주관사 한국투자증권·씨티그룹글로벌마켓증권. 공모가·상장일 미정</p><div class="src"><a href="https://www.hankyung.com/article/2026090796526" target="_blank" rel="noopener">한국경제 ↗</a></div></div><div class="oc"><div class="h"><b>Discord</b><span class="chip red">상장 신청</span></div><div class="d">2026-01</div><p>1월 비공개 신청, 3월 상장 가능성 보도. 이후 상장 완료 소식은 확인 못 함</p><div class="src"><a href="https://techcrunch.com/2026/01/07/discords-ipo-could-happen-in-march/" target="_blank" rel="noopener">TechCrunch ↗</a></div></div><div class="oc"><div class="h"><b>Kraken(Payward)</b><span class="chip red">상장 신청</span></div><div class="d">2026-09</div><p>2025년 11월 S-1 초안 비공개 제출 후 상장 보류, 2027년 중반 상장 관측. 회사는 새 일정 미확인</p><div class="src"><a href="https://www.crowdfundinsider.com/2026/09/305481-payward-puts-kraken-ipo-on-hold-as-sources-point-to-mid-2027-debut/" target="_blank" rel="noopener">Crowdfund Insider ↗</a></div></div><div class="oc"><div class="h"><b>Databricks</b><span class="chip">준비 보도</span></div><div class="d">2026-08-13</div><p>50억 달러를 기업가치 1,900억 달러에 조달. 고드시 CEO는 2026년을 상장하기 나쁜 해라고 했고 S-1 비공개 제출도 하지 않은 상태</p><div class="src"><a href="https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/" target="_blank" rel="noopener">TechCrunch ↗</a></div></div><div class="oc"><div class="h"><b>Stripe</b><span class="chip">준비 보도</span></div><div class="d">2026-02-24</div><p>직원·주주 대상 텐더 오퍼로 기업가치 1,590억 달러. 상장 신청·일정 발표 없음</p><div class="src"><a href="https://www.cnbc.com/2026/02/24/stripe-value-stock-sale-tender-offer.html" target="_blank" rel="noopener">CNBC ↗</a></div></div><div class="oc"><div class="h"><b>토스(비바리퍼블리카)</b><span class="chip">준비 보도</span></div><div class="d">2026-07-06</div><p>미국 나스닥 ADR 상장 계획 보류, 연내 상장은 어렵다는 관계자 발언. 당초 기대 기업가치 10조~20조 원</p><div class="src"><a href="https://www.sedaily.com/article/20064327" target="_blank" rel="noopener">서울경제 ↗</a></div></div><div class="oc"><div class="h"><b>리벨리온</b><span class="chip">준비 보도</span></div><div class="d">2026-06-10</div><p>국민성장펀드 투자 유치 후 코스피 대신 코스닥 상장에 무게가 실린다는 보도. 예비심사 청구 여부는 확인 못 함</p><div class="src"><a href="https://www.investchosun.com/site/data/html_dir/2026/06/10/2026061080180.html" target="_blank" rel="noopener">인베스트조선 ↗</a></div></div></div></section>
+<style>.item .ti{font-size:14px;line-height:1.6}.item{padding:12px 0}.item .meta{line-height:1.7}.src{font-size:11.5px;color:var(--ink3)}.src a{color:inherit}.st{border:1px solid var(--line);padding:14px 16px;margin-top:12px}.st h3{font-size:16px;font-weight:800;margin:0 0 6px}.st .s{font-size:12px;font-weight:700;margin-bottom:8px}.st p{font-size:13px;line-height:1.75;margin:0;color:var(--ink2)}.ocs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:14px}.oc{border:1px solid var(--line);padding:12px 14px}.oc .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.oc .h b{font-size:14px}.oc .d{font-size:12px;font-weight:700;color:var(--ink2);margin-top:3px}.oc p{font-size:12.5px;line-height:1.65;margin:6px 0;color:var(--ink2)}.nl{font-size:12.5px;line-height:1.8;color:var(--ink2);padding-left:18px}</style><div class="tiles"><div class="tile"><div class="l">최근 뉴스</div><div class="v">36건</div><div class="c" style="color:var(--ink3)">최근 7일</div></div><div class="tile"><div class="l">상장 신청</div><div class="v">4곳</div><div class="c" style="color:var(--ink3)">신청·심사 단계</div></div><div class="tile"><div class="l">준비 보도</div><div class="v">4곳</div><div class="c" style="color:var(--ink3)">관측 단계</div></div></div><div class="st"><h3>Anthropic</h3><div class="s">비상장 · 2026-06-01 SEC에 S-1 초안 비공개 제출 · 공개 S-1·티커·공모가·상장일 미확정</div><p>2026-06-01 S-1 초안을 SEC에 비공개 제출했다고 회사가 직접 발표했고, 직전 시리즈H(650억 달러)에서 기업가치 9,650억 달러를 인정받음. 이후 보도는 주관사(모건스탠리·골드만삭스 주도, JP모건 참여), 나스닥 선택, 최대 1,000억 달러 조달·약 2조 달러 가치 논의로 이어졌으나 회사가 확인한 것은 없음. 일정 관측은 10월 → 10월 중순 마케팅 → 11월 9일 주 로드쇼·추수감사절 전 거래로 계속 밀렸고, 조사일 현재 공개 S-1은 확인되지 않음</p></div><div class="st"><h3>OpenAI</h3><div class="s">비상장 · 2026-06-08 SEC에 등록신청서 초안 비공개 제출 · CEO가 2026년 상장 배제, CFO는 2027년 상장 언급</div><p>2025-10-28 공익법인(OpenAI Group PBC) 전환을 마친 뒤 2026-03-31 1,220억 달러를 투자 후 가치 8,520억 달러에 조달했고, 2026-06-08 IPO 서류를 비공개 제출했다고 밝힘. 이후 올트먼 CEO가 1조 달러 가치를 고수해 2027년으로 미룬다는 보도가 나왔고, 9월에는 본인이 안전 문제를 이유로 2026년 상장은 없다고 발언. 9월 말에는 IPO 전 300억 달러 이상을 약 1조 4,000억 달러 가치로 조달하는 초기 협의 보도가 나옴</p></div><section id="news"><div class="sh"><span class="no">01</span><h2>최근 뉴스</h2><span class="en">LATEST NEWS</span></div><p class="note">네이버 뉴스 검색 · 최근 7일 · 제목에 회사 이름과 상장 관련 낱말이 함께 있는 기사만 · NEW = 24시간 내</p><div class="subh"><h3>Anthropic</h3><span class="en">10건</span></div><div class="item wide"><div class="n">한국경제</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.hankyung.com/article/202610082204i" target="_blank" rel="noopener">"앤트로픽 상장은 터무니 없다…기존 투자자만 이득"[박신영의 개장전 ...</a></div><div class="meta">7시간 전</div></div></div><div class="item wide"><div class="n">디지털투데이</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=705832" target="_blank" rel="noopener">"2700조원? 말도 안돼. 2026년 가장 황당한 IPO"…앤트로픽에 날 선 경고</a></div><div class="meta">20시간 전</div></div></div><div class="item wide"><div class="n">news.einfomax.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://news.einfomax.co.kr/news/articleView.html?idxno=4438243" target="_blank" rel="noopener">美리서치 "앤트로픽 적정가치 1천500억달러…2조달러 IPO는 터무니없어...</a></div><div class="meta">22시간 전</div></div></div><div class="item wide"><div class="n">토큰포스트</div><div><div class="ti"><a href="https://www.tokenpost.kr/news/ai/419500" target="_blank" rel="noopener">앤트로픽 비공개 S-1 제출…연환산 매출 300억달러 넘어</a></div><div class="meta">10/8 01:24</div></div></div><div class="item wide"><div class="n">토큰포스트</div><div><div class="ti"><a href="https://www.tokenpost.kr/news/insights/419175" target="_blank" rel="noopener">앤트로픽 IPO 기대에 선물 미결제약정 5배…카이코 리서치, 거래소 간 가...</a></div><div class="meta">10/7 11:24</div></div></div><div class="item wide"><div class="n">한국경제</div><div><div class="ti"><a href="https://www.hankyung.com/article/2026100663461" target="_blank" rel="noopener">[데스크 칼럼] 앤트로픽의 이상한 IPO</a></div><div class="meta">10/7 01:01</div></div></div><div class="item wide"><div class="n">economytalk.kr</div><div><div class="ti"><a href="http://www.economytalk.kr/news/articleView.html?idxno=424503" target="_blank" rel="noopener">11월 상장 앞둔 앤트로픽, 눈덩이 적자에 美 국방부 사용 중단까지 '겹악...</a></div><div class="meta">10/6 16:52</div></div></div><div class="item wide"><div class="n">segyebiz.com</div><div><div class="ti"><a href="http://www.segyebiz.com/newsView/20261005505722?OutUrl=naver" target="_blank" rel="noopener">[오현승의 IT 스토리] 기업가치 2조달러?…‘AI 공룡’ 앤트로픽 IPO 초읽...</a></div><div class="meta">10/5 14:02</div></div></div><div class="item wide"><div class="n">ajunews.com</div><div><div class="ti"><a href="https://www.ajunews.com/view/20261004161541017" target="_blank" rel="noopener">[인문자의 앤트로픽 이야기 | 인간·문화·자연] 앤트로픽 상장, 반도체...</a></div><div class="meta">10/4 16:24</div></div></div><div class="item wide"><div class="n">coinreaders.com</div><div><div class="ti"><a href="http://coinreaders.com/261504" target="_blank" rel="noopener">앤트로픽 IPO 앞두고 '2조 달러' 베팅…하이퍼리퀴드 프리IPO 상품, 사도...</a></div><div class="meta">10/4 10:08</div></div></div><div class="subh"><h3>OpenAI</h3><span class="en">6건</span></div><div class="item wide"><div class="n">토큰포스트</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.tokenpost.kr/news/breaking/419976" target="_blank" rel="noopener">온도, 오픈AI 연동 비상장사 토큰 거래 상품 출시</a></div><div class="meta">7시간 전</div></div></div><div class="item wide"><div class="n">etoday.co.kr</div><div><div class="ti"><a href="https://www.etoday.co.kr/news/view/2632892" target="_blank" rel="noopener">오픈AI, IPO 미루고 몸값 높이나⋯“300억달러 조달 추진” [금리 넘어선...</a></div><div class="meta">10/6 15:10</div></div></div><div class="item wide"><div class="n">dt.co.kr</div><div><div class="ti"><a href="https://www.dt.co.kr/article/12087516?ref=naver" target="_blank" rel="noopener">“IPO 미룬 오픈AI, 300억달러 투자 유치 논의 중”</a></div><div class="meta">10/6 08:19</div></div></div><div class="item wide"><div class="n">ddaily.co.kr</div><div><div class="ti"><a href="https://www.ddaily.co.kr/page/view/2026100608055809289" target="_blank" rel="noopener">상장 미룬 오픈AI, UAE 펀드와 300억달러 투자 협상…블랙록도 참여 논의</a></div><div class="meta">10/6 08:07</div></div></div><div class="item wide"><div class="n">biz.sbs.co.kr</div><div><div class="ti"><a href="https://biz.sbs.co.kr/article_hub/20000338344?division=NAVER" target="_blank" rel="noopener">블룸버그 "IPO 미룬 오픈AI, 40조원 투자 유치 논의중"</a></div><div class="meta">10/6 07:58</div></div></div><div class="item wide"><div class="n">연합뉴스</div><div><div class="ti"><a href="https://www.yna.co.kr/view/AKR20261006016500009?input=1195m" target="_blank" rel="noopener">"IPO 미룬 오픈AI, 40조원 투자 유치 논의중"</a></div><div class="meta">10/6 07:55</div></div></div><div class="subh"><h3>그 밖의 상장</h3><span class="en">20건</span></div><div class="item wide"><div class="n">cbci.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.cbci.co.kr/news/articleView.html?idxno=613565" target="_blank" rel="noopener">몸값 135조 대어 뜬다…SK하이닉스 솔리다임, 골드만 손잡고 美 상장 시...</a></div><div class="meta">6시간 전</div></div></div><div class="item wide"><div class="n">매일경제</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.mk.co.kr/article/12171725" target="_blank" rel="noopener">[매일경제TV] 공모주 잔혹사 끊을 구원투수는</a></div><div class="meta">14시간 전</div></div></div><div class="item wide"><div class="n">the-biz.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="http://www.the-biz.co.kr/news/articleView.html?idxno=728978" target="_blank" rel="noopener">'130조 대어' 솔리다임 주관사 선정… 美 증시 입성 속도</a></div><div class="meta">15시간 전</div></div></div><div class="item wide"><div class="n">junggi.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.junggi.co.kr/news/articleView.html?idxno=38038" target="_blank" rel="noopener">베르티스, 코스닥 상장예비심사 신청…영업손실 80억</a></div><div class="meta">16시간 전</div></div></div><div class="item wide"><div class="n">newsworks.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.newsworks.co.kr/news/articleView.html?idxno=855937" target="_blank" rel="noopener">상장 결정된 바 없다더니…블룸버그 "솔리다임, 이르면 내년 뉴욕 상장...</a></div><div class="meta">19시간 전</div></div></div><div class="item wide"><div class="n">biz.heraldcorp.com</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip ink">무신사</span></div><div class="ti"><a href="https://biz.heraldcorp.com/article/10896824?ref=naver" target="_blank" rel="noopener">얼어붙은 3분기 IPO 시장…무신사·소노, 구원투수될까</a></div><div class="meta">19시간 전</div></div></div><div class="item wide"><div class="n">ebn.co.kr</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.ebn.co.kr/news/articleView.html?idxno=1727151" target="_blank" rel="noopener">대신증권 중소형 IPO서 두각…하반기 존재감 키웠다</a></div><div class="meta">20시간 전</div></div></div><div class="item wide"><div class="n">뉴스1</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.news1.kr/world/international-economy/6313962" target="_blank" rel="noopener">"SK하이닉스의 솔리다임, 내년 美상장 추진…밸류 최대 1000억달러"</a></div><div class="meta">20시간 전</div></div></div><div class="item wide"><div class="n">이데일리</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://www.edaily.co.kr/News/Read?newsId=02407526645610952&amp;mediaCodeNo=257&amp;utm_source=naver&amp;utm_medium=referral&amp;utm_campaign=news_syndication&amp;utm_content=original_article" target="_blank" rel="noopener">"SK하이닉스 솔리다임, 내년 美IPO 위한 주관사 선정"</a></div><div class="meta">23시간 전</div></div></div><div class="item wide"><div class="n">dealsite.co.kr</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip ink">리벨리온</span></div><div class="ti"><a href="https://dealsite.co.kr/articles/170287" target="_blank" rel="noopener">[리벨리온 IPO] AI 대어 1호 타이틀 때문에…업스테이지와 수면 밑 경쟁</a></div><div class="meta">23시간 전</div></div></div><div class="item wide"><div class="n">etoday.co.kr</div><div><div class="ti"><a href="https://www.etoday.co.kr/news/view/2633408" target="_blank" rel="noopener">고객 편중 티에스모스트…IPO서 매출처 다변화 시험대 [IPO 엑스레이]</a></div><div class="meta">10/8 06:46</div></div></div><div class="item wide"><div class="n">newspim.com</div><div><div class="ti"><a href="https://www.newspim.com/news/view/20261007000494" target="_blank" rel="noopener">기술특례 상장사 8할이 적자…A·A 받은 10곳도 관리종목·거래정지</a></div><div class="meta">10/8 06:00</div></div></div><div class="item wide"><div class="n">startuptoday.co.kr</div><div><div class="ti"><a href="https://www.startuptoday.co.kr/news/articleView.html?idxno=815288" target="_blank" rel="noopener">[분석] IPO 보릿고개 끝나나…10월 공모주 봇물 속 '대어' 대기중</a></div><div class="meta">10/8 04:50</div></div></div><div class="item wide"><div class="n">todaykorea.co.kr</div><div><div class="ti"><a href="https://www.todaykorea.co.kr/news/articleView.html?idxno=406894" target="_blank" rel="noopener">[이슈PICK+] "4분기는 다르다"···IPO 시장, 10월 상장 러시에 반등 모...</a></div><div class="meta">10/7 17:50</div></div></div><div class="item wide"><div class="n">metroseoul.co.kr</div><div><div class="chips"><span class="chip ink">무신사</span></div><div class="ti"><a href="http://www.metroseoul.co.kr/article/20261007500403" target="_blank" rel="noopener">매출 늘고 이익 줄고…IPO 앞둔 무신사, 8조 몸값 '시험대'</a></div><div class="meta">10/7 15:40</div></div></div><div class="item wide"><div class="n">daily.hankooki.com</div><div><div class="ti"><a href="https://daily.hankooki.com/news/articleView.html?idxno=1412794" target="_blank" rel="noopener">공모주 시장 살아나나…이달 대어급 IPO에 수급 분산 변수</a></div><div class="meta">10/7 15:36</div></div></div><div class="item wide"><div class="n">newswell.co.kr</div><div><div class="ti"><a href="http://www.newswell.co.kr/news/articleView.html?idxno=22499" target="_blank" rel="noopener">'티에스모스트·키노톤·뱅크샐러드' 코스닥 상장</a></div><div class="meta">10/7 11:32</div></div></div><div class="item wide"><div class="n">kukinews.com</div><div><div class="ti"><a href="https://www.kukinews.com/article/view/kuk202610070053" target="_blank" rel="noopener">‘1조 대어’ 엘리스그룹, 일반공모 돌입…“기업가치 변수는 사업 확장...</a></div><div class="meta">10/7 10:44</div></div></div><div class="item wide"><div class="n">thebell.co.kr</div><div><div class="ti"><a href="https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610060914251720106013" target="_blank" rel="noopener">[더벨]노벨티노빌리티, c-Kit ADC 기술이전 '상장 재도전' 근거</a></div><div class="meta">10/7 07:02</div></div></div><div class="item wide"><div class="n">newspim.com</div><div><div class="ti"><a href="https://www.newspim.com/news/view/20261006001045" target="_blank" rel="noopener">[솔리다임 IPO 논란] ① 10조원 주고 산 회사…쪼개기 상장 아니다</a></div><div class="meta">10/7 06:00</div></div></div></section><section id="c-anthropic"><div class="sh"><span class="no">02</span><h2>Anthropic 타임라인</h2><span class="en">TIMELINE</span></div><p class="note">조사해 둔 기록 · 최신 순 · 기업가치와 상장 시기는 보도 기준이며 확정이 아님</p><div class="item wide"><div class="n">2026-10-01</div><div><div class="ti">10월 14일 투자자 행사, 11월 9일 주 로드쇼 관측</div><div class="meta">블룸버그 보도. 10월 14일 샌프란시스코 본사에서 투자자 행사, 이르면 11월 9일 주 공식 마케팅 개시·추수감사절 전 거래 관측. 잠재 투자자들은 1조 8,000억~2조 달러를 적정 가치로 봄. 대변인은 논평 거부<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-10-01/anthropic-is-said-to-plan-pre-ipo-investor-day-as-listing-nears" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-28</div><div><div class="ti">투자설명서 초안 내용 보도</div><div class="meta">로이터가 입수한 261쪽 초안 기준 2025년 매출 약 46억 달러(12배 성장), 영업손실 80억 달러 이상, 순손실 420억 달러, 클라우드·컴퓨팅 약정 5,180억 달러. 매출의 약 4분의 1이 고객 2곳에서 발생<br><span class="src"><a href="https://www.cnbc.com/2026/09/28/anthropics-ipo-prospectus-shows-sweeping-ai-vision-surging-costs-reuters.html" target="_blank" rel="noopener">Reuters(CNBC 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-09-13</div><div><div class="ti">상장 거래소로 나스닥 선택 보도</div><div class="meta">블룸버그 보도. 스페이스X 이상 규모 조달을 목표로 나스닥을 선택. 회사는 거래소·일정을 공식 확인하지 않음<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-09-13/anthropic-said-to-choose-nasdaq-for-much-anticipated-ipo-listing" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-11</div><div><div class="ti">엔비디아, IPO에 최대 100억 달러 투자 검토 보도</div><div class="meta">로이터 보도. 앤트로픽은 최대 1,000억 달러 조달·약 2조 달러 기업가치를 논의 중이며 엔비디아가 앵커 투자자 참여를 협의. 양사 모두 확인하지 않음<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2026-09-11/nvidia-in-talks-to-invest-up-to-10b-in-anthropic-ipo-reuters" target="_blank" rel="noopener">Bloomberg(로이터 인용) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-09-05</div><div><div class="ti">IPO 개시 10월 중순으로 이동 보도</div><div class="meta">로이터 보도. 투자설명서 공개가 9월 말로 미뤄지고 IPO 마케팅은 10월 중순 개시 관측<br><span class="src"><a href="https://www.cnbc.com/2026/09/05/anthropic-ipo-launch-shifts-toward-mid-october-reuters.html" target="_blank" rel="noopener">Reuters(CNBC 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-04</div><div><div class="ti">주관사로 모건스탠리·골드만삭스 선정 보도</div><div class="meta">블룸버그 보도. 모건스탠리와 골드만삭스가 주도하고 JP모건도 참여, 이르면 10월 상장 검토. 은행 추가 가능성 언급<br><span class="src"><a href="https://finance.yahoo.com/markets/stocks/articles/anthropic-said-pick-morgan-stanley-175802678.html" target="_blank" rel="noopener">Bloomberg(Yahoo Finance 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-01</div><div><div class="ti">SEC에 S-1 초안 비공개 제출 공식 발표</div><div class="meta">보통주 IPO를 위한 Form S-1 등록신청서 초안을 SEC에 비공개 제출. 주식 수와 공모가는 미정이며 상장은 시장 상황 등에 달렸다고 명시<br><span class="src"><a href="https://www.anthropic.com/news/confidential-draft-s1-sec" target="_blank" rel="noopener">Anthropic ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-05-28</div><div><div class="ti">시리즈H 650억 달러, 기업가치 9,650억 달러</div><div class="meta">알티미터·드래고니어·그리노크스·세쿼이아 주도. 하이퍼스케일러의 기존 약정 150억 달러(아마존 50억 달러 포함) 포함. 투자 후 기업가치 9,650억 달러<br><span class="src"><a href="https://www.orrick.com/en/News/2026/05/Anthropic-Raises-65B-Series-H-at-965B-Post-Money-Valuation" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-04</div><div><div class="ti">텐더 오퍼 종료, 목표 규모에 못 미침</div><div class="meta">투자 전 3,500억 달러 가치로 마감. 50억~60억 달러 매각을 준비했으나 직원들이 IPO를 앞두고 보유를 택해 매물이 투자 수요보다 적었음<br><span class="src"><a href="https://www.tipranks.com/news/anthropic-wraps-up-tender-offer-as-employees-resist-selling-shares-ahead-of-ipo" target="_blank" rel="noopener">TipRanks ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2026-02-12</div><div><div class="ti">시리즈G 300억 달러, 기업가치 3,800억 달러</div><div class="meta">GIC·코투 주도로 300억 달러 조달, 투자 후 기업가치 3,800억 달러. 앞서 발표된 마이크로소프트·엔비디아 투자 일부 포함<br><span class="src"><a href="https://www.orrick.com/en/News/2026/02/Anthropic-Raises-30B-Series-G-at-380B-Post-Money-Valuation" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-02-04</div><div><div class="ti">직원 지분 매각(텐더 오퍼) 계획 보도</div><div class="meta">투자 전 기업가치 3,500억 달러 기준으로 직원이 주식을 팔 수 있게 하는 거래 추진. 200억 달러 이상 규모의 자금 조달과 병행<br><span class="src"><a href="https://news.bloomberglaw.com/tech-and-telecom-law/anthropic-plans-employee-tender-offer-at-350-billion-valuation" target="_blank" rel="noopener">Bloomberg ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-12-02</div><div><div class="ti">IPO 준비 위해 로펌 윌슨 손시니 선임 보도</div><div class="meta">FT 보도를 로이터가 전함. 이르면 2026년 상장 가능성, 투자은행과 초기 논의 중이나 주관사는 미선정. 회사 대변인은 "상장 시기나 여부를 결정하지 않았다"고 밝힘<br><span class="src"><a href="https://www.marketscreener.com/news/anthropic-plans-an-ipo-as-early-as-2026-ft-reports-ce7d51d9d08cf326" target="_blank" rel="noopener">Reuters(MarketScreener 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-11-18</div><div><div class="ti">마이크로소프트·엔비디아 최대 150억 달러 투자 발표</div><div class="meta">엔비디아 최대 100억 달러, 마이크로소프트 최대 50억 달러 투자. 앤트로픽은 애저 컴퓨팅 300억 달러 구매 약정<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2025-11-18/microsoft-nvidia-to-invest-up-to-15-billion-in-anthropic" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-09-02</div><div><div class="ti">시리즈F 130억 달러, 기업가치 1,830억 달러</div><div class="meta">ICONIQ 주도, 피델리티·라이트스피드 공동 주도로 130억 달러 조달, 투자 후 기업가치 1,830억 달러<br><span class="src"><a href="https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation" target="_blank" rel="noopener">Anthropic ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-03</div><div><div class="ti">시리즈E 35억 달러, 기업가치 615억 달러</div><div class="meta">라이트스피드 벤처 파트너스 주도로 35억 달러 조달, 투자 후 기업가치 615억 달러<br><span class="src"><a href="https://orrick.com/News/2025/03/Anthropic-Raises-3-point-5-Billion-to-Advance-AI-Development-and-Expand-Compute-Capacity" target="_blank" rel="noopener">Orrick ↗</a></span></div></div></div></section><section id="c-openai"><div class="sh"><span class="no">03</span><h2>OpenAI 타임라인</h2><span class="en">TIMELINE</span></div><p class="note">조사해 둔 기록 · 최신 순 · 기업가치와 상장 시기는 보도 기준이며 확정이 아님</p><div class="item wide"><div class="n">2026-09-29</div><div><div class="ti">IPO 전 300억 달러 이상 조달 협의 보도</div><div class="meta">투자 전 기업가치 약 1조 4,000억 달러로 최소 300억 달러를 조달하는 초기 협의. 조건은 바뀔 수 있음<br><span class="src"><a href="https://www.rdworldonline.com/openai-reportedly-seeks-30-billion-after-delaying-ipo/" target="_blank" rel="noopener">R&amp;D World(블룸버그 인용) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-09-11</div><div><div class="ti">올트먼 "2026년 상장은 없다"</div><div class="meta">포천 인터뷰에서 "안전과 관련해 벌어지는 일을 고려하면 지금 상장하는 것은 부적절"하다고 발언. 2027년 여부는 확답하지 않음<br><span class="src"><a href="https://www.cnbc.com/2026/09/12/anthropics-amodei-proposes-plan-to-slow-the-pace-of-advancing-ai-capabilities.html" target="_blank" rel="noopener">CNBC ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-08-19</div><div><div class="ti">CFO, 직원들에게 "2027년에 상장사가 될 것"</div><div class="meta">프라이어 CFO가 전사 회의에서 2027년 상장을 언급하고 사업이 계속 가속하면 더 빨라질 수 있다고 발언. "IPO는 결승선이 아니라 또 한 번의 자금 조달"<br><span class="src"><a href="https://www.cnbc.com/2026/08/19/open-ai-ipo-timing-2027-friar.html" target="_blank" rel="noopener">CNBC ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-26</div><div><div class="ti">IPO 2027년으로 연기 관측 보도</div><div class="meta">뉴욕타임스 보도 인용. 자문단이 2027년 1조 달러 상장과 가치를 낮춘 조기 상장 두 안을 제시했고 올트먼은 1조 달러 미만은 "논외"라는 입장<br><span class="src"><a href="https://the-decoder.com/altman-wont-go-public-for-less-than-1-trillion-so-openais-ipo-may-slip-to-2027/" target="_blank" rel="noopener">The Decoder(NYT 인용) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-06-08</div><div><div class="ti">SEC에 IPO 서류 비공개 제출 발표</div><div class="meta">등록신청서 초안을 SEC에 비공개 제출. 회사는 "시기는 정하지 않았고 꽤 걸릴 수 있다"고 밝힘. 직전 기업가치는 투자 후 8,520억 달러<br><span class="src"><a href="https://techcrunch.com/2026/06/08/following-anthropic-openai-files-confidentially-for-ipo/" target="_blank" rel="noopener">TechCrunch ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-05-21</div><div><div class="ti">9월 상장 목표·IPO 신청 임박 보도</div><div class="meta">CNBC·WSJ 인용 보도. 이르면 그 주에 비공개 제출, 9월 상장 목표이나 계획은 유동적. 올트먼 CEO는 빠른 상장, 프라이어 CFO는 신중론<br><span class="src"><a href="https://news.mtn.co.kr/news-detail/2026052104373670130" target="_blank" rel="noopener">머니투데이방송(MTN) ↗</a></span></div></div></div><div class="item wide"><div class="n">2026-03-31</div><div><div class="ti">1,220억 달러 조달 마감, 기업가치 8,520억 달러</div><div class="meta">아마존 500억 달러(150억 달러 우선), 엔비디아·소프트뱅크 각 300억 달러 등. 은행 채널로 개인 투자자에게서 약 30억 달러 유치. 월 매출 20억 달러<br><span class="src"><a href="https://finance.yahoo.com/markets/stocks/articles/openai-closes-122bn-funding-round-093126735.html" target="_blank" rel="noopener">Yahoo Finance ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-10-29</div><div><div class="ti">최대 1조 달러 가치 IPO 준비 보도</div><div class="meta">로이터 보도. 이르면 2026년 하반기 신청 검토, 최소 600억 달러 조달 초기 논의. 프라이어 CFO는 2027년 상장 목표를 주변에 언급. 대변인은 "IPO는 우리의 초점이 아니다"라고 밝힘<br><span class="src"><a href="https://www.marketscreener.com/news/openai-lays-groundwork-for-juggernaut-ipo-at-up-to-1-trillion-valuation-ce7d5dd2d089f626" target="_blank" rel="noopener">Reuters(MarketScreener 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-10-28</div><div><div class="ti">자본 재편 완료, OpenAI Group PBC 출범</div><div class="meta">비영리는 OpenAI 재단으로 개칭해 PBC를 통제하고 1,300억 달러 이상 가치의 지분 보유. 마이크로소프트 지분은 약 27%(약 1,350억 달러)<br><span class="src"><a href="https://dc.fortune.com/2025/10/28/openai-for-profit-restructuring-microsoft-stake/" target="_blank" rel="noopener">Fortune ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-10</div><div><div class="ti">직원 지분 약 66억 달러 매각, 기업가치 5,000억 달러</div><div class="meta">전·현직 직원이 스라이브·소프트뱅크·드래고니어·MGX·티로프라이스 등에 약 66억 달러어치 매각. 승인 한도 100억 달러 이상 중 일부만 매각<br><span class="src"><a href="https://www.nst.com.my/amp/business/corporate/2025/10/1285828/openai-hits-us500-billion-valuation-after-share-sale-softbank" target="_blank" rel="noopener">Reuters(NST 게재) ↗</a></span></div></div></div><div class="item wide"><div class="n">2025-05-05</div><div><div class="ti">비영리가 통제권 유지, 영리 부문은 PBC로 전환 발표</div><div class="meta">영리 LLC를 공익법인(PBC)으로 바꾸되 비영리가 계속 통제하고 대주주로 남는다고 발표. 기존의 통제권 이전 계획 철회<br><span class="src"><a href="https://openai.com/index/evolving-our-structure/" target="_blank" rel="noopener">OpenAI ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2025-03-31</div><div><div class="ti">소프트뱅크 주도 최대 400억 달러 조달, 기업가치 3,000억 달러</div><div class="meta">소프트뱅크가 4월 중순 100억 달러, 12월 300억 달러를 투입하되 연말까지 영리 전환이 조건<br><span class="src"><a href="https://fidelity.com/news/article/default/202503312313RTRSNEWSCOMBINED_L3N3QE1DP_1" target="_blank" rel="noopener">Reuters(Fidelity 게재) ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2024-10-02</div><div><div class="ti">66억 달러 조달, 기업가치 1,570억 달러</div><div class="meta">스라이브 캐피털 주도, 마이크로소프트·엔비디아·소프트뱅크·MGX 참여<br><span class="src"><a href="https://www.bloomberg.com/news/articles/2024-10-02/openai-has-closed-new-funding-round-raising-over-6-5-billion" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div><div class="item wide"><div class="n">2024-02-17</div><div><div class="ti">직원 지분 매각, 기업가치 860억 달러</div><div class="meta">스라이브 캐피털 주도의 텐더 오퍼 완료, 기업가치 860억 달러<br><span class="src"><a href="https://www.bnnbloomberg.ca/openai-deal-lets-employees-sell-shares-at-86-billion-valuation-1.2036074" target="_blank" rel="noopener">Bloomberg ↗</a> · 확인 막힘</span></div></div></div></section><section id="others"><div class="sh"><span class="no">04</span><h2>주목받는 상장</h2><span class="en">IPO WATCH</span></div><p class="note">신청 · 준비 보도 — 조사해 둔 기록 · 상장을 마친 회사는 뺌</p><div class="ocs"><div class="oc"><div class="h"><b>Nscale</b><span class="chip red">상장 신청</span></div><div class="d">2026-09-18</div><p>SEC에 S-1 공개 제출, 뉴욕증권거래소 NSCL로 상장 신청. 주관사 골드만삭스·JP모건·모건스탠리. 2026년 상반기 매출 1억 4,060만 달러, 순손실 10억 2,000만 달러. 공모 규모 확인 못 함</p><div class="src"><a href="https://www.sec.gov/Archives/edgar/data/0002110365/000119312526395475/ck0002110365-20260918.htm" target="_blank" rel="noopener">SEC EDGAR ↗</a> · 확인 막힘</div></div><div class="oc"><div class="h"><b>무신사</b><span class="chip red">상장 신청</span></div><div class="d">2026-09-07</div><p>한국거래소에 유가증권시장 상장예비심사 신청. 상장 예정 2억 2,783만 주 중 2,660만 주 공모, 주관사 한국투자증권·씨티그룹글로벌마켓증권. 공모가·상장일 미정</p><div class="src"><a href="https://www.hankyung.com/article/2026090796526" target="_blank" rel="noopener">한국경제 ↗</a></div></div><div class="oc"><div class="h"><b>Discord</b><span class="chip red">상장 신청</span></div><div class="d">2026-01</div><p>1월 비공개 신청, 3월 상장 가능성 보도. 이후 상장 완료 소식은 확인 못 함</p><div class="src"><a href="https://techcrunch.com/2026/01/07/discords-ipo-could-happen-in-march/" target="_blank" rel="noopener">TechCrunch ↗</a></div></div><div class="oc"><div class="h"><b>Kraken(Payward)</b><span class="chip red">상장 신청</span></div><div class="d">2026-09</div><p>2025년 11월 S-1 초안 비공개 제출 후 상장 보류, 2027년 중반 상장 관측. 회사는 새 일정 미확인</p><div class="src"><a href="https://www.crowdfundinsider.com/2026/09/305481-payward-puts-kraken-ipo-on-hold-as-sources-point-to-mid-2027-debut/" target="_blank" rel="noopener">Crowdfund Insider ↗</a></div></div><div class="oc"><div class="h"><b>Databricks</b><span class="chip">준비 보도</span></div><div class="d">2026-08-13</div><p>50억 달러를 기업가치 1,900억 달러에 조달. 고드시 CEO는 2026년을 상장하기 나쁜 해라고 했고 S-1 비공개 제출도 하지 않은 상태</p><div class="src"><a href="https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/" target="_blank" rel="noopener">TechCrunch ↗</a></div></div><div class="oc"><div class="h"><b>Stripe</b><span class="chip">준비 보도</span></div><div class="d">2026-02-24</div><p>직원·주주 대상 텐더 오퍼로 기업가치 1,590억 달러. 상장 신청·일정 발표 없음</p><div class="src"><a href="https://www.cnbc.com/2026/02/24/stripe-value-stock-sale-tender-offer.html" target="_blank" rel="noopener">CNBC ↗</a></div></div><div class="oc"><div class="h"><b>토스(비바리퍼블리카)</b><span class="chip">준비 보도</span></div><div class="d">2026-07-06</div><p>미국 나스닥 ADR 상장 계획 보류, 연내 상장은 어렵다는 관계자 발언. 당초 기대 기업가치 10조~20조 원</p><div class="src"><a href="https://www.sedaily.com/article/20064327" target="_blank" rel="noopener">서울경제 ↗</a></div></div><div class="oc"><div class="h"><b>리벨리온</b><span class="chip">준비 보도</span></div><div class="d">2026-06-10</div><p>국민성장펀드 투자 유치 후 코스피 대신 코스닥 상장에 무게가 실린다는 보도. 예비심사 청구 여부는 확인 못 함</p><div class="src"><a href="https://www.investchosun.com/site/data/html_dir/2026/06/10/2026061080180.html" target="_blank" rel="noopener">인베스트조선 ↗</a></div></div></div></section>
 <footer><p>타임라인·주목받는 상장 — 2026-10-04 조사 기록(data/ipo_watch.json) · 출처 주소 37개 중 24개는 2026-10-04에 열어 기사 제목이 내용과 맞는지 대조함 · '확인 막힘' 표시는 자동 접속이 막혀 대조하지 못한 주소(브라우저에서는 열릴 수 있음)</p><p>최근 뉴스 — 네이버 뉴스 검색, 평일 아침 수집</p><p class="w">비상장 회사의 기업가치·상장 시기는 보도와 관측이며 확정이 아님 · 투자 판단의 참고 자료</p></footer>
 <button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
 </div>
@@ -279,7 +413,16 @@ footer .w{color:var(--ink2);margin-top:7px}
     if(!a)return;
     ev.preventDefault();
     var el=document.getElementById(a.getAttribute("href").slice(1));
-    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+    if(!el)return;
+    /* 접힌 묶음('더 보기' 뒤) 안의 항목이면 먼저 편다 */
+    var hid=el.closest("[hidden]"),n=0;
+    while(hid&&n++<5){
+      hid.hidden=false;
+      var mb=hid.id&&document.querySelector('.morebtn[data-more="'+hid.id+'"]');
+      if(mb)mb.hidden=true;
+      hid=el.closest("[hidden]");
+    }
+    el.scrollIntoView({behavior:"smooth",block:"start"});
   });
 
 
@@ -324,6 +467,32 @@ footer .w{color:var(--ink2);margin-top:7px}
         if(d) body.appendChild(d);
       });
     });
+  });
+
+  /* 구분 필터(.pf button[data-f]) — 같은 섹션 안의 [data-f] 줄·묶음만 남긴다.
+     data-f 가 빈 버튼은 '전체'. 묶음(.fgrp)은 보이는 줄이 하나도 없으면 함께 숨긴다. */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".pf button[data-f]");
+    if(!b)return;
+    var bar=b.closest(".pf"),scope=bar.getAttribute("data-scope");
+    var root=scope?document.getElementById(scope):bar.parentNode;
+    if(!root)return;
+    var f=b.getAttribute("data-f")||"";
+    [].forEach.call(bar.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b)});
+    [].forEach.call(root.querySelectorAll("[data-f]:not(button)"),function(r){
+      r.hidden=!!f&&r.getAttribute("data-f")!==f});
+    [].forEach.call(root.querySelectorAll(".fgrp"),function(g){
+      g.hidden=!g.querySelector("[data-f]:not(button):not([hidden])")});
+  });
+
+  /* 더 보기(.morebtn[data-more]) — 접힌 묶음(id)을 펴고 버튼은 사라진다 */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".morebtn[data-more]");
+    if(!b)return;
+    ev.preventDefault();
+    var t=document.getElementById(b.getAttribute("data-more"));
+    if(t){t.hidden=false}
+    b.hidden=true;
   });
 
   var btn=document.getElementById("totop");
