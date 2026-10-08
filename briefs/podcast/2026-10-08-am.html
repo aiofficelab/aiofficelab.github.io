@@ -8,28 +8,29 @@
 :root{
   --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
   --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
-  --rule:rgba(32,30,29,.42); --rule-soft:rgba(32,30,29,.15);
-  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
-  --blue:#1157cf; --blue-700:#0b3d96;
-  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+  --line:#d8d4d3; --line2:#eceae9;
+  --rule:var(--ink); --rule-soft:var(--line);
+  --accent:#ec3013; --accent-700:#a02008; --accent-100:#fff2ef;
+  --blue:#1a56db; --blue-700:#0b3d96; --blue-100:#eef3ff;
+  --navy:#1f2a5c; --teal:#0f6e56; --plum:#6b3fa0; --brick:#c9290e;
+  --font:"Archivo","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
 }
 /* 다크 모드는 끈다 — 삼성 인터넷이 배경은 희게 두고 글자만 다크용 밝은 색으로
    바꿔 '흰 바탕 흰 글자'가 되던 실사례(2026-09-06, 갤럭시). 항상 라이트. */
 :root{color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
-  font:400 13px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+  font:400 13.5px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
 h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
 a{color:var(--accent-700);text-underline-offset:3px}
 a:hover{color:var(--accent)}
 b,strong{font-weight:700}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+.wrap{max-width:1012px;margin:0 auto;padding:26px 20px 44px}
 
 /* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다.
    위 여백은 없앤다: 머리글(.mast)을 접었는데도 26px 이 남아 사이트의 '아카이브'
-   줄과 본문 첫 줄 사이가 40px 가까이 벌어졌다(사용자 2026-09-07).
-   관심종목 셸(portfolio_page)에는 진작 들어가 있던 규칙이라 그쪽에 맞춘다. */
+   줄과 본문 첫 줄 사이가 40px 가까이 벌어졌다(사용자 2026-09-07). */
 body.embed{--paper:#fff}
 body.embed .wrap{max-width:none;padding-left:0;padding-right:0;padding-top:0}
 body.embed .mast{display:none}
@@ -37,64 +38,174 @@ body.embed .nav{position:static;margin-top:0}
 body.embed section{scroll-margin-top:8px}
 body.embed .totop{display:none}
 
-/* 머리 */
-.kick{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--accent)}
-.mast h1{font-size:30px;line-height:1.12;margin:7px 0 0}
-.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
-.rule{height:2px;background:var(--rule);margin:16px 0 0}
+/* ── 2026-10 리디자인 — 사이트 셸(index.html)과 같은 어휘로 맞춘다 ──
+   검은 선 2px 섹션 머리 · 검은 요약 패널(.hero/.lead) · 칩·버튼은 각진 테두리 ·
+   목록은 타일 + 본문 + 오른쪽 검은 버튼. 둥근 모서리와 왼쪽 색 띠 상자는 쓰지 않는다. */
 
-/* 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리로 버튼처럼 */
-.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
-  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
-.nav a{padding:6px 13px;font-size:12px;font-weight:700;color:var(--ink2);text-decoration:none;
-  white-space:nowrap;border:1px solid var(--rule-soft);background:var(--paper)}
-.nav a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
+/* 머리 */
+.kick{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--accent)}
+.mast h1{font-size:34px;line-height:1.1;letter-spacing:-.8px;margin:6px 0 0}
+.mast .dt{margin-top:8px;font-size:13px;color:var(--ink2)}
+.rule{height:2px;background:var(--ink);margin:14px 0 0}
+
+/* 네비 — 칩 모양 버튼 한 줄 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:8px;
+  margin:16px 0 0;padding:10px 0;background:var(--paper);border-bottom:2px solid var(--ink)}
+.nav a{display:inline-flex;align-items:center;height:40px;padding:0 14px;font-size:13px;font-weight:700;
+  color:var(--ink);text-decoration:none;white-space:nowrap;border:2px solid var(--line);background:#fff}
+.nav a:hover{border-color:var(--ink)}
 .nav .sep{flex:1;border:0}
 
-/* 섹션 */
-section{margin-top:32px;scroll-margin-top:46px}
-.sh{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--rule);padding-bottom:7px}
+/* 섹션 머리 — 번호(빨강) · 제목 · 보조 · 영문 라벨, 검은 선 2px */
+section{margin-top:40px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
 .sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
-.sh h2{font-size:17px}
-.sh .en{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--ink3)}
-.note{color:var(--ink3);font-size:11px;line-height:1.7;margin:9px 0 0}
-.note b{color:var(--ink2)}
-.lead{background:var(--paper2);border-left:3px solid var(--accent);padding:11px 14px;margin:16px 0 0;
-  font-size:14px;font-weight:700}
+.sh h2{font-size:19px;letter-spacing:-.4px}
+.sh .sub{font-size:13px;color:var(--ink2)}
+.sh .en{margin-left:auto;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--ink2)}
+.note{color:var(--ink2);font-size:11.5px;line-height:1.7;margin:10px 0 0}
+.note b{color:var(--ink)}
 
-/* 항목 카드 — 번호 · 칩 · 제목 · 날짜 · 링크 */
-.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 4px;
-  padding:16px 0;border-bottom:1px solid var(--rule-soft)}
-/* 버튼을 제목 오른쪽에 세워 목록이 세로로 길어지지 않게 한다 */
+/* 검은 요약 패널 — page(lead=) 한 줄짜리 */
+.lead{background:var(--ink);color:#fff;padding:22px 24px;margin:16px 0 0;
+  font-size:21px;font-weight:800;line-height:1.35;letter-spacing:-.4px;text-wrap:pretty}
+/* 검은 요약 패널 — hero(): 왼쪽 큰 카드(요약) + 오른쪽 카드(바로가기·주요 항목) */
+.hero{margin-top:16px;background:var(--ink);color:#fff;padding:22px;display:flex;flex-wrap:wrap;gap:18px}
+.hero .hc{flex:1 1 440px;min-width:0;border:1px solid rgba(255,255,255,.22);padding:20px 22px;
+  display:flex;flex-direction:column;gap:11px}
+.hero .hc.aside{flex:1 1 300px}
+.hero .htag{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:rgba(255,255,255,.72);letter-spacing:.5px}
+.hero .htag b{font-size:10px;font-weight:800;letter-spacing:1px;background:#fff;color:var(--ink);padding:3px 6px;line-height:1}
+.hero .htag b.red{background:var(--accent);color:#fff}
+.hero h3{font-size:22px;font-weight:800;line-height:1.3;letter-spacing:-.4px;text-wrap:pretty}
+.hero .big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.hero p{margin:0;font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);text-wrap:pretty}
+.hero p.wh{color:#fff}
+.hero .hnote{margin-top:auto;padding-top:6px;font-size:11.5px;color:rgba(255,255,255,.62)}
+.hero .hsub{font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.72)}
+.hero a{color:#fff}
+.hero .hsep{border-top:1px solid rgba(255,255,255,.22);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.hero .hbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  background:#fff;color:var(--ink);text-decoration:none;align-self:flex-start;margin-top:auto}
+.hero .hbtn:hover{background:var(--accent);color:#fff}
+.hero .hlist{display:flex;flex-direction:column}
+.hero .hlist>*{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.22);
+  color:#fff;text-decoration:none;font-size:13.5px;line-height:1.4}
+.hero .hlist .tl{width:40px;height:40px;font-size:11px}
+.hero .hlist .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.hero .hlist small{font-size:11.5px;color:rgba(255,255,255,.72)}
+.hero .hlist .hd{font-size:12px;font-weight:800;flex:0 0 64px}
+.hero .hlist .sw{width:10px;height:10px;flex:none}
+.hero .hlist .hm{color:rgba(255,255,255,.72)}
+.hero .hlist .arr{margin-left:auto;font-weight:800}
+.hero .hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hero .hgrid a{display:flex;flex-direction:column;gap:5px;padding:10px;background:#fff;color:var(--ink);text-decoration:none;min-height:44px}
+.hero .hgrid a:hover{background:var(--accent);color:#fff}
+.hero .hgrid b{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.hero .hgrid small{font-size:11px;font-weight:500}
+
+/* 숫자 줄 — 큰 카드 넷 대신 라벨 + 숫자 */
+.stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:14px}
+.stats .st{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--ink2)}
+.stats .st b{font-size:22px;letter-spacing:-.5px;color:var(--ink);font-weight:800;line-height:1}
+.stats .st.hot b{color:var(--accent)}
+
+/* 구분 필터 칩 — 색 견본 + 이름 + 건수. 누르면 .on 이 옮겨가고 [data-f] 줄만 남는다 */
+.pf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.pf .lbl{font-size:12px;color:var(--ink2);margin-right:2px}
+.pf button,.pf a{font:700 13px/1 var(--font);height:42px;padding:0 14px 0 10px;display:inline-flex;align-items:center;gap:9px;
+  border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.pf .sw{width:18px;height:18px;display:inline-block;flex:none}
+.pf .cnt{font-size:11px;color:var(--ink2);font-weight:700}
+.pf button:hover,.pf a:hover{border-color:var(--ink)}
+.pf .on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pf .on .cnt{color:rgba(255,255,255,.7)}
+.pf .on .sw{outline:2px solid #fff;outline-offset:-2px}
+
+/* 타일 — 색 사각형 + 짧은 글자(티커·구분) */
+.tl{width:56px;height:56px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:#fff;font-size:12px;font-weight:800;letter-spacing:-.3px;line-height:1.1;
+  text-align:center;padding:0 4px;overflow:hidden;word-break:break-all}
+.tl.sm{width:40px;height:40px;font-size:10px;padding:0 2px;letter-spacing:-.5px}
+.tl.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.tl.gray{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+
+/* 목록 줄 — 타일 · 본문 · 오른쪽 버튼 */
+.row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:5px}
+.row .rh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row .rh .nm{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.row .rh .nm a{color:var(--ink);text-decoration:none}
+.row .rh .nm a:hover{color:var(--accent-700)}
+.row .rh .tm{font-size:11.5px;color:var(--ink2);letter-spacing:.3px}
+.row .rt{font-size:13.5px;line-height:1.5}
+.row .rt .pl{color:var(--ink2)}
+.row .rm{font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.row .rm b{color:var(--ink)}
+.row .acts{margin:0}
+.row.dim{opacity:.72}
+.row[hidden]{display:none}
+
+/* 회사 카드·회사 줄 — AI 요약(한 줄 + 문장) + 근거 링크 칩 */
+.cogrid{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:16px}
+.cocard{border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.corow{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.corow .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.coh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.coh .nm{display:flex;flex-direction:column;gap:3px;min-width:0}
+.coh .nm b{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.coh .nm small{font-size:11px;color:var(--ink2)}
+.coh .cnt{margin-left:auto;font-size:11px;font-weight:700;border:1px solid var(--line);padding:3px 8px;color:var(--ink2);white-space:nowrap}
+.coh .chip{margin:0}
+.cocard .coh .tl{width:48px;height:48px}
+.colead{font-size:14.5px;font-weight:800;line-height:1.45;letter-spacing:-.2px}
+.corep{display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:#444141}
+.corep span{display:flex;gap:10px}
+.corep span::before{content:"";flex:none;width:6px;height:6px;margin-top:7px;background:var(--mk,var(--accent))}
+.rl{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.rl .ref{font-size:11px;font-weight:700;border:1px solid var(--line);padding:4px 8px;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.rl .ref:hover{border-color:var(--ink);color:var(--ink)}
+.flow{display:flex;gap:10px;align-items:baseline;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+.flow .k{font-weight:700;letter-spacing:.5px}
+.flow a{font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap}
+
+/* 항목 카드(기존 item) — 번호 · 칩 · 제목 · 날짜 · 링크. 새 톤으로만 손본다 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;
+  padding:14px 0;border-bottom:1px solid var(--line)}
 .item.side{grid-template-columns:34px minmax(0,1fr) auto}
 .item .ex{align-self:center;padding-left:14px}
 .item .ex .acts{margin-top:0;justify-content:flex-end}
 .item:last-child{border-bottom:0}
-.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:2px}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:3px}
 .item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
 .item .ti a{color:inherit;text-decoration:none}
 .item .ti a:hover{color:var(--accent-700);text-decoration:underline}
-.item .meta{margin-top:5px;font-size:11.5px;color:var(--ink3)}
-.item .meta b{color:var(--ink2)}
-.chips{margin-bottom:5px}
-.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;
-  padding:2px 7px;margin:0 5px 4px 0;border:1px solid var(--rule-soft);color:var(--ink2)}
-.chip.red{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.item .meta{margin-top:5px;font-size:12px;color:var(--ink2)}
+.item .meta b{color:var(--ink)}
+.chips{margin-bottom:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0;
+  padding:2px 7px;margin:0;border:1px solid var(--line);color:var(--ink);line-height:1.3}
+.chip.red{background:var(--accent-100);border-color:var(--accent-100);color:#7c1405}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:#fff}
 .chip.blue{border-color:var(--blue);color:var(--blue-700)}
-/* NEW 배지(외곽선형) — 제목·문장 '뒤'에 붙는 자리용. 뉴스 게시판(tech·ktnews)이
-   쓴다. 다른 게시판의 칩 줄(제목 위)에는 어울리지 않아 기존 빨간 칩 유지(9/6 실측) */
-.newb{display:inline-block;margin-left:7px;padding:1px 5px 0;font-size:9px;
-  font-weight:800;letter-spacing:1px;color:var(--accent);
-  border:1px solid var(--accent);vertical-align:2px}
+.chip.gray{color:var(--ink2)}
+/* NEW 배지 — 제목·문장 뒤에 붙는 자리용 */
+.newb{display:inline-block;margin-left:7px;padding:3px 6px;font-size:10px;line-height:1;
+  font-weight:800;letter-spacing:1px;color:#7c1405;background:var(--accent-100);vertical-align:2px}
 
-/* 링크 버튼 */
+/* 링크 버튼 — 오른쪽 검은 버튼 하나(.pri) + 외곽선 보조 */
 .acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
-.acts a{display:inline-block;padding:6px 12px;font-size:11.5px;font-weight:700;
-  border:1px solid var(--rule-soft);color:var(--ink2);text-decoration:none;background:var(--paper)}
-.acts a:hover{border-color:var(--ink);color:var(--ink);background:rgba(128,128,128,.08)}
-.acts a.pri{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.acts a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  border:2px solid var(--line);color:var(--ink);text-decoration:none;background:#fff;white-space:nowrap}
+.acts a:hover{border-color:var(--ink)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:#fff}
 .acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* 더 보기 — 접힌 묶음을 편다(data-more=대상 id) */
+.morebtn{margin-top:12px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;
+  font:800 13px/1 var(--font);border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none}
+.morebtn:hover{background:var(--ink);color:#fff}
+.morebtn.ghost{border-color:var(--line);font-weight:700;color:var(--ink2)}
+.morebtn.ghost:hover{border-color:var(--ink);background:#fff;color:var(--ink)}
 
 /* 원페이지 미리보기 */
 .thumb{margin-top:12px;border:2px solid var(--ink)}
@@ -102,28 +213,28 @@ section{margin-top:32px;scroll-margin-top:46px}
 
 /* 진행 단계 */
 .stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
-.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);
   padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
-.stage .st i{width:7px;height:7px;background:var(--rule-soft);display:inline-block}
+.stage .st i{width:7px;height:7px;background:var(--line);display:inline-block}
 .stage .st.on{color:var(--ink)}
 .stage .st.on i{background:var(--accent)}
 .stage .st.done{color:var(--ink2)}
 .stage .st.done i{background:var(--ink2)}
 
-/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등) */
-.subh{display:flex;align-items:baseline;gap:9px;margin:24px 0 0;padding-bottom:5px;
-  border-bottom:1px solid var(--rule)}
-.subh h3{font-size:14px;font-weight:800;letter-spacing:-.01em}
-.subh .en{margin-left:auto;font-size:9px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등), 검은 선 2px */
+.subh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:24px 0 0;padding:6px 0;
+  border-bottom:2px solid var(--ink)}
+.subh h3{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.subh .sub{font-size:12px;color:var(--ink2)}
+.subh .en{margin-left:auto;font-size:11px;letter-spacing:.5px;color:var(--ink2);font-weight:700}
+.subh .chip{vertical-align:1px}
 /* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
 .item.wide{grid-template-columns:96px minmax(0,1fr)}
 .item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
-/* 삼성바이오로직스처럼 긴 이름이 제목 칸을 침범하지 않게 잘라 준다 */
-.item.wide .n{color:var(--ink);font-size:12.5px;line-height:1.4;
+.item.wide .n{color:var(--ink);font-size:13px;line-height:1.4;letter-spacing:-.2px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:640px){
   .item.wide{grid-template-columns:72px minmax(0,1fr)}
-  /* 좁은 화면에서는 다시 아래로 내린다 — 옆에 두면 제목이 눌린다 */
   .item.side{grid-template-columns:34px minmax(0,1fr)}
   .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
   .item .ex{grid-column:2;padding-left:0}
@@ -132,13 +243,13 @@ section{margin-top:32px;scroll-margin-top:46px}
 /* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
-table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
-  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th{font-size:10px;letter-spacing:.1em;font-weight:700;color:var(--ink2);
+  padding:10px 7px 6px;border-bottom:2px solid var(--ink);text-align:right;white-space:nowrap}
 table.g th:first-child{text-align:left}
 table.g th.s{cursor:pointer;user-select:none}
 table.g th.s:hover{color:var(--ink)}
 table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
-table.g td{font-size:12px;padding:7px;border-bottom:1px solid var(--rule-soft);
+table.g td{font-size:12.5px;padding:8px 7px;border-bottom:1px solid var(--line);
   text-align:right;white-space:nowrap}
 table.g td:first-child{text-align:left}
 table.g td.spk{text-align:left}
@@ -149,21 +260,19 @@ table.g.mk{table-layout:fixed}
 table.g.mk tr.mrow{display:none}
 @media(max-width:640px){
   .mo{display:none}
-  /* 칸을 숨겨도 colgroup 의 너비는 남아 자리를 먹는다. 함께 풀어 준다 */
   table.g.mk{table-layout:auto;min-width:0}
   table.g.mk col.c1,table.g.mk col.c2{width:auto}
   table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
-  /* 접은 칸은 행을 누르면 바로 아래 줄에서 펴진다 */
   table.g.mk tr[data-v]{cursor:pointer}
   table.g.mk tr.mrow.op{display:table-row}
   table.g.mk tr.mrow > td{padding:0 0 10px}
   table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
-    border-top:1px solid var(--rule-soft)}
+    border-top:1px solid var(--line)}
   .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
-    border-bottom:1px solid var(--rule-soft);white-space:nowrap}
-  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+    border-bottom:1px solid var(--line);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--line)}
   .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
-    color:var(--ink3);margin-bottom:3px}
+    color:var(--ink2);margin-bottom:3px}
   .mper .pc.w6{flex:1 1 100%;border-right:0}
   .mper .pc.w6 svg{display:block;width:100%;height:36px}
 }
@@ -177,56 +286,68 @@ table.g .val{font-weight:800;color:var(--ink)}
 svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
 svg.sp polyline{fill:none;stroke-width:1.5}
 svg.sp polygon{opacity:.13}
-/* 달력 격자 — IR 캘린더용. 메일 표와 달리 CSS grid 라 폭에 맞춰 늘어난다 */
+/* 달력 격자 — IR 캘린더용. 폰에서도 7칸을 유지하고 칸·글자만 폭에 비례해 줄인다(가로 스크롤 없음) */
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
-  border-top:2px solid var(--rule);border-left:1px solid var(--rule-soft)}
-.cal .wd{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink3);padding:7px 7px 6px;
-  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.cal .wd.we{opacity:.65}
-.cal .dy{min-height:86px;padding:6px 7px 9px;
-  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.cal .dy.past{background:rgba(128,128,128,.05)}
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cal .wd{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ink2);padding:8px 10px;background:#f6f5f5;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .wd.we{color:var(--accent-700)}
+.cal .dy{min-height:176px;padding:8px;min-width:0;display:flex;flex-direction:column;gap:4px;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .dy.past{background:#f6f5f5}
 .cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
-.cal .dn{font-size:11px;font-weight:700;color:var(--ink2)}
-.cal .dy.past .dn{color:var(--ink3)}
+.cal .dn{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.cal .dy.past .dn{color:var(--ink2)}
 .cal .dy.today .dn{color:var(--accent-700)}
-.cal .tk{display:block;margin-top:4px;font-size:10px;font-weight:700;padding:2px 5px;
-  text-decoration:none;background:var(--ink);color:var(--paper);
+.cal .tk{display:block;font-size:11px;font-weight:700;padding:3px 6px;
+  text-decoration:none;background:var(--ink);color:#fff;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal .tk.kr{background:var(--accent);color:#fff}
-.cal .tk.done{background:var(--rule-soft);color:var(--ink3)}
+.cal .tk.kr{background:var(--brick);color:#fff}
+.cal .tk.done{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.cal .tk.hol{background:transparent;color:var(--ink2);border:1px dashed var(--ink3);font-weight:700}
+.cal .tk.kr.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.cal .dy.past .tk.kr.lite{color:var(--ink2);border-color:var(--line)}
+.cal .tk.more{background:transparent;color:#444141;border:1px dotted var(--ink3);text-align:center}
 .cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
-.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;font-size:10.5px;color:var(--ink3)}
-.calleg i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
-@media(max-width:640px){.cal .dy{min-height:62px;padding:4px 4px 6px}.cal .tk{font-size:9px;padding:1px 3px}}
-/* 지표 타일 — 값 하나 + 등락 */
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:11.5px;color:var(--ink2)}
+.calleg i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-2px}
+@media(max-width:640px){
+  .cal .wd{font-size:10px;padding:4px 4px}
+  .cal .dy{min-height:64px;padding:3px;gap:2px}
+  .cal .dn{font-size:11px;margin-bottom:1px}
+  .cal .tk{font-size:9px;padding:1px 2px}
+}
+/* 지표 타일 — 값 하나 + 등락 (시황·금리 등). 건수 타일은 .stats 로 바꾼다 */
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
-  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
-.tile{padding:11px 13px;border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft)}
-.tile .l{font-size:11px;color:var(--ink3);font-weight:700}
-.tile .v{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
-.tile .c{font-size:11.5px;font-weight:700;margin-top:2px}
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.tile{padding:12px 14px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.tile .l{font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1px}
+.tile .v{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-top:4px;line-height:1.1}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:3px}
 .tile .em{margin-right:5px}
 .tile .sp{display:block;margin-top:8px;width:100%;height:34px}
 .tile .sp polyline{fill:none;stroke-width:1.6}
 .tile .sp polygon{opacity:.13}
 .up{color:var(--accent-700)}
-.dn{color:var(--blue-700)}
-.flat,.dash{color:var(--ink3)}
+.dn{color:var(--blue)}
+.flat,.dash{color:var(--ink2)}
+.sur{display:inline-block;font-size:11px;font-weight:800;padding:3px 7px;line-height:1.3}
+.sur.up{background:var(--accent-100)}
+.sur.dn{background:var(--blue-100)}
 
 /* 존 바 — 현재 값이 어느 구간에 있는지 */
-.gauge{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.gauge{padding:14px 0;border-bottom:1px solid var(--line)}
 .gauge:last-child{border-bottom:0}
 .gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
 .gauge .gn{font-size:13.5px;font-weight:800}
-.gauge .gs{font-size:11px;color:var(--ink3)}
+.gauge .gs{font-size:11px;color:var(--ink2)}
 .gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
 .gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
 .zbar{position:relative;height:12px;display:flex;margin-top:10px}
 .zbar .z{height:100%}
 .zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
   border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
-.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink3)}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink2)}
 .zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
 
 /* 뉴스 불릿 */
@@ -235,34 +356,47 @@ svg.sp polygon{opacity:.13}
 .bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
 .bul li.risk::before{background:var(--accent)}
 .bul li.risk{font-weight:700}
-.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink3);white-space:nowrap}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink2);white-space:nowrap}
 .bul a:hover{color:var(--accent)}
 
-.empty{padding:26px 0;color:var(--ink3);font-size:12.5px}
-footer{border-top:2px solid var(--rule);margin-top:36px;padding-top:13px;
-  color:var(--ink3);font-size:11px;line-height:1.75}
+.empty{padding:26px 0;color:var(--ink2);font-size:13px}
+footer{border-top:2px solid var(--ink);margin-top:44px;padding-top:14px;
+  color:var(--ink2);font-size:11.5px;line-height:1.75}
 footer p{margin:0}
-footer .w{color:var(--ink2);margin-top:7px}
+footer .w{color:var(--ink);margin-top:7px}
 
 /* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
 .totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
-  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  display:grid;place-items:center;background:#fff;color:var(--ink);
   border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
   opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
 .totop.on{opacity:1;visibility:visible}
 .totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 [hidden]{display:none!important}
 @media(max-width:640px){
-  .mast h1{font-size:24px}
+  .mast h1{font-size:26px}
   .item{grid-template-columns:26px 1fr}
+  .hero{padding:14px;gap:12px}
+  .hero .hc{padding:16px}
+  .hero h3{font-size:19px}
+  .hero .big{font-size:28px}
+  .hero .hgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stats{gap:10px 20px}
+  .stats .st b{font-size:19px}
+  .row{gap:12px}
+  .row .rb{flex-basis:150px}
+  .row.tall .rb{flex-basis:200px}
+  .row.tall .acts{flex-basis:100%}
+  .row .acts a,.acts a{height:38px;padding:0 12px;font-size:12px}
+  .cocard{padding:16px}
 }
 </style>
 </head><body>
 <div class="wrap">
-<header class="mast"><div class="kick">PODCAST</div><h1>팟캐스트</h1><div class="dt">10/8(목) · 매일 아침 7시 30분 · 저녁 6시 20분 · 누적 11편</div></header>
+<header class="mast"><div class="kick">PODCAST</div><h1>팟캐스트</h1><div class="dt">10/8(목) · 매일 아침 7시 30분 · 저녁 6시 20분 · 누적 12편</div></header>
 <div class="rule"></div>
 <nav class="nav"><a href="#latest" target="_self">최신</a><a href="#archive" target="_self">지난 에피소드</a><span class="sep"></span></nav>
-<style>.item .ti{font-size:14.5px;line-height:1.55}.item{padding:13px 0}.pf{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 2px}.pf button{font:inherit;font-size:12px;font-weight:700;padding:5px 11px;cursor:pointer;border:1px solid var(--rule-soft);background:var(--paper);color:var(--ink2)}.pf button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.ep[hidden],.dg[hidden]{display:none}</style><div class="tiles"><div class="tile"><div class="l">누적</div><div class="v">11편</div><div class="c" style="color:var(--ink3)">10/4(일)부터</div></div><div class="tile"><div class="l">이번 달</div><div class="v">11편</div><div class="c" style="color:var(--ink3)">10월</div></div><div class="tile"><div class="l">시리즈</div><div class="v">6개</div><div class="c" style="color:var(--ink3)">아침 투자 브리핑 · 저녁 투자 브리핑 외</div></div><div class="tile"><div class="l">최신</div><div class="v">10/8(목)</div><div class="c" style="color:var(--ink3)">오늘</div></div></div><section id="latest"><div class="sh"><span class="no">01</span><h2>최신 에피소드</h2><span class="en">LATEST</span></div><p class="note">10/8(목) 발행 1편 · 제목이나 듣기를 누르면 Gemini Notebook 이 새 창으로 열림</p><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/8(목)</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/b12d722d-5471-43b2-999e-08d7f1f23aa0/artifact/3ec83ee7-3a0d-4e76-bc0c-fbfa8c289a8f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/b12d722d-5471-43b2-999e-08d7f1f23aa0/artifact/3ec83ee7-3a0d-4e76-bc0c-fbfa8c289a8f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></section><section id="archive"><div class="sh"><span class="no">02</span><h2>지난 에피소드</h2><span class="en">ARCHIVE</span></div><p class="note">최신이 위 · 시리즈를 누르면 그 시리즈만 보임</p><div class="pf" id="pf"><button type="button" class="on" data-s="">전체 10</button><button type="button" data-s="아침 투자 브리핑">아침 투자 브리핑 4</button><button type="button" data-s="저녁 투자 브리핑">저녁 투자 브리핑 1</button><button type="button" data-s="IBM 기업 학습">IBM 기업 학습 1</button><button type="button" data-s="서비스나우 기업 학습편">서비스나우 기업 학습편 1</button><button type="button" data-s="관심기업 저녁 브리핑">관심기업 저녁 브리핑 2</button><button type="button" data-s="액센츄어 재무 공부">액센츄어 재무 공부 1</button></div><div class="dg"><div class="subh"><h3>10/7(수)</h3><span class="en">2026-10-07</span></div><div class="ep" data-s="저녁 투자 브리핑"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/35e02986-f84c-41a4-8605-bf02e62ad2b8/artifact/b3980cc4-98a6-4f33-b871-b8f8883c65b6?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">저녁 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/35e02986-f84c-41a4-8605-bf02e62ad2b8/artifact/b3980cc4-98a6-4f33-b871-b8f8883c65b6?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="IBM 기업 학습"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/c0e40194-14ce-4127-8ff7-30f1cfd70399/artifact/f9152d08-222d-4f10-b130-bf9184692f40?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">IBM 기업 학습</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/c0e40194-14ce-4127-8ff7-30f1cfd70399/artifact/f9152d08-222d-4f10-b130-bf9184692f40?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/8b078c43-a07f-48e6-b167-92dce067c0cc/artifact/2e3fc02b-b4ce-4421-98d6-789882e0925b" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/8b078c43-a07f-48e6-b167-92dce067c0cc/artifact/2e3fc02b-b4ce-4421-98d6-789882e0925b" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/6(화)</h3><span class="en">2026-10-06</span></div><div class="ep" data-s="서비스나우 기업 학습편"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/807fca6f-144d-454f-bcca-fd2aec945c61/artifact/57ad1dc5-c6f2-4bf5-b600-06247b3f772d?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">서비스나우 기업 학습편</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/807fca6f-144d-454f-bcca-fd2aec945c61/artifact/57ad1dc5-c6f2-4bf5-b600-06247b3f772d?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="관심기업 저녁 브리핑"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/5ac88dc9-bb77-4457-95f0-ce04c6c38c0d/artifact/288dfe3f-532e-48d2-aa25-5a9750118373?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">관심기업 저녁 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/5ac88dc9-bb77-4457-95f0-ce04c6c38c0d/artifact/288dfe3f-532e-48d2-aa25-5a9750118373?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/6d283cf2-e788-4d7a-bf2c-a328b57b6502/artifact/ae823cd7-d6da-4ade-811c-c585abed6d32?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/6d283cf2-e788-4d7a-bf2c-a328b57b6502/artifact/ae823cd7-d6da-4ade-811c-c585abed6d32?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/5(월)</h3><span class="en">2026-10-05</span></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/5(월)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/a6cf069f-d9c7-4c7f-9fb2-176726868845/artifact/82ca1afb-ccc7-4687-adf7-e46a3760054a?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/a6cf069f-d9c7-4c7f-9fb2-176726868845/artifact/82ca1afb-ccc7-4687-adf7-e46a3760054a?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="액센츄어 재무 공부"><div class="item wide side"><div class="n">10/5(월)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/bd95dc6f-76c7-4d71-88a3-dd20bb571604/artifact/fab6522a-9f56-47a2-a877-baa94bddcf92?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">액센츄어 재무 공부</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/bd95dc6f-76c7-4d71-88a3-dd20bb571604/artifact/fab6522a-9f56-47a2-a877-baa94bddcf92?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/4(일)</h3><span class="en">2026-10-04</span></div><div class="ep" data-s="관심기업 저녁 브리핑"><div class="item wide side"><div class="n">10/4(일)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/4052946e-132c-465b-8629-87a6da351122/artifact/2f1079e2-e9c8-4c8f-a437-4281c8f8ef3f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">관심기업 저녁 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/4052946e-132c-465b-8629-87a6da351122/artifact/2f1079e2-e9c8-4c8f-a437-4281c8f8ef3f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/4(일)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/cfb06a37-0809-406e-b066-94efcccc274e/artifact/832e9c4d-2cff-4401-9716-6f7675d53f01?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/cfb06a37-0809-406e-b066-94efcccc274e/artifact/832e9c4d-2cff-4401-9716-6f7675d53f01?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div></section><script>(function(){var pf=document.getElementById("pf");if(!pf)return;pf.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var s=b.getAttribute("data-s");[].forEach.call(pf.children,function(x){x.classList.toggle("on",x===b);});[].forEach.call(document.querySelectorAll("#archive .ep"),function(x){x.hidden=!!s&&x.getAttribute("data-s")!==s;});[].forEach.call(document.querySelectorAll("#archive .dg"),function(g){g.hidden=!g.querySelector(".ep:not([hidden])");});});})();</script>
+<style>.item .ti{font-size:14.5px;line-height:1.55}.item{padding:13px 0}.pf{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 2px}.pf button{font:inherit;font-size:12px;font-weight:700;padding:5px 11px;cursor:pointer;border:1px solid var(--rule-soft);background:var(--paper);color:var(--ink2)}.pf button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.ep[hidden],.dg[hidden]{display:none}</style><div class="tiles"><div class="tile"><div class="l">누적</div><div class="v">12편</div><div class="c" style="color:var(--ink3)">10/4(일)부터</div></div><div class="tile"><div class="l">이번 달</div><div class="v">12편</div><div class="c" style="color:var(--ink3)">10월</div></div><div class="tile"><div class="l">시리즈</div><div class="v">7개</div><div class="c" style="color:var(--ink3)">아리스타 네트웍스 기업 학습 · 아침 투자 브리핑 외</div></div><div class="tile"><div class="l">최신</div><div class="v">10/8(목)</div><div class="c" style="color:var(--ink3)">오늘</div></div></div><section id="latest"><div class="sh"><span class="no">01</span><h2>최신 에피소드</h2><span class="en">LATEST</span></div><p class="note">10/8(목) 발행 2편 · 제목이나 듣기를 누르면 Gemini Notebook 이 새 창으로 열림</p><div class="ep" data-s="아리스타 네트웍스 기업 학습"><div class="item wide side"><div class="n">10/8(목)</div><div><div class="chips"><span class="chip red">NEW</span></div><div class="ti"><a href="https://notebook.google.com/notebook/4d402d0b-5c9d-4363-aec7-0d92ab9d82cf/artifact/f420db8e-18dd-4af7-aff1-ad704caac677?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아리스타 네트웍스 기업 학습</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/4d402d0b-5c9d-4363-aec7-0d92ab9d82cf/artifact/f420db8e-18dd-4af7-aff1-ad704caac677?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/8(목)</div><div><div class="chips"><span class="chip red">NEW</span><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/b12d722d-5471-43b2-999e-08d7f1f23aa0/artifact/3ec83ee7-3a0d-4e76-bc0c-fbfa8c289a8f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/b12d722d-5471-43b2-999e-08d7f1f23aa0/artifact/3ec83ee7-3a0d-4e76-bc0c-fbfa8c289a8f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></section><section id="archive"><div class="sh"><span class="no">02</span><h2>지난 에피소드</h2><span class="en">ARCHIVE</span></div><p class="note">최신이 위 · 시리즈를 누르면 그 시리즈만 보임</p><div class="pf" id="pf"><button type="button" class="on" data-s="">전체 10</button><button type="button" data-s="아침 투자 브리핑">아침 투자 브리핑 4</button><button type="button" data-s="저녁 투자 브리핑">저녁 투자 브리핑 1</button><button type="button" data-s="IBM 기업 학습">IBM 기업 학습 1</button><button type="button" data-s="서비스나우 기업 학습편">서비스나우 기업 학습편 1</button><button type="button" data-s="관심기업 저녁 브리핑">관심기업 저녁 브리핑 2</button><button type="button" data-s="액센츄어 재무 공부">액센츄어 재무 공부 1</button></div><div class="dg"><div class="subh"><h3>10/7(수)</h3><span class="en">2026-10-07</span></div><div class="ep" data-s="저녁 투자 브리핑"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/35e02986-f84c-41a4-8605-bf02e62ad2b8/artifact/b3980cc4-98a6-4f33-b871-b8f8883c65b6?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">저녁 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/35e02986-f84c-41a4-8605-bf02e62ad2b8/artifact/b3980cc4-98a6-4f33-b871-b8f8883c65b6?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="IBM 기업 학습"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/c0e40194-14ce-4127-8ff7-30f1cfd70399/artifact/f9152d08-222d-4f10-b130-bf9184692f40?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">IBM 기업 학습</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/c0e40194-14ce-4127-8ff7-30f1cfd70399/artifact/f9152d08-222d-4f10-b130-bf9184692f40?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/7(수)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/8b078c43-a07f-48e6-b167-92dce067c0cc/artifact/2e3fc02b-b4ce-4421-98d6-789882e0925b" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/8b078c43-a07f-48e6-b167-92dce067c0cc/artifact/2e3fc02b-b4ce-4421-98d6-789882e0925b" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/6(화)</h3><span class="en">2026-10-06</span></div><div class="ep" data-s="서비스나우 기업 학습편"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/807fca6f-144d-454f-bcca-fd2aec945c61/artifact/57ad1dc5-c6f2-4bf5-b600-06247b3f772d?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">서비스나우 기업 학습편</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/807fca6f-144d-454f-bcca-fd2aec945c61/artifact/57ad1dc5-c6f2-4bf5-b600-06247b3f772d?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="관심기업 저녁 브리핑"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/5ac88dc9-bb77-4457-95f0-ce04c6c38c0d/artifact/288dfe3f-532e-48d2-aa25-5a9750118373?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">관심기업 저녁 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/5ac88dc9-bb77-4457-95f0-ce04c6c38c0d/artifact/288dfe3f-532e-48d2-aa25-5a9750118373?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/6(화)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/6d283cf2-e788-4d7a-bf2c-a328b57b6502/artifact/ae823cd7-d6da-4ade-811c-c585abed6d32?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/6d283cf2-e788-4d7a-bf2c-a328b57b6502/artifact/ae823cd7-d6da-4ade-811c-c585abed6d32?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/5(월)</h3><span class="en">2026-10-05</span></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/5(월)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/a6cf069f-d9c7-4c7f-9fb2-176726868845/artifact/82ca1afb-ccc7-4687-adf7-e46a3760054a?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/a6cf069f-d9c7-4c7f-9fb2-176726868845/artifact/82ca1afb-ccc7-4687-adf7-e46a3760054a?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="액센츄어 재무 공부"><div class="item wide side"><div class="n">10/5(월)</div><div><div class="ti"><a href="https://notebook.google.com/notebook/bd95dc6f-76c7-4d71-88a3-dd20bb571604/artifact/fab6522a-9f56-47a2-a877-baa94bddcf92?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">액센츄어 재무 공부</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/bd95dc6f-76c7-4d71-88a3-dd20bb571604/artifact/fab6522a-9f56-47a2-a877-baa94bddcf92?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div><div class="dg"><div class="subh"><h3>10/4(일)</h3><span class="en">2026-10-04</span></div><div class="ep" data-s="관심기업 저녁 브리핑"><div class="item wide side"><div class="n">10/4(일)</div><div><div class="chips"><span class="chip">저녁</span></div><div class="ti"><a href="https://notebook.google.com/notebook/4052946e-132c-465b-8629-87a6da351122/artifact/2f1079e2-e9c8-4c8f-a437-4281c8f8ef3f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">관심기업 저녁 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/4052946e-132c-465b-8629-87a6da351122/artifact/2f1079e2-e9c8-4c8f-a437-4281c8f8ef3f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div><div class="ep" data-s="아침 투자 브리핑"><div class="item wide side"><div class="n">10/4(일)</div><div><div class="chips"><span class="chip">아침</span></div><div class="ti"><a href="https://notebook.google.com/notebook/cfb06a37-0809-406e-b066-94efcccc274e/artifact/832e9c4d-2cff-4401-9716-6f7675d53f01?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">아침 투자 브리핑</a></div></div><div class="ex"><div class="acts"><a href="https://notebook.google.com/notebook/cfb06a37-0809-406e-b066-94efcccc274e/artifact/832e9c4d-2cff-4401-9716-6f7675d53f01?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener" class="pri">듣기 ↗</a></div></div></div></div></div></section><script>(function(){var pf=document.getElementById("pf");if(!pf)return;pf.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var s=b.getAttribute("data-s");[].forEach.call(pf.children,function(x){x.classList.toggle("on",x===b);});[].forEach.call(document.querySelectorAll("#archive .ep"),function(x){x.hidden=!!s&&x.getAttribute("data-s")!==s;});[].forEach.call(document.querySelectorAll("#archive .dg"),function(g){g.hidden=!g.querySelector(".ep:not([hidden])");});});})();</script>
 <footer><p>Gemini Notebook(구 NotebookLM)의 음성 개요 링크 모음 — 음성은 구글 쪽에서 재생되며 구글 계정 로그인이 필요할 수 있음</p><p>아침 7시 30분 · 저녁 6시 20분에 새 에피소드가 올라오면 목록에 더해짐</p><p class="w">AI 가 자료를 바탕으로 만든 음성 — 수치와 사실은 원자료로 확인 · 투자 판단의 참고 자료</p></footer>
 <button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
 </div>
@@ -279,7 +413,16 @@ footer .w{color:var(--ink2);margin-top:7px}
     if(!a)return;
     ev.preventDefault();
     var el=document.getElementById(a.getAttribute("href").slice(1));
-    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+    if(!el)return;
+    /* 접힌 묶음('더 보기' 뒤) 안의 항목이면 먼저 편다 */
+    var hid=el.closest("[hidden]"),n=0;
+    while(hid&&n++<5){
+      hid.hidden=false;
+      var mb=hid.id&&document.querySelector('.morebtn[data-more="'+hid.id+'"]');
+      if(mb)mb.hidden=true;
+      hid=el.closest("[hidden]");
+    }
+    el.scrollIntoView({behavior:"smooth",block:"start"});
   });
 
 
@@ -324,6 +467,32 @@ footer .w{color:var(--ink2);margin-top:7px}
         if(d) body.appendChild(d);
       });
     });
+  });
+
+  /* 구분 필터(.pf button[data-f]) — 같은 섹션 안의 [data-f] 줄·묶음만 남긴다.
+     data-f 가 빈 버튼은 '전체'. 묶음(.fgrp)은 보이는 줄이 하나도 없으면 함께 숨긴다. */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".pf button[data-f]");
+    if(!b)return;
+    var bar=b.closest(".pf"),scope=bar.getAttribute("data-scope");
+    var root=scope?document.getElementById(scope):bar.parentNode;
+    if(!root)return;
+    var f=b.getAttribute("data-f")||"";
+    [].forEach.call(bar.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b)});
+    [].forEach.call(root.querySelectorAll("[data-f]:not(button)"),function(r){
+      r.hidden=!!f&&r.getAttribute("data-f")!==f});
+    [].forEach.call(root.querySelectorAll(".fgrp"),function(g){
+      g.hidden=!g.querySelector("[data-f]:not(button):not([hidden])")});
+  });
+
+  /* 더 보기(.morebtn[data-more]) — 접힌 묶음(id)을 펴고 버튼은 사라진다 */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".morebtn[data-more]");
+    if(!b)return;
+    ev.preventDefault();
+    var t=document.getElementById(b.getAttribute("data-more"));
+    if(t){t.hidden=false}
+    b.hidden=true;
   });
 
   var btn=document.getElementById("totop");
