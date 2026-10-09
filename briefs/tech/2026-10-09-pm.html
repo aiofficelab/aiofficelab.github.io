@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>빅테크·AI 동향</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --line:#d8d4d3; --line2:#eceae9;
+  --rule:var(--ink); --rule-soft:var(--line);
+  --accent:#ec3013; --accent-700:#a02008; --accent-100:#fff2ef;
+  --blue:#1a56db; --blue-700:#0b3d96; --blue-100:#eef3ff;
+  --navy:#1f2a5c; --teal:#0f6e56; --plum:#6b3fa0; --brick:#c9290e;
+  --font:"Archivo","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+/* 다크 모드는 끈다 — 삼성 인터넷이 배경은 희게 두고 글자만 다크용 밝은 색으로
+   바꿔 '흰 바탕 흰 글자'가 되던 실사례(2026-09-06, 갤럭시). 항상 라이트. */
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13.5px/1.6 var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+a{color:var(--accent-700);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+b,strong{font-weight:700}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1012px;margin:0 auto;padding:26px 20px 44px}
+
+/* 삽입 상태 — 제목은 부모가, 위로가기도 부모가. 바탕과 폭을 부모에 맞춘다.
+   위 여백은 없앤다: 머리글(.mast)을 접었는데도 26px 이 남아 사이트의 '아카이브'
+   줄과 본문 첫 줄 사이가 40px 가까이 벌어졌다(사용자 2026-09-07). */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0;padding-top:0}
+body.embed .mast{display:none}
+body.embed .nav{position:static;margin-top:0}
+body.embed section{scroll-margin-top:8px}
+body.embed .totop{display:none}
+
+/* ── 2026-10 리디자인 — 사이트 셸(index.html)과 같은 어휘로 맞춘다 ──
+   검은 선 2px 섹션 머리 · 검은 요약 패널(.hero/.lead) · 칩·버튼은 각진 테두리 ·
+   목록은 타일 + 본문 + 오른쪽 검은 버튼. 둥근 모서리와 왼쪽 색 띠 상자는 쓰지 않는다. */
+
+/* 머리 */
+.kick{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--accent)}
+.mast h1{font-size:34px;line-height:1.1;letter-spacing:-.8px;margin:6px 0 0}
+.mast .dt{margin-top:8px;font-size:13px;color:var(--ink2)}
+.rule{height:2px;background:var(--ink);margin:14px 0 0}
+
+/* 네비 — 칩 모양 버튼 한 줄 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:8px;
+  margin:16px 0 0;padding:10px 0;background:var(--paper);border-bottom:2px solid var(--ink)}
+.nav a{display:inline-flex;align-items:center;height:40px;padding:0 14px;font-size:13px;font-weight:700;
+  color:var(--ink);text-decoration:none;white-space:nowrap;border:2px solid var(--line);background:#fff}
+.nav a:hover{border-color:var(--ink)}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 머리 — 번호(빨강) · 제목 · 보조 · 영문 라벨, 검은 선 2px */
+section{margin-top:40px;scroll-margin-top:46px}
+.sh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:19px;letter-spacing:-.4px}
+.sh .sub{font-size:13px;color:var(--ink2)}
+.sh .en{margin-left:auto;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--ink2)}
+.note{color:var(--ink2);font-size:11.5px;line-height:1.7;margin:10px 0 0}
+.note b{color:var(--ink)}
+
+/* 검은 요약 패널 — page(lead=) 한 줄짜리 */
+.lead{background:var(--ink);color:#fff;padding:22px 24px;margin:16px 0 0;
+  font-size:21px;font-weight:800;line-height:1.35;letter-spacing:-.4px;text-wrap:pretty}
+/* 검은 요약 패널 — hero(): 왼쪽 큰 카드(요약) + 오른쪽 카드(바로가기·주요 항목) */
+.hero{margin-top:16px;background:var(--ink);color:#fff;padding:22px;display:flex;flex-wrap:wrap;gap:18px}
+.hero .hc{flex:1 1 440px;min-width:0;border:1px solid rgba(255,255,255,.22);padding:20px 22px;
+  display:flex;flex-direction:column;gap:11px}
+.hero .hc.aside{flex:1 1 300px}
+.hero .htag{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:rgba(255,255,255,.72);letter-spacing:.5px}
+.hero .htag b{font-size:10px;font-weight:800;letter-spacing:1px;background:#fff;color:var(--ink);padding:3px 6px;line-height:1}
+.hero .htag b.red{background:var(--accent);color:#fff}
+.hero h3{font-size:22px;font-weight:800;line-height:1.3;letter-spacing:-.4px;text-wrap:pretty}
+.hero .big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.hero p{margin:0;font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);text-wrap:pretty}
+.hero p.wh{color:#fff}
+.hero .hnote{margin-top:auto;padding-top:6px;font-size:11.5px;color:rgba(255,255,255,.62)}
+.hero .hsub{font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.72)}
+.hero a{color:#fff}
+.hero .hsep{border-top:1px solid rgba(255,255,255,.22);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.hero .hbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  background:#fff;color:var(--ink);text-decoration:none;align-self:flex-start;margin-top:auto}
+.hero .hbtn:hover{background:var(--accent);color:#fff}
+.hero .hlist{display:flex;flex-direction:column}
+.hero .hlist>*{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.22);
+  color:#fff;text-decoration:none;font-size:13.5px;line-height:1.4}
+.hero .hlist .tl{width:40px;height:40px;font-size:11px}
+.hero .hlist .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.hero .hlist small{font-size:11.5px;color:rgba(255,255,255,.72)}
+.hero .hlist .hd{font-size:12px;font-weight:800;flex:0 0 64px}
+.hero .hlist .sw{width:10px;height:10px;flex:none}
+.hero .hlist .hm{color:rgba(255,255,255,.72)}
+.hero .hlist .arr{margin-left:auto;font-weight:800}
+.hero .hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hero .hgrid a{display:flex;flex-direction:column;gap:5px;padding:10px;background:#fff;color:var(--ink);text-decoration:none;min-height:44px}
+.hero .hgrid a:hover{background:var(--accent);color:#fff}
+.hero .hgrid b{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.hero .hgrid small{font-size:11px;font-weight:500}
+
+/* 숫자 줄 — 큰 카드 넷 대신 라벨 + 숫자 */
+.stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:14px}
+.stats .st{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--ink2)}
+.stats .st b{font-size:22px;letter-spacing:-.5px;color:var(--ink);font-weight:800;line-height:1}
+.stats .st.hot b{color:var(--accent)}
+
+/* 구분 필터 칩 — 색 견본 + 이름 + 건수. 누르면 .on 이 옮겨가고 [data-f] 줄만 남는다 */
+.pf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.pf .lbl{font-size:12px;color:var(--ink2);margin-right:2px}
+.pf button,.pf a{font:700 13px/1 var(--font);height:42px;padding:0 14px 0 10px;display:inline-flex;align-items:center;gap:9px;
+  border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.pf .sw{width:18px;height:18px;display:inline-block;flex:none}
+.pf .cnt{font-size:11px;color:var(--ink2);font-weight:700}
+.pf button:hover,.pf a:hover{border-color:var(--ink)}
+.pf .on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pf .on .cnt{color:rgba(255,255,255,.7)}
+.pf .on .sw{outline:2px solid #fff;outline-offset:-2px}
+
+/* 타일 — 색 사각형 + 짧은 글자(티커·구분) */
+.tl{width:56px;height:56px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:#fff;font-size:12px;font-weight:800;letter-spacing:-.3px;line-height:1.1;
+  text-align:center;padding:0 4px;overflow:hidden;word-break:break-all}
+.tl.sm{width:40px;height:40px;font-size:10px;padding:0 2px;letter-spacing:-.5px}
+.tl.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.tl.gray{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+
+/* 목록 줄 — 타일 · 본문 · 오른쪽 버튼 */
+.row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:5px}
+.row .rh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row .rh .nm{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.row .rh .nm a{color:var(--ink);text-decoration:none}
+.row .rh .nm a:hover{color:var(--accent-700)}
+.row .rh .tm{font-size:11.5px;color:var(--ink2);letter-spacing:.3px}
+.row .rt{font-size:13.5px;line-height:1.5}
+.row .rt .pl{color:var(--ink2)}
+.row .rm{font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.row .rm b{color:var(--ink)}
+.row .acts{margin:0}
+.row.dim{opacity:.72}
+.row[hidden]{display:none}
+
+/* 회사 카드·회사 줄 — AI 요약(한 줄 + 문장) + 근거 링크 칩 */
+.cogrid{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:16px}
+.cocard{border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.corow{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.corow .rb{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.coh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.coh .nm{display:flex;flex-direction:column;gap:3px;min-width:0}
+.coh .nm b{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.coh .nm small{font-size:11px;color:var(--ink2)}
+.coh .cnt{margin-left:auto;font-size:11px;font-weight:700;border:1px solid var(--line);padding:3px 8px;color:var(--ink2);white-space:nowrap}
+.coh .chip{margin:0}
+.cocard .coh .tl{width:48px;height:48px}
+.colead{font-size:14.5px;font-weight:800;line-height:1.45;letter-spacing:-.2px}
+.corep{display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:#444141}
+.corep span{display:flex;gap:10px}
+.corep span::before{content:"";flex:none;width:6px;height:6px;margin-top:7px;background:var(--mk,var(--accent))}
+.rl{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.rl .ref{font-size:11px;font-weight:700;border:1px solid var(--line);padding:4px 8px;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.rl .ref:hover{border-color:var(--ink);color:var(--ink)}
+.flow{display:flex;gap:10px;align-items:baseline;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+.flow .k{font-weight:700;letter-spacing:.5px}
+.flow a{font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap}
+
+/* 항목 카드(기존 item) — 번호 · 칩 · 제목 · 날짜 · 링크. 새 톤으로만 손본다 */
+.item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;
+  padding:14px 0;border-bottom:1px solid var(--line)}
+.item.side{grid-template-columns:34px minmax(0,1fr) auto}
+.item .ex{align-self:center;padding-left:14px}
+.item .ex .acts{margin-top:0;justify-content:flex-end}
+.item:last-child{border-bottom:0}
+.item .n{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--accent);padding-top:3px}
+.item .ti{font-size:15px;font-weight:800;line-height:1.45;letter-spacing:-.01em}
+.item .ti a{color:inherit;text-decoration:none}
+.item .ti a:hover{color:var(--accent-700);text-decoration:underline}
+.item .meta{margin-top:5px;font-size:12px;color:var(--ink2)}
+.item .meta b{color:var(--ink)}
+.chips{margin-bottom:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0;
+  padding:2px 7px;margin:0;border:1px solid var(--line);color:var(--ink);line-height:1.3}
+.chip.red{background:var(--accent-100);border-color:var(--accent-100);color:#7c1405}
+.chip.ink{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.blue{border-color:var(--blue);color:var(--blue-700)}
+.chip.gray{color:var(--ink2)}
+/* NEW 배지 — 제목·문장 뒤에 붙는 자리용 */
+.newb{display:inline-block;margin-left:7px;padding:3px 6px;font-size:10px;line-height:1;
+  font-weight:800;letter-spacing:1px;color:#7c1405;background:var(--accent-100);vertical-align:2px}
+
+/* 링크 버튼 — 오른쪽 검은 버튼 하나(.pri) + 외곽선 보조 */
+.acts{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.acts a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;font-size:13px;font-weight:800;
+  border:2px solid var(--line);color:var(--ink);text-decoration:none;background:#fff;white-space:nowrap}
+.acts a:hover{border-color:var(--ink)}
+.acts a.pri{background:var(--ink);border-color:var(--ink);color:#fff}
+.acts a.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* 더 보기 — 접힌 묶음을 편다(data-more=대상 id) */
+.morebtn{margin-top:12px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;
+  font:800 13px/1 var(--font);border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none}
+.morebtn:hover{background:var(--ink);color:#fff}
+.morebtn.ghost{border-color:var(--line);font-weight:700;color:var(--ink2)}
+.morebtn.ghost:hover{border-color:var(--ink);background:#fff;color:var(--ink)}
+
+/* 원페이지 미리보기 */
+.thumb{margin-top:12px;border:2px solid var(--ink)}
+.thumb img{display:block;width:100%}
+
+/* 진행 단계 */
+.stage{margin-top:10px;display:flex;flex-wrap:wrap;gap:0}
+.stage .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);
+  padding:0 10px 0 0;margin-right:10px;white-space:nowrap}
+.stage .st i{width:7px;height:7px;background:var(--line);display:inline-block}
+.stage .st.on{color:var(--ink)}
+.stage .st.on i{background:var(--accent)}
+.stage .st.done{color:var(--ink2)}
+.stage .st.done i{background:var(--ink2)}
+
+/* 하위 블록 머리 — 섹션보다 한 단 낮은 제목 (날짜 묶음 등), 검은 선 2px */
+.subh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:24px 0 0;padding:6px 0;
+  border-bottom:2px solid var(--ink)}
+.subh h3{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.subh .sub{font-size:12px;color:var(--ink2)}
+.subh .en{margin-left:auto;font-size:11px;letter-spacing:.5px;color:var(--ink2);font-weight:700}
+.subh .chip{vertical-align:1px}
+/* 종목코드처럼 번호 칸이 긴 목록 — 6자리도 겹치지 않게 */
+.item.wide{grid-template-columns:96px minmax(0,1fr)}
+.item.wide.side{grid-template-columns:96px minmax(0,1fr) auto}
+.item.wide .n{color:var(--ink);font-size:13px;line-height:1.4;letter-spacing:-.2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){
+  .item.wide{grid-template-columns:72px minmax(0,1fr)}
+  .item.side{grid-template-columns:34px minmax(0,1fr)}
+  .item.wide.side{grid-template-columns:72px minmax(0,1fr)}
+  .item .ex{grid-column:2;padding-left:0}
+  .item .ex .acts{margin-top:9px;justify-content:flex-start}
+}
+/* 지표 표 — 관심종목 리포트와 같은 형식 (최근 · 전일비 · 전월말비 · 작년말비) */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:620px;margin-top:12px}
+table.g th{font-size:10px;letter-spacing:.1em;font-weight:700;color:var(--ink2);
+  padding:10px 7px 6px;border-bottom:2px solid var(--ink);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12.5px;padding:8px 7px;border-bottom:1px solid var(--line);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g td.spk{text-align:left}
+/* 시장 표 — 절마다 라벨 길이가 달라 열이 어긋나던 것을 칸 너비로 고정한다 */
+table.g.mk{table-layout:fixed}
+/* 좁은 화면에서는 6개월·전월말비·작년말비를 접는다 — 가로 스크롤이 생기지 않게 */
+.mper{display:none}
+table.g.mk tr.mrow{display:none}
+@media(max-width:640px){
+  .mo{display:none}
+  table.g.mk{table-layout:auto;min-width:0}
+  table.g.mk col.c1,table.g.mk col.c2{width:auto}
+  table.g.mk td:first-child,table.g.mk th:first-child{width:auto;white-space:nowrap}
+  table.g.mk tr[data-v]{cursor:pointer}
+  table.g.mk tr.mrow.op{display:table-row}
+  table.g.mk tr.mrow > td{padding:0 0 10px}
+  table.g.mk tr.mrow .mper{display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--line)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--line);white-space:nowrap}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--line)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink2);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+}
+table.g.mk col.c1{width:190px}
+table.g.mk col.c2{width:110px}
+@media(max-width:640px){table.g.mk col.c1{width:150px}}
+table.g tr:hover td{background:rgba(128,128,128,.07)}
+table.g .nm{font-weight:700;color:var(--ink)}
+table.g .em{margin-right:6px}
+table.g .val{font-weight:800;color:var(--ink)}
+svg.sp{display:inline-block;vertical-align:middle;width:78px;height:24px}
+svg.sp polyline{fill:none;stroke-width:1.5}
+svg.sp polygon{opacity:.13}
+/* 달력 격자 — IR 캘린더용. 폰에서도 7칸을 유지하고 칸·글자만 폭에 비례해 줄인다(가로 스크롤 없음) */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:14px;
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cal .wd{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ink2);padding:8px 10px;background:#f6f5f5;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .wd.we{color:var(--accent-700)}
+.cal .dy{min-height:176px;padding:8px;min-width:0;display:flex;flex-direction:column;gap:4px;
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.cal .dy.past{background:#f6f5f5}
+.cal .dy.today{background:var(--accent-100);box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .dn{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.cal .dy.past .dn{color:var(--ink2)}
+.cal .dy.today .dn{color:var(--accent-700)}
+.cal .tk{display:block;font-size:11px;font-weight:700;padding:3px 6px;
+  text-decoration:none;background:var(--ink);color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .tk.kr{background:var(--brick);color:#fff}
+.cal .tk.done{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.cal .tk.hol{background:transparent;color:var(--ink2);border:1px dashed var(--ink3);font-weight:700}
+.cal .tk.kr.lite{background:#fff;color:var(--accent-700);border:1px solid var(--accent)}
+.cal .dy.past .tk.kr.lite{color:var(--ink2);border-color:var(--line)}
+.cal .tk.more{background:transparent;color:#444141;border:1px dotted var(--ink3);text-align:center}
+.cal .tk:hover{outline:2px solid var(--ink);outline-offset:1px}
+.calleg{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:11.5px;color:var(--ink2)}
+.calleg i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-2px}
+@media(max-width:640px){
+  .cal .wd{font-size:10px;padding:4px 4px}
+  .cal .dy{min-height:64px;padding:3px;gap:2px}
+  .cal .dn{font-size:11px;margin-bottom:1px}
+  .cal .tk{font-size:9px;padding:1px 2px}
+}
+/* 지표 타일 — 값 하나 + 등락 (시황·금리 등). 건수 타일은 .stats 로 바꾼다 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:0;margin-top:12px;
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.tile{padding:12px 14px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.tile .l{font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1px}
+.tile .v{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-top:4px;line-height:1.1}
+.tile .c{font-size:11.5px;font-weight:700;margin-top:3px}
+.tile .em{margin-right:5px}
+.tile .sp{display:block;margin-top:8px;width:100%;height:34px}
+.tile .sp polyline{fill:none;stroke-width:1.6}
+.tile .sp polygon{opacity:.13}
+.up{color:var(--accent-700)}
+.dn{color:var(--blue)}
+.flat,.dash{color:var(--ink2)}
+.sur{display:inline-block;font-size:11px;font-weight:800;padding:3px 7px;line-height:1.3}
+.sur.up{background:var(--accent-100)}
+.sur.dn{background:var(--blue-100)}
+
+/* 존 바 — 현재 값이 어느 구간에 있는지 */
+.gauge{padding:14px 0;border-bottom:1px solid var(--line)}
+.gauge:last-child{border-bottom:0}
+.gauge .gh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.gauge .gn{font-size:13.5px;font-weight:800}
+.gauge .gs{font-size:11px;color:var(--ink2)}
+.gauge .gv{margin-left:auto;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.gauge .badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;color:#fff}
+.zbar{position:relative;height:12px;display:flex;margin-top:10px}
+.zbar .z{height:100%}
+.zbar .mk{position:absolute;top:-6px;width:0;height:0;border-left:5px solid transparent;
+  border-right:5px solid transparent;border-top:8px solid var(--ink);margin-left:-5px}
+.zleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:7px;font-size:10.5px;color:var(--ink2)}
+.zleg i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+
+/* 뉴스 불릿 */
+.bul{margin:12px 0 0;padding:0}
+.bul li{list-style:none;margin:0 0 9px;padding-left:19px;position:relative;font-size:13.5px;line-height:1.62}
+.bul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--ink2)}
+.bul li.risk::before{background:var(--accent)}
+.bul li.risk{font-weight:700}
+.bul a{font-size:10.5px;margin-left:5px;text-decoration:none;color:var(--ink2);white-space:nowrap}
+.bul a:hover{color:var(--accent)}
+
+.empty{padding:26px 0;color:var(--ink2);font-size:13px}
+footer{border-top:2px solid var(--ink);margin-top:44px;padding-top:14px;
+  color:var(--ink2);font-size:11.5px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink);margin-top:7px}
+
+/* 위로가기 — 직접 링크로 열었을 때만 (삽입 시엔 부모가 맡는다) */
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:#fff;color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.totop.on{opacity:1;visibility:visible}
+.totop:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  .mast h1{font-size:26px}
+  .item{grid-template-columns:26px 1fr}
+  .hero{padding:14px;gap:12px}
+  .hero .hc{padding:16px}
+  .hero h3{font-size:19px}
+  .hero .big{font-size:28px}
+  .hero .hgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stats{gap:10px 20px}
+  .stats .st b{font-size:19px}
+  .row{gap:12px}
+  .row .rb{flex-basis:150px}
+  .row.tall .rb{flex-basis:200px}
+  .row.tall .acts{flex-basis:100%}
+  .row .acts a,.acts a{height:38px;padding:0 12px;font-size:12px}
+  .cocard{padding:16px}
+}
+</style>
+</head><body>
+<div class="wrap">
+<header class="mast"><div class="kick">BIG TECH &amp; AI</div><h1>빅테크·AI 동향</h1><div class="dt">10/9(금) · 오후판 · 최근 3일 창</div></header>
+<div class="rule"></div>
+
+<style>.aisum{display:flex;flex-direction:column;gap:10px}.aisum .atag{display:none}.rl .newb{margin:0;vertical-align:0}.crow{padding:12px 0;border-bottom:1px solid var(--line)}.crow:last-child,.crow:last-of-type{border-bottom:0}.crow .ct{font-size:14px;font-weight:700;line-height:1.5;letter-spacing:-.2px}.crow .ct a{color:var(--ink);text-decoration:none}.crow .ct a:hover{color:var(--accent-700)}.crow .ct .chip{margin-left:7px;vertical-align:2px;font-weight:700}.crow .cm{margin-top:4px;font-size:11.5px;color:var(--ink2)}.crow .cm a{color:var(--ink2)}.crow .cd{margin-top:4px;font-size:12.5px;line-height:1.6;color:var(--ink2)}.thline{display:flex;gap:8px;align-items:baseline;margin-top:6px;font-size:12.5px;line-height:1.5}.thline .d{color:var(--ink2);font-variant-numeric:tabular-nums;min-width:30px}.thline a{color:var(--ink);text-decoration:none}.thline a:hover{text-decoration:underline}.thline .p{color:var(--ink2);white-space:nowrap}</style><div class="stats"><div class="st"><span>감시</span><b>9사</b></div><div class="st"><span>오늘 소식</span><b>8사</b></div><div class="st"><span>기사</span><b>53건</b></div><div class="st"><span>창</span><b>3일</b></div></div><section id="today"><div class="sh"><span class="no">01</span><h2>오늘의 흐름</h2><span class="sub">10/9(금) · 오후판 · 최근 3일 창</span><span class="en">TODAY</span></div><div class="hero"><article class="hc"><div class="htag"><b>AI 요약</b><span>빅테크 8사 종합</span></div><h3>오픈AI 매출 전망 하향에 시장 충격, 경쟁사들은 신제품 출시 및 정책 강화</h3><p>오픈AI의 매출 전망 하향 소식이 시장에 큰 영향을 미치며 AI 산업의 수익성에 대한 의구심을 키우고 있습니다. 동시에 앤트로픽과 구글은 새로운 AI 모델과 기업용 서비스를 선보이며 경쟁을 심화하고 있습니다. 이들 뉴스를 통해 AI 산업의 현재 상황과 미래 방향을 파악할 수 있습니다</p><div class="hnote">Gemini 자동 요약 · 기사 제목만 근거 — 원문 확인 권장</div></article><aside class="hc aside"><div class="hsub">회사별 요약 바로가기</div><div class="hgrid"><a href="#co-ant" target="_self"><b>ANT</b><small>앤트로픽</small></a><a href="#co-nvda" target="_self"><b>NVDA</b><small>엔비디아</small></a><a href="#co-oai" target="_self"><b>OAI</b><small>오픈AI</small></a><a href="#co-aapl" target="_self"><b>AAPL</b><small>애플</small></a><a href="#co-goog" target="_self"><b>GOOG</b><small>구글</small></a><a href="#co-amzn" target="_self"><b>AMZN</b><small>아마존</small></a><a href="#co-meta" target="_self"><b>META</b><small>메타</small></a><a href="#co-tsla" target="_self"><b>TSLA</b><small>테슬라</small></a></div></aside></div></section><section id="co"><div class="sh"><span class="no">02</span><h2>회사별 요약</h2><span class="sub">8사 · 앤트로픽 → 엔비디아 → 오픈AI → 시총순</span><span class="en">BY COMPANY</span></div><div class="cogrid"><article class="cocard" id="co-ant"><div class="coh"><div class="tl" style="background:var(--ink)">ANT</div><div class="nm"><b>앤트로픽</b><small>Anthropic</small></div><span class="cnt">기사 6</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">AI 모델 오용 방지 정책 강화 및 신규 모델 출시</div><div class="corep"><span>클로드 모델의 오용을 막기 위해 사용 정책을 개정하고 모델 학대를 금지함</span> <span>2028년 미국 대선을 앞두고 후보 접촉 전담팀을 조직함</span> <span>오픈소스 보안 취약점 무료 탐지 서비스를 공개하고, 실행 비용을 75% 낮춘 고속 AI 모델 '클로드 하이쿠 5.5'를 출시함</span></div><div class="rl"><a class="ref" href="https://www.aitimes.com/news/articleView.html?idxno=216100" target="_blank" rel="noopener">AI타임스 ↗</a><a class="ref" href="https://www.fortunekorea.co.kr/news/articleView.html?idxno=54351" target="_blank" rel="noopener">fortunekorea.co.kr ↗</a><a class="ref" href="https://www.aitimes.kr/news/articleView.html?idxno=42243" target="_blank" rel="noopener">aitimes.kr ↗</a><a class="ref" href="https://www.aitimes.kr/news/articleView.html?idxno=42242" target="_blank" rel="noopener">aitimes.kr ↗</a><a class="ref" href="https://www.khan.co.kr/article/202610091032001" target="_blank" rel="noopener">경향신문 ↗</a></div></div></article><article class="cocard" id="co-nvda"><div class="coh"><div class="tl" style="background:var(--ink)">NVDA</div><div class="nm"><b>엔비디아</b><small>NVIDIA</small></div><span class="cnt">기사 6</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">젠슨 황 국립과학훈장 수훈 및 HBM4 전망 유지</div><div class="corep"><span>젠슨 황 CEO가 국립과학훈장을 수훈함</span> <span>오픈AI 매출 충격으로 주가가 3% 하락함</span> <span>'루빈' HBM4 12단 유지 전망으로 HBM 수요 둔화 우려가 기우임을 시사함</span></div><div class="rl"><a class="ref" href="http://www.newstown.co.kr/news/articleView.html?idxno=718096" target="_blank" rel="noopener">newstown.co.kr ↗</a><a class="ref" href="https://www.koreadaily.com/article/20261008221552970" target="_blank" rel="noopener">koreadaily.com ↗</a><a class="ref" href="https://www.donga.com/news/Economy/article/all/20261009/134813875/1" target="_blank" rel="noopener">동아일보 ↗</a><a class="ref" href="https://www.newsis.com/view/NISX20261008_0003818878" target="_blank" rel="noopener">뉴시스 ↗</a><a class="ref" href="https://www.mdtoday.co.kr/news/articleView.html?idxno=617980" target="_blank" rel="noopener">mdtoday.co.kr ↗</a></div></div></article><article class="cocard" id="co-oai"><div class="coh"><div class="tl" style="background:var(--ink)">OAI</div><div class="nm"><b>오픈AI</b><small>OpenAI</small></div><span class="cnt">기사 10</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">예상 매출 하향 조정 및 안전 연구자 고용 종료 유지</div><div class="corep"><span>예상 매출이 당초 알려진 700억 달러보다 27조원 줄어든 500억 달러로 축소 전망됨</span> <span>안전 연구자 3명에 대한 고용 종료 결정을 유지함</span> <span>수학계에서 난제 풀이에 의문을 제기하며 원고 3편이 오류로 철회됨</span> <span>러시아·이란발 AI 여론조작 작전을 차단하고 가짜 기자 7명의 기사를 삭제함</span></div><div class="rl"><a class="ref" href="https://it.chosun.com/news/articleView.html?idxno=2023092171742" target="_blank" rel="noopener">IT조선 ↗</a><a class="ref" href="https://www.tokenpost.kr/news/breaking/420381" target="_blank" rel="noopener">토큰포스트 ↗</a><a class="ref" href="https://www.chosun.com/economy/tech_it/2026/10/09/L7RG2HB7JBF3PITWGPLYCW3E3Y/?utm_source=naver&amp;utm_medium=referral&amp;utm_campaign=naver-news" target="_blank" rel="noopener">조선일보 ↗</a><a class="ref" href="https://www.donga.com/news/Economy/article/all/20261009/134814341/1" target="_blank" rel="noopener">동아일보 ↗</a><a class="ref" href="https://www.joongang.co.kr/article/25468447" target="_blank" rel="noopener">중앙일보 ↗</a><a class="ref" href="https://www.cbci.co.kr/news/articleView.html?idxno=613841" target="_blank" rel="noopener">cbci.co.kr ↗</a><a class="ref" href="https://www.seoul.co.kr/news/economy/IT/2026/10/09/20261009500100?wlog_tag3=naver" target="_blank" rel="noopener">seoul.co.kr ↗</a><a class="ref" href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=448983" target="_blank" rel="noopener">businesspost.co.kr ↗</a><a class="ref" href="https://www.news2day.co.kr/article/20261009500016" target="_blank" rel="noopener">news2day.co.kr ↗</a></div></div></article><article class="cocard" id="co-aapl"><div class="coh"><div class="tl" style="background:var(--ink)">AAPL</div><div class="nm"><b>애플</b><small>Apple</small></div><span class="cnt">기사 5</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">아이폰18프로 교환 및 첫 터치스크린 맥북 공개 예정</div><div class="corep"><span>아이폰18프로 '패닉풀' 1500대가 교환됨</span> <span>27일 첫 터치스크린 맥북을 공개할 예정임</span> <span>팀 쿡 CEO가 존 터너스 경영에 개입하지 않겠다고 밝히며 승계 후 역할 분리를 언급함</span></div><div class="rl"><a class="ref" href="https://view.asiae.co.kr/article/2026100914561239091" target="_blank" rel="noopener">view.asiae.co.kr ↗</a><a class="ref" href="https://www.chosun.com/economy/tech_it/2026/10/09/YTE63UB6YBGHXCPYIM66DB7GHM/?utm_source=naver&amp;utm_medium=referral&amp;utm_campaign=naver-news" target="_blank" rel="noopener">조선일보 ↗</a><a class="ref" href="https://www.cbci.co.kr/news/articleView.html?idxno=613674" target="_blank" rel="noopener">cbci.co.kr ↗</a><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=706165" target="_blank" rel="noopener">디지털투데이 ↗</a></div></div></article><article class="cocard" id="co-goog"><div class="coh"><div class="tl" style="background:var(--ink)">GOOG</div><div class="nm"><b>구글</b><small>Google</small></div><span class="cnt">기사 4</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">제미나이 4.0 출시 예측 확률 하락 및 기업용 에이전트 공개</div><div class="corep"><span>제미나이 4.0 출시 예측 확률이 하루 새 47% 하락하여 3%가 됨</span> <span>기업용 '제미나이 에이전트'를 공개하며 오픈AI '닷'에 맞불을 놓음</span></div><div class="rl"><a class="ref" href="https://www.tokenpost.kr/news/general/420336" target="_blank" rel="noopener">토큰포스트 ↗</a><a class="ref" href="https://www.ddaily.co.kr/page/view/2026100909440875305" target="_blank" rel="noopener">ddaily.co.kr ↗</a><a class="ref" href="https://www.aitimes.kr/news/articleView.html?idxno=42244" target="_blank" rel="noopener">aitimes.kr ↗</a></div></div></article><article class="cocard" id="co-amzn"><div class="coh"><div class="tl" style="background:var(--ink)">AMZN</div><div class="nm"><b>아마존</b><small>Amazon</small></div><span class="cnt">기사 6</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">알렉사 태블릿 3종 공개 및 쇼핑 접근 차단</div><div class="corep"><span>강력한 알렉사+를 탑재한 태블릿 3종을 공개하며 구글 플레이와 AI 비서 기능을 결합함</span> <span>메타의 AI 에이전트 '판'을 막는 움직임을 보임</span> <span>메타 '뮤즈'의 쇼핑 접근을 차단함</span></div><div class="rl"><a class="ref" href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=494027" target="_blank" rel="noopener">pinpointnews.co.kr ↗</a><a class="ref" href="https://www.ddaily.co.kr/page/view/2026100910255020279" target="_blank" rel="noopener">ddaily.co.kr ↗</a><a class="ref" href="https://www.newsquest.co.kr/news/articleView.html?idxno=302332" target="_blank" rel="noopener">newsquest.co.kr ↗</a><a class="ref" href="https://magazine.hankyung.com/business/article/202610081363b" target="_blank" rel="noopener">한국경제 ↗</a></div></div></article><article class="cocard" id="co-meta"><div class="coh"><div class="tl" style="background:var(--ink)">META</div><div class="nm"><b>메타</b><small>Meta</small></div><span class="cnt">기사 8</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">AI 에이전트 '뮤즈' 초기 흥행 성공 및 아이패드용 앱 출시</div><div class="corep"><span>AI 에이전트 '뮤즈'가 초기 흥행에 성공하며 일간 이용자가 218만2000명에 달함</span> <span>'뮤즈'의 다음 단계 목표는 '뮤즈'의 수익화임</span> <span>'뮤즈'의 아이패드용 앱을 출시하고 업무용 도구 연동을 강화함</span></div><div class="rl"><a class="ref" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=706154" target="_blank" rel="noopener">디지털투데이 ↗</a><a class="ref" href="http://www.wikileaks-kr.org/news/articleView.html?idxno=192994" target="_blank" rel="noopener">wikileaks-kr.org ↗</a><a class="ref" href="https://www.tokenpost.kr/news/ai/420109" target="_blank" rel="noopener">토큰포스트 ↗</a><a class="ref" href="https://www.aitimes.com/news/articleView.html?idxno=216078" target="_blank" rel="noopener">AI타임스 ↗</a></div></div></article><article class="cocard" id="co-tsla"><div class="coh"><div class="tl" style="background:var(--ink)">TSLA</div><div class="nm"><b>테슬라</b><small>Tesla</small></div><span class="cnt">기사 8</span></div><div class="aisum"><div class="atag">AI 요약</div><div class="colead">국감서 FSD 안전성 지적 및 휴머노이드 로봇 기대와 검증 사이</div><div class="corep"><span>국정감사에서 FSD 안전성과 개인정보 보호에 대한 지적을 받음</span> <span>휴머노이드 로봇 옵티머스의 공개 부족으로 시장에서 기대와 검증 사이의 논의가 이어짐</span> <span>자율주행의 유럽 진출을 넓히기 위해 슬로바키아 승인을 추진함</span> <span>임시번호판 발급이 6년간 단 1건으로 등록 전 검수 사각지대가 지적됨</span> <span>전 옵티머스 AI 책임자가 산업용 로봇 스타트업을 공동 창업함</span></div><div class="rl"><a class="ref" href="https://www.m-i.kr/news/articleView.html?idxno=2004239" target="_blank" rel="noopener">m-i.kr ↗</a><a class="ref" href="https://www.jemin.com/news/articleView.html?idxno=844088" target="_blank" rel="noopener">jemin.com ↗</a><a class="ref" href="https://www.ilyoseoul.co.kr/news/articleView.html?idxno=523526" target="_blank" rel="noopener">ilyoseoul.co.kr ↗</a><a class="ref" href="https://www.jemin.com/news/articleView.html?idxno=844087" target="_blank" rel="noopener">jemin.com ↗</a><a class="ref" href="https://www.mt.co.kr/estate/2026/10/09/2026100817235688565" target="_blank" rel="noopener">머니투데이 ↗</a><a class="ref" href="https://www.newspim.com/news/view/20261008001233" target="_blank" rel="noopener">newspim.com ↗</a><a class="ref" href="https://www.tokenpost.kr/news/tech/420178" target="_blank" rel="noopener">토큰포스트 ↗</a></div></div></article></div></section>
+<footer><p>감시 대상 — 앤트로픽 · 엔비디아 · 오픈AI · MS · 애플 · 구글 · 아마존 · 테슬라</p><p>데이터: 네이버 뉴스 검색, Gemini 요약(문장 끝 링크가 근거 기사) · 시세성 기사는 시황 브리핑이 다룸</p><p class="w">자동 생성 브리핑 · 투자 권유 아님</p></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로">↑</button>
+</div>
+<script>
+(function(){
+  try{ if(window.self!==window.top) document.body.classList.add("embed"); }
+  catch(e){ document.body.classList.add("embed") }
+
+  /* 사이트가 iframe에 <base target="_blank">를 넣어 내부 앵커까지 새 탭으로 연다.
+     네비만이 아니라 문서 안의 모든 #앵커 클릭을 가로채 직접 스크롤한다.
+     scrollIntoView 는 부모 스크롤까지 밀어준다. */
+  document.addEventListener("click",function(ev){
+    var a=ev.target.closest("a[href^='#']");
+    if(!a)return;
+    ev.preventDefault();
+    var el=document.getElementById(a.getAttribute("href").slice(1));
+    if(!el)return;
+    /* 접힌 묶음('더 보기' 뒤) 안의 항목이면 먼저 편다 */
+    var hid=el.closest("[hidden]"),n=0;
+    while(hid&&n++<5){
+      hid.hidden=false;
+      var mb=hid.id&&document.querySelector('.morebtn[data-more="'+hid.id+'"]');
+      if(mb)mb.hidden=true;
+      hid=el.closest("[hidden]");
+    }
+    el.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+
+  /* 표 정렬 — th[data-k] 를 누르면 그 열 기준으로 재배열한다.
+     메일에서는 불가능했던 것: 오늘 많이 움직인 것부터 보기.
+     좁은 화면에서 접은 칸(.mper)은 행을 눌러 편다. 접힘은 행 안에 들어 있어
+     정렬로 순서가 바뀌어도 따라다닌다. */
+  document.querySelectorAll("table.g").forEach(function(tb){
+    var dir = {}, orig = null, mates = null;
+    tb.addEventListener("click", function(ev){
+      var tr = ev.target.closest("tr[data-v]");
+      if(tr){
+        var d = tr.nextElementSibling;
+        if(d && d.classList.contains("mrow")){ d.classList.toggle("op"); return; }
+      }
+      var th = ev.target.closest("th[data-k]");
+      if(!th) return;
+      var k = th.dataset.k, body = tb.tBodies[0] || tb;
+      if(!orig){
+        orig = [].slice.call(body.querySelectorAll("tr[data-v]"));
+        /* 접힘 줄은 제 행 바로 뒤에 붙어 있어야 한다 — 정렬할 때 짝으로 옮긴다 */
+        mates = new Map();
+        orig.forEach(function(r){
+          var d = r.nextElementSibling;
+          if(d && d.classList.contains("mrow")) mates.set(r, d);
+        });
+      }
+      dir[k] = dir[k] === -1 ? 1 : -1;
+      var rows = orig.slice().sort(function(a,b){
+        var x = parseFloat(a.dataset[k]), y = parseFloat(b.dataset[k]);
+        if(isNaN(x)) return 1;
+        if(isNaN(y)) return -1;
+        return (x - y) * dir[k];
+      });
+      tb.querySelectorAll("th .aw").forEach(function(s){ s.remove() });
+      var m = document.createElement("span");
+      m.className = "aw"; m.textContent = dir[k] < 0 ? "▼" : "▲";
+      th.appendChild(m);
+      rows.forEach(function(r){
+        body.appendChild(r);
+        var d = mates.get(r);
+        if(d) body.appendChild(d);
+      });
+    });
+  });
+
+  /* 구분 필터(.pf button[data-f]) — 같은 섹션 안의 [data-f] 줄·묶음만 남긴다.
+     data-f 가 빈 버튼은 '전체'. 묶음(.fgrp)은 보이는 줄이 하나도 없으면 함께 숨긴다. */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".pf button[data-f]");
+    if(!b)return;
+    var bar=b.closest(".pf"),scope=bar.getAttribute("data-scope");
+    var root=scope?document.getElementById(scope):bar.parentNode;
+    if(!root)return;
+    var f=b.getAttribute("data-f")||"";
+    [].forEach.call(bar.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b)});
+    [].forEach.call(root.querySelectorAll("[data-f]:not(button)"),function(r){
+      r.hidden=!!f&&r.getAttribute("data-f")!==f});
+    [].forEach.call(root.querySelectorAll(".fgrp"),function(g){
+      g.hidden=!g.querySelector("[data-f]:not(button):not([hidden])")});
+  });
+
+  /* 더 보기(.morebtn[data-more]) — 접힌 묶음(id)을 펴고 버튼은 사라진다 */
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest(".morebtn[data-more]");
+    if(!b)return;
+    ev.preventDefault();
+    var t=document.getElementById(b.getAttribute("data-more"));
+    if(t){t.hidden=false}
+    b.hidden=true;
+  });
+
+  var btn=document.getElementById("totop");
+  if(btn){
+    function paint(){ btn.classList.toggle("on",(window.scrollY||0)>360) }
+    btn.onclick=function(){ window.scrollTo({top:0,behavior:"smooth"}) };
+    window.addEventListener("scroll",paint,{passive:true});
+    paint();
+  }
+})();
+</script>
+</body></html>
