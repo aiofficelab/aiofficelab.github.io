@@ -305,16 +305,18 @@ var BRIEFS = [
   { kind:"dart",     group:"market", no:"04", cad:"매일 오전 7시", title:"기업공시 감시", kick:"CORPORATE DISCLOSURE WATCH", sum:"국내 60사 + 미국 70사 적신호 분류 · 기업이슈 뉴스" },
   { kind:"econscan", group:"market", no:"05", cad:"평일 오전 7시", title:"경제·금융 동향", kick:"DAILY SCAN", sum:"재경부 경제지표 + 금감원 금융시장 동향 — 일일/주간/월간" },
   { kind:"portfolio", group:"market", no:"06", cad:"매일 오전 7시", title:"관심종목 리포트", kick:"WATCHLIST REPORT", sum:"관심종목 32개 + 시장 지표" },
-  { kind:"ktnews",   group:"news",   no:"07", cad:"매일 오전 7시 · 오후 4시", title:"KT그룹 뉴스", kick:"KT GROUP NEWS", sum:"KT 리스크 · 그룹사 42사 · 통신3사 — 오탐 차단 스크랩" },
-  { kind:"tech",     group:"news",   no:"08", cad:"매일 오전 7시 · 오후 4시", title:"빅테크·AI 동향", kick:"BIG TECH & AI", sum:"빅테크 9사 — 회사별 AI 요약 리포트" },
+  /* 국내 증시 현황 — 2026-10-17 추가. 엔진 krx.py 가 한국거래소 OPEN API 전 종목 마감 자료로 평일 발행(아침·오후 신호, 같은 기준일이면 한 번만). 뒤 카드 번호를 하나씩 밀었다 */
+  { kind:"krx",      group:"market", no:"07", cad:"평일 · 전 거래일 마감 기준", title:"국내 증시 현황", kick:"KOREA MARKET", sum:"코스피·코스닥 전 종목 — 등락 분포 · 거래대금 · 시가총액 집중 · 업종 · 금·배출권" },
+  { kind:"ktnews",   group:"news",   no:"08", cad:"매일 오전 7시 · 오후 4시", title:"KT그룹 뉴스", kick:"KT GROUP NEWS", sum:"KT 리스크 · 그룹사 42사 · 통신3사 — 오탐 차단 스크랩" },
+  { kind:"tech",     group:"news",   no:"09", cad:"매일 오전 7시 · 오후 4시", title:"빅테크·AI 동향", kick:"BIG TECH & AI", sum:"빅테크 9사 — 회사별 AI 요약 리포트" },
   /* 상장(IPO) 동향 — 2026-10-04 추가. 엔진 ipo.py 가 평일 오전 7시 발행(조사 기록 타임라인 + 최근 7일 뉴스). 뒤 카드 번호를 하나씩 밀었다 */
-  { kind:"ipo",      group:"news",   no:"09", cad:"평일 오전 7시", title:"상장(IPO) 동향", kick:"IPO WATCH", sum:"Anthropic·OpenAI 상장 준비 타임라인 + 주목받는 상장 · 최근 뉴스" },
-  { kind:"rnd",      group:"news",   no:"10", cad:"평일 오전 7시", title:"기술 리포트", kick:"TECH REPORTS", sum:"SPRi·KISTEP 새 간행물 + 기술 정보 사이트 바로가기" },
-  { kind:"fss",      group:"reg",    no:"11", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
-  { kind:"law",      group:"reg",    no:"12", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" },
+  { kind:"ipo",      group:"news",   no:"10", cad:"평일 오전 7시", title:"상장(IPO) 동향", kick:"IPO WATCH", sum:"Anthropic·OpenAI 상장 준비 타임라인 + 주목받는 상장 · 최근 뉴스" },
+  { kind:"rnd",      group:"news",   no:"11", cad:"평일 오전 7시", title:"기술 리포트", kick:"TECH REPORTS", sum:"SPRi·KISTEP 새 간행물 + 기술 정보 사이트 바로가기" },
+  { kind:"fss",      group:"reg",    no:"12", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
+  { kind:"law",      group:"reg",    no:"13", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" },
   /* 팟캐스트 — 2026-10-05 추가. Gemini Notebook 음성 브리핑의 링크 모음(엔진 podcast.py).
      에이전트가 구글 시트에 한 줄 적으면 시트의 앱스크립트가 엔진을 깨운다 — 새 에피소드가 있을 때만 발행 */
-  { kind:"podcast",  group:"audio",  no:"13", cad:"매일 오전 7:30 · 오후 6:20", title:"팟캐스트", kick:"PODCAST", sum:"Gemini Notebook 음성 브리핑 — 아침 투자 · 출퇴근길 · 관심기업" }
+  { kind:"podcast",  group:"audio",  no:"14", cad:"매일 오전 7:30 · 오후 6:20", title:"팟캐스트", kick:"PODCAST", sum:"Gemini Notebook 음성 브리핑 — 아침 투자 · 출퇴근길 · 관심기업" }
 ];
 var GRID = { market:"gridMarket", news:"gridNews", reg:"gridReg", audio:"gridAudio" };
 /* 상단 탭의 게시판 수는 BRIEFS 에서 센다 — 손으로 적어 두면 게시판을 더할 때 어긋난다 */
