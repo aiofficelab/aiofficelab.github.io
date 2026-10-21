@@ -1,59 +1,60 @@
 {
  "kind": "fss",
- "at": "2026-10-21 06:21",
+ "at": "2026-10-22 06:21",
  "runs": [
   [
    "sanction",
-   "guide",
    "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "guide",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "guide",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "guide",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "guide",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "rule",
-   "klca"
-  ],
-  [
-   "sanction",
-   "klca"
-  ],
-  [
-   "sanction",
    "notice",
+   "klca"
+  ],
+  [
+   "sanction",
+   "guide",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "guide",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "guide",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "guide",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "guide",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
+   "rule",
+   "klca"
+  ],
+  [
+   "sanction",
    "klca"
   ]
  ],
