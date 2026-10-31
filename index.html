@@ -250,7 +250,6 @@
         <button type="button" class="mtab" data-g="market">데일리 마켓 <span class="cnt">6</span><i>▾</i></button>
         <button type="button" class="mtab" data-g="news">뉴스 <span class="cnt">3</span><i>▾</i></button>
         <button type="button" class="mtab" data-g="reg">규제·회계 <span class="cnt">2</span><i>▾</i></button>
-        <button type="button" class="mtab" data-g="audio">팟캐스트 <span class="cnt">1</span><i>▾</i></button>
         <div class="mega" id="mega" hidden></div>
       </nav>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
@@ -270,9 +269,7 @@
       <div class="seclabel">NEWS</div>
       <div class="grid" id="gridNews"></div>
       <div class="seclabel">REGULATORY</div>
-      <div class="grid" id="gridReg"></div>
-      <div class="seclabel">PODCAST</div>
-      <div class="grid" id="gridAudio" style="padding-bottom:8px"></div>
+      <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
     </div>
   </section>
   <section id="reader" class="wrap reader" hidden>
@@ -320,12 +317,10 @@ var BRIEFS = [
      지난 회차는 ipo kind 에 남아 있으나 카드가 없어 열리지 않는다. 뒤 카드 번호를 하나씩 당겼다 */
   { kind:"rnd",      group:"news",   no:"11", cad:"평일 오전 7시", title:"기술 리포트", kick:"TECH REPORTS", sum:"SPRi·KISTEP 새 간행물 + 기술 정보 사이트 바로가기" },
   { kind:"fss",      group:"reg",    no:"12", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
-  { kind:"law",      group:"reg",    no:"13", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" },
-  /* 팟캐스트 — 2026-10-05 추가. Gemini Notebook 음성 브리핑의 링크 모음(엔진 podcast.py).
-     에이전트가 구글 시트에 한 줄 적으면 시트의 앱스크립트가 엔진을 깨운다 — 새 에피소드가 있을 때만 발행 */
-  { kind:"podcast",  group:"audio",  no:"14", cad:"매일 오전 7:30 · 오후 6:20", title:"팟캐스트", kick:"PODCAST", sum:"Gemini Notebook 음성 브리핑 — 아침 투자 · 출퇴근길 · 관심기업" }
+  { kind:"law",      group:"reg",    no:"13", cad:"매주 월요일 오전 7시", title:"법률 모니터링", kick:"WEEKLY REGULATORY MONITOR", sum:"입법예고 · 국회 심사 · 금융위 모니터링" }
+  /* 팟캐스트 카드는 2026-10-31 게시판을 내려 뺐다(사용자). 지난 회차는 podcast kind 에 남아 있으나 카드가 없어 열리지 않는다. renderPodcast 는 남겨 둔다. */
 ];
-var GRID = { warroom:"gridWarroom", market:"gridMarket", news:"gridNews", reg:"gridReg", audio:"gridAudio" };
+var GRID = { warroom:"gridWarroom", market:"gridMarket", news:"gridNews", reg:"gridReg" };
 /* 상단 탭의 게시판 수는 BRIEFS 에서 센다 — 손으로 적어 두면 게시판을 더할 때 어긋난다 */
 [].forEach.call(document.querySelectorAll(".mtab"), function(t){
   var g = t.getAttribute("data-g");
