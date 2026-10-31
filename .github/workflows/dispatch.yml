@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       brief:
-        description: '깨울 브리핑 (all / econscan / law / morning / ir / portfolio / rates)'
+        description: '깨울 브리핑 (all / econscan / law / morning / ir / portfolio / rates / warroom)'
         default: 'all'
         required: false
 
@@ -35,7 +35,7 @@ jobs:
         run: |
           t="${MANUAL:-all}"
           case "$t" in
-            all|econscan|law|morning|ir|portfolio|rates) ;;
+            all|econscan|law|morning|ir|portfolio|rates|warroom) ;;
             *) echo "::error::모르는 브리핑 이름: '$t'"; exit 1 ;;
           esac
           echo "target=$t" >> "$GITHUB_OUTPUT"
