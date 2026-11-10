@@ -70,9 +70,9 @@
   .lead.sw .k,.lead.sw .t{opacity:0;transform:translateY(5px);}
   .seclabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--mut);padding:28px 0 10px;}
   /* 게시판 타일 — Grid Board 타일 채택(설명문 없음): 큰 번호 + 제목 + 상태 태그·열기 */
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  @media(max-width:1080px){.grid{grid-template-columns:repeat(3,1fr);}}
-  @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr);}}
+  .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+  @media(max-width:1080px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+  @media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:520px){.grid{grid-template-columns:1fr;}}
   .cardx{background:#fff;border:2px solid var(--ink);padding:16px 18px 14px;
     min-height:148px;display:flex;flex-direction:column;cursor:pointer;}
@@ -82,7 +82,7 @@
   .cardx .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
   .cardx .no{font-size:24px;font-weight:800;color:var(--acc);}
   .cardx.off .no{color:#9a9694;}
-  .cardx .cad{font-size:12px;color:var(--mut);white-space:nowrap;}
+  .cardx .cad{font-size:12px;color:var(--mut);text-align:right;line-height:1.4;}
   .cardx .ttl{padding-top:2px;font-size:20px;font-weight:800;letter-spacing:-0.4px;}
   .cardx.off .ttl{color:#9a9694;}
   .cardx .foot{margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
