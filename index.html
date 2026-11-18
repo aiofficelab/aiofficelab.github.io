@@ -246,10 +246,8 @@
       <div class="dateline"><span><b id="today"></b>&nbsp;&nbsp;매일 자동 발행</span>
         <span class="r" id="wx" hidden></span></div>
       <nav class="menu" id="menu" aria-label="게시판 바로가기">
-        <button type="button" class="mtab" data-g="warroom">워룸 <span class="cnt">1</span><i>▾</i></button>
-        <button type="button" class="mtab" data-g="market">데일리 마켓 <span class="cnt">6</span><i>▾</i></button>
-        <button type="button" class="mtab" data-g="news">뉴스 <span class="cnt">3</span><i>▾</i></button>
-        <button type="button" class="mtab" data-g="reg">규제·회계 <span class="cnt">1</span><i>▾</i></button>
+        <button type="button" class="mtab" data-g="market">데일리 마켓 <span class="cnt">8</span><i>▾</i></button>
+        <button type="button" class="mtab" data-g="news">뉴스 <span class="cnt">4</span><i>▾</i></button>
         <div class="mega" id="mega" hidden></div>
       </nav>
       <div class="lead" id="lead" hidden><span class="k">오늘 시장 한 줄</span><span class="t" id="leadText"></span></div>
@@ -262,14 +260,11 @@
       </div>
     </div>
     <div class="wrap">
-      <div class="seclabel">WAR ROOM</div>
-      <div class="grid" id="gridWarroom"></div>
+      <!-- 2026-11-18 칸을 둘로(사용자) — 워룸은 DAILY MARKET 맨 앞, 회계 모니터링은 NEWS 의 기술 리포트 옆. WAR ROOM·REGULATORY 칸은 없앴다 -->
       <div class="seclabel">DAILY MARKET</div>
       <div class="grid" id="gridMarket"></div>
       <div class="seclabel">NEWS</div>
-      <div class="grid" id="gridNews"></div>
-      <div class="seclabel">REGULATORY</div>
-      <div class="grid" id="gridReg" style="padding-bottom:8px"></div>
+      <div class="grid" id="gridNews" style="padding-bottom:8px"></div>
     </div>
   </section>
   <section id="reader" class="wrap reader" hidden>
@@ -297,7 +292,7 @@ var BRIEFS = [
   /* WAR ROOM — 2026-10-31 AI Studio 앱(aiofficelab.ai.studio)의 워룸을 이 사이트로 옮김(사이트 하나로 통합).
      그날 브리핑 9종을 가로질러 경영진 판단 한 장 — 엔진 warroom.py, 하루 두 판(-am/-pm), 깨우기 GAS wakeWarroom(9시대·17시대).
      앱에만 있던 '새로 생성'·듣기·AI 리포트는 쓰이지 않아 가져오지 않았다. 뒤 카드 번호를 하나씩 밀었다(02~14). */
-  { kind:"warroom",  group:"warroom", no:"01", cad:"매일 오전 8시 · 오후 5시", title:"워룸 전략 브리프", kick:"WAR ROOM", sum:"브리핑 9종을 가로질러 — 오늘의 판단 · 국내외 동향 · 회사 사안 · 일정" },
+  { kind:"warroom",  group:"market",  no:"01", cad:"매일 오전 8시 · 오후 5시", title:"워룸 전략 브리프", kick:"WAR ROOM", sum:"브리핑 9종을 가로질러 — 오늘의 판단 · 국내외 동향 · 회사 사안 · 일정" },
   /* DAILY MARKET 차례 — 시황 → 금리 → IR → 공시 → 경제·금융 → 관심종목 (사용자 2026-09-07).
      번호(no)는 카드 표시용일 뿐, 딥링크·아카이브는 kind 로 걸려 있어 순서를 바꿔도 안전하다. */
   { kind:"morning",  group:"market", no:"02", cad:"매일 오전 7시 · 오후 4시", title:"시황 브리핑", kick:"MARKET BRIEFING", sum:"환율·증시·금리·원자재 + 오늘의 흐름 · 금융스트레스" },
@@ -316,12 +311,12 @@ var BRIEFS = [
   /* 상장(IPO) 동향(2026-10-04 추가, 옛 10번)은 2026-10-25 카드를 없앴다(사용자 결정 — 잘 안 봄). 엔진 ipo.py 도 내렸다.
      지난 회차는 ipo kind 에 남아 있으나 카드가 없어 열리지 않는다. 뒤 카드 번호를 하나씩 당겼다 */
   { kind:"rnd",      group:"news",   no:"11", cad:"평일 오전 7시", title:"기술 리포트", kick:"TECH REPORTS", sum:"SPRi·KISTEP 새 간행물 + 기술 정보 사이트 바로가기" },
-  { kind:"fss",      group:"reg",    no:"12", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
+  { kind:"fss",      group:"news",   no:"12", cad:"평일 오전 7시", title:"회계 모니터링", kick:"ACCOUNTING WATCH", sum:"금감원 · 상장협 · 내부회계운영위 — 제재·지적·자료·규정" },
   /* 법률 모니터링(옛 13번)은 2026-11-18 카드를 없앴다(사용자 — jina 릴레이 비용). 엔진 law.py 도 내렸고 복원은 엔진 태그 backup-law-20261118.
      지난 회차는 law kind 에 남아 있으나 카드가 없어 열리지 않는다 */
   /* 팟캐스트 카드는 2026-10-31 게시판을 내려 뺐다(사용자). 지난 회차는 podcast kind 에 남아 있으나 카드가 없어 열리지 않는다. renderPodcast 는 남겨 둔다. */
 ];
-var GRID = { warroom:"gridWarroom", market:"gridMarket", news:"gridNews", reg:"gridReg" };
+var GRID = { market:"gridMarket", news:"gridNews" };
 /* 상단 탭의 게시판 수는 BRIEFS 에서 센다 — 손으로 적어 두면 게시판을 더할 때 어긋난다 */
 [].forEach.call(document.querySelectorAll(".mtab"), function(t){
   var g = t.getAttribute("data-g");
@@ -602,7 +597,7 @@ function renderHome(){
       '<div class="foot">' + tag +
       (has ? '<span class="open">열기 <span class="aw">↗</span></span>' : '') + '</div>';
     if (has) el.addEventListener("click", function(){ openReader(b.kind); });
-    $(GRID[b.group] || "gridReg").appendChild(el);
+    $(GRID[b.group] || "gridNews").appendChild(el);
   });
 }
 
