@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>관심종목 리포트 — 2026-11-23</title>
+<style>
+:root{
+  --bg:#eae9e9; --paper:#f8f6f5; --paper2:#f1efee;
+  --ink:#201e1d; --ink2:#605d5d; --ink3:#8a8686;
+  --rule:#201e1d; --rule-soft:#d8d4d3; --line:#d8d4d3;   /* 2026-10 리디자인 — 검은 선·연한 회색 선 */
+  --accent:#ec3013; --accent-700:#ae1800; --accent-100:#fff2ef;
+  --blue:#1157cf; --blue-700:#0b3d96; --blue-100:#eef3fd;
+  --font:"Archivo","Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif;
+}
+/* 다크 모드는 끈다 — 삼성 인터넷 흰바탕+흰글자 실사례(2026-09-06). 항상 라이트. */
+:root{color-scheme:light}
+*{box-sizing:border-box}
+/* 부모 사이트에 iframe으로 실린 상태
+   · 제목은 부모가 이미 보여주므로 머리글을 접는다
+   · 부모가 iframe 높이를 내용에 맞춰 늘려서 자체 스크롤이 없다 → sticky·fixed 해제
+   · 바탕은 부모의 프레임 카드(#fff)에 맞춰 이음매를 없앤다 (--paper 하나만 바꾸면 전부 따라온다) */
+body.embed{--paper:#fff}
+body.embed .wrap{max-width:none;padding-left:0;padding-right:0}
+body.embed .mast{display:none}
+body.embed .wrap{padding-top:0}
+body.embed .nav{position:static;margin-top:0;border-top:0}
+body.embed section,body.embed .sub{scroll-margin-top:8px}
+body.embed .top{display:none}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 13px/1.55 var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+b,strong{font-weight:700}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 44px}
+
+/* 머리 */
+.kick{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--accent)}
+.mast h1{font-size:34px;line-height:1.1;letter-spacing:-.8px;margin:6px 0 0}
+.mast .dt{margin-top:7px;font-size:12px;color:var(--ink2)}
+.rule{height:2px;background:var(--rule);margin:16px 0 0}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;
+  border-top:2px solid var(--rule);border-bottom:2px solid var(--rule)}
+.kpi{padding:13px 16px}
+.kpi+.kpi{border-left:1px solid var(--rule-soft)}
+.kpi .k{font-size:9.5px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+.kpi .v{font-size:26px;font-weight:800;line-height:1.1;margin-top:3px;letter-spacing:-.02em}
+.kpi .sc{font-size:10.5px;color:var(--ink3);margin-top:2px}
+
+/* 상단 네비 — 텍스트처럼 보이면 누를 수 있는지 모른다. 테두리를 줘 버튼으로 읽히게 한다 */
+.nav{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:6px;
+  margin:16px 0 0;padding:9px 0;background:var(--paper);border-bottom:2px solid var(--rule)}
+.nav a{display:inline-flex;align-items:center;height:40px;padding:0 14px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
+  white-space:nowrap;border:2px solid var(--line);background:#fff}
+.nav a:hover{border-color:var(--ink)}
+.nav a:active{background:var(--ink);border-color:var(--ink);color:#fff}
+.nav .sep{flex:1;border:0}
+
+/* 섹션 */
+section{margin-top:40px;scroll-margin-top:46px}
+.sub{scroll-margin-top:46px}
+/* 하위 블록 — 섹션보다 한 단 낮은 머리 */
+.subh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:24px 0 0;padding:6px 0;
+  border-bottom:2px solid var(--ink)}
+.subh h3{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.subh .en{margin-left:auto;font-size:11px;letter-spacing:.5px;color:var(--ink2);font-weight:700}
+.sh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.sh .no{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.sh h2{font-size:19px;letter-spacing:-.4px}
+.sh .en{margin-left:auto;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--ink2)}
+.note{color:var(--ink2);font-size:11.5px;line-height:1.7;margin:10px 0 0}
+.note b{color:var(--ink)}
+
+/* 표 */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.g{border-collapse:collapse;width:100%;min-width:700px}
+table.g th{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  padding:10px 7px 6px;border-bottom:2px solid var(--rule);text-align:right;white-space:nowrap}
+table.g th:first-child{text-align:left}
+table.g th.s{cursor:pointer;user-select:none}
+table.g th.s:hover{color:var(--ink)}
+table.g th .aw{color:var(--accent);font-size:8px;margin-left:3px}
+table.g td{font-size:12px;padding:6px 7px;border-bottom:1px solid var(--rule-soft);
+  text-align:right;white-space:nowrap}
+table.g td:first-child{text-align:left}
+table.g tr.r{cursor:pointer}
+table.g tr.r:hover td{background:rgba(128,128,128,.10)}
+table.g tr.r.op td{background:var(--accent-100)}
+.tk{font-weight:800}
+.nm{color:var(--ink3);font-size:11px;margin-left:6px}
+.val{font-weight:800}
+.up{color:var(--accent-700)}
+.dn,.neg{color:var(--blue-700)}
+.flat,.dash{color:var(--ink3)}
+
+/* 스파크라인 — display:block 이면 셀의 우측정렬을 무시하고 왼쪽에 붙어
+   머리글('6개월')과 칸이 어긋난다. inline-block 이어야 숫자 열들과 같이 오른쪽에 선다. */
+svg.sp{display:inline-block;vertical-align:middle}
+table.g td.spk{text-align:left}
+.sp .ln{fill:none;stroke:var(--ink2);stroke-width:1.3}
+.sp .ar{fill:var(--rule-soft)}
+
+/* 행 펼침 — 바탕은 본문과 같은 흰색, 왼쪽 빨간 선으로만 구분한다 */
+tr.dt td{background:var(--paper);padding:14px 12px 16px;border-left:3px solid var(--accent)}
+.bars{display:grid;grid-template-columns:170px 1fr 96px;gap:6px 12px;align-items:center;max-width:660px}
+.bars .bn{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars .bt{background:rgba(128,128,128,.15);height:11px;position:relative}
+.bars .bt i{position:absolute;top:0;bottom:0;left:0;display:block;background:var(--accent)}
+.bars .bt i.neg{background:var(--blue)}
+.bars .bv{font-size:11.5px;font-weight:800;text-align:right;white-space:nowrap}
+.bars .bv small{font-weight:600;color:var(--ink3);margin-left:5px}
+
+/* 동행성 — 종목별 카드 */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:0;margin-top:14px;
+  border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft)}
+/* auto-fill 열 수가 화면 폭에 따라 바뀌므로 nth-child로 세로선을 그으면 어긋난다 —
+   모든 카드에 오른쪽 선을 주고 컨테이너가 왼쪽을 맡는다 */
+.card{padding:12px 14px 14px;border-bottom:1px solid var(--rule-soft);
+  border-right:1px solid var(--rule-soft)}
+.card .ct{font-size:12.5px;font-weight:800}
+.card .ct .nm{font-weight:400}
+.card .rows{margin-top:8px;display:grid;grid-template-columns:1fr 60px 30px;gap:4px 8px;align-items:center}
+.card .rn{font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .rb{height:9px;background:rgba(128,128,128,.15);position:relative}
+.card .rb i{position:absolute;top:0;bottom:0;left:0;background:var(--accent)}
+.card .rb i.neg{background:var(--blue)}
+.card .rv{font-size:11px;font-weight:800;text-align:right}
+.card .none{font-size:11px;color:var(--ink3);margin-top:7px}
+
+/* 히트맵 */
+.heat{border-collapse:collapse;margin-top:6px}
+.heat.core th.ch{font-size:10.5px;font-weight:700;color:var(--ink2);padding:0 6px 6px;
+  text-align:center;border-bottom:2px solid var(--rule);white-space:nowrap}
+.heat.core td.cc{width:auto;min-width:74px;height:28px;font-size:11px;font-weight:700;
+  letter-spacing:-.01em;text-align:center;border:1px solid var(--paper)}
+.tog{font-size:11px;font-weight:700;color:var(--accent-700);text-decoration:underline;
+  text-underline-offset:3px;padding:0}
+.tog:hover{color:var(--accent)}
+.heat th.ind{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:600;
+  color:var(--ink2);padding:6px 1px;height:132px;vertical-align:bottom}
+.heat th.pf{position:sticky;left:0;background:var(--paper);text-align:left;font-size:11px;
+  font-weight:700;padding:0 9px 0 0;white-space:nowrap;z-index:2}
+.heat th.gb{text-align:left;font-size:9.5px;letter-spacing:.16em;color:var(--ink3);font-weight:700;
+  padding:0 0 4px 3px;border-bottom:2px solid var(--rule);white-space:nowrap}
+.heat th.gb+th.gb{border-left:1px solid var(--paper)}
+.heat th.gp{text-align:left;font-size:10px;letter-spacing:.14em;color:var(--ink3);
+  padding:12px 0 4px;font-weight:700;position:sticky;left:0;background:var(--paper)}
+.heat th.gp::before{content:"";display:inline-block;width:6px;height:6px;background:var(--accent);
+  margin-right:7px;vertical-align:middle;position:relative;top:-1px}
+.heat td{width:24px;height:22px;border:1px solid var(--paper)}
+.heat td:hover{outline:2px solid var(--ink);outline-offset:-2px}
+.legend{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:11px;color:var(--ink3);flex-wrap:wrap}
+.legend i{display:inline-block;width:22px;height:12px}
+
+footer{border-top:2px solid var(--ink);margin-top:44px;padding-top:14px;
+  color:var(--ink2);font-size:11.5px;line-height:1.75}
+footer p{margin:0}
+footer .w{color:var(--ink2);margin-top:7px}
+/* 위로가기 — 라운드 0·2px 잉크 테두리, 호버 시 빨강 (사이트 문법 유지) */
+.top{position:fixed;right:18px;bottom:18px;z-index:30;width:40px;height:40px;
+  display:grid;place-items:center;background:var(--paper);color:var(--ink);
+  border:2px solid var(--ink);font-size:15px;line-height:1;
+  opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.top.on{opacity:1;visibility:visible}
+.top:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+@media(max-width:640px){.top{right:12px;bottom:12px;width:36px;height:36px}}
+[hidden]{display:none!important}
+.mper{display:none}
+@media(max-width:640px){
+  /* 좁은 화면에서는 6개월·전월말비·작년말비·닮은 지표를 접는다. 접은 칸은 행을
+     누르면 아래에 펴진다(periodStrip) — 닮은 지표는 거기서 막대 8개로 더 자세히 나온다 */
+  .mo{display:none}
+  table.g{min-width:0}
+  .mper{display:flex;flex-wrap:wrap;margin:2px 0 12px;border-top:1px solid var(--rule-soft)}
+  .mper .pc{flex:1 1 50%;min-width:0;padding:8px 10px 9px;font-size:13.5px;font-weight:800;
+    border-bottom:1px solid var(--rule-soft)}
+  .mper .pc:nth-child(odd){border-right:1px solid var(--rule-soft)}
+  .mper .pc b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+    color:var(--ink3);margin-bottom:3px}
+  .mper .pc.w6{flex:1 1 100%;border-right:0}
+  .mper .pc.w6 svg{display:block;width:100%;height:36px}
+  /* 표 안에서 펴지므로 내용 폭이 표를 넓히지 않게 화면 폭에 못박는다 */
+  .mper,tr.dt .bars{width:calc(100vw - 46px);box-sizing:border-box}
+  .bars{grid-template-columns:84px minmax(0,1fr) 46px;gap:5px 8px;max-width:none}
+  .bars .bn,.bars .bv{font-size:10.5px}
+  .bars .bv small{display:none}
+  .kpis{grid-template-columns:1fr}
+  .kpi+.kpi{border-left:0;border-top:1px solid var(--rule-soft)}
+  .mast h1{font-size:24px}
+  .cards{grid-template-columns:1fr}
+  .card:nth-child(odd){border-right:0}
+}
+</style>
+</head><body>
+<div class="wrap">
+
+<header class="mast" id="mast">
+  <div class="kick">WATCHLIST</div>
+  <h1 id="h1"></h1>
+  <div class="dt" id="dt"></div>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<section id="s1">
+  <div class="sh"><span class="no">01</span><h2>관심종목</h2><span class="en">WATCHLIST</span></div>
+<style>.pfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0;border-top:1px solid var(--rule-soft);border-left:1px solid var(--rule-soft);margin-top:10px}.pft{padding:10px 12px 9px;border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}.pft .l{font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pft .v{font-size:14px;font-weight:800;letter-spacing:-.01em;margin:2px 0 5px}.pft svg{display:block;width:100%;height:30px}</style><div class="subh" style="margin-top:16px"><h3>미국 관심종목</h3><span class="en">1종목 · 지정 순서</span></div><div class="pfg"><div class="pft"><div class="l">ANT</div><div class="v">$88.91</div><div class="l">신규 상장 · 작년말 종가 없음</div></div></div><div class="subh" style="margin-top:16px"><h3>한국 관심종목</h3><span class="en">4종목 · 올해 등락순</span></div><div class="pfg"><div class="pft"><div class="l">SOL 미국AI소프트웨어</div><div class="v" style="color:var(--blue-700)">▼10.4%</div><svg viewBox="0 0 100 31" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,31 0.0,13.9 0.9,15.2 1.9,13.9 2.8,14.9 3.7,14.6 4.6,16.3 5.6,18.2 6.5,19.1 7.4,19.2 8.3,18.3 9.3,22.2 10.2,21.6 11.1,25.3 12.0,25.6 13.0,23.9 13.9,26.2 14.8,25.4 15.7,29.0 16.7,28.0 17.6,26.0 18.5,23.6 19.4,22.5 20.4,22.5 21.3,22.7 22.2,23.1 23.1,23.1 24.1,24.1 25.0,24.9 25.9,25.4 26.9,26.1 27.8,26.4 28.7,25.5 29.6,24.4 30.6,28.6 31.5,27.5 32.4,24.5 33.3,24.7 34.3,22.4 35.2,24.7 36.1,24.4 37.0,25.2 38.0,24.3 38.9,21.5 39.8,21.3 40.7,21.2 41.7,19.0 42.6,17.6 43.5,15.9 44.4,16.5 45.4,12.2 46.3,4.0 47.2,8.4 48.1,11.9 49.1,14.8 50.0,14.2 50.9,14.4 51.9,16.5 52.8,17.4 53.7,16.8 54.6,14.6 55.6,12.2 56.5,11.0 57.4,10.5 58.3,12.2 59.3,13.2 60.2,12.7 61.1,13.7 62.0,14.0 63.0,17.5 63.9,15.6 64.8,14.8 65.7,13.5 66.7,8.2 67.6,9.8 68.5,7.4 69.4,7.9 70.4,9.4 71.3,10.0 72.2,10.0 73.1,11.8 74.1,6.7 75.0,6.7 75.9,10.3 76.9,10.4 77.8,11.2 78.7,11.2 79.6,8.4 80.6,7.2 81.5,7.8 82.4,7.6 83.3,8.2 84.3,6.4 85.2,6.9 86.1,7.9 87.0,6.4 88.0,9.8 88.9,11.7 89.8,11.3 90.7,11.1 91.7,9.0 92.6,10.7 93.5,13.7 94.4,16.0 95.4,16.8 96.3,15.0 97.2,15.3 98.1,16.4 99.1,18.7 100.0,19.9 100,31" fill="var(--blue)" opacity=".12"/><polyline points="0.0,13.9 0.9,15.2 1.9,13.9 2.8,14.9 3.7,14.6 4.6,16.3 5.6,18.2 6.5,19.1 7.4,19.2 8.3,18.3 9.3,22.2 10.2,21.6 11.1,25.3 12.0,25.6 13.0,23.9 13.9,26.2 14.8,25.4 15.7,29.0 16.7,28.0 17.6,26.0 18.5,23.6 19.4,22.5 20.4,22.5 21.3,22.7 22.2,23.1 23.1,23.1 24.1,24.1 25.0,24.9 25.9,25.4 26.9,26.1 27.8,26.4 28.7,25.5 29.6,24.4 30.6,28.6 31.5,27.5 32.4,24.5 33.3,24.7 34.3,22.4 35.2,24.7 36.1,24.4 37.0,25.2 38.0,24.3 38.9,21.5 39.8,21.3 40.7,21.2 41.7,19.0 42.6,17.6 43.5,15.9 44.4,16.5 45.4,12.2 46.3,4.0 47.2,8.4 48.1,11.9 49.1,14.8 50.0,14.2 50.9,14.4 51.9,16.5 52.8,17.4 53.7,16.8 54.6,14.6 55.6,12.2 56.5,11.0 57.4,10.5 58.3,12.2 59.3,13.2 60.2,12.7 61.1,13.7 62.0,14.0 63.0,17.5 63.9,15.6 64.8,14.8 65.7,13.5 66.7,8.2 67.6,9.8 68.5,7.4 69.4,7.9 70.4,9.4 71.3,10.0 72.2,10.0 73.1,11.8 74.1,6.7 75.0,6.7 75.9,10.3 76.9,10.4 77.8,11.2 78.7,11.2 79.6,8.4 80.6,7.2 81.5,7.8 82.4,7.6 83.3,8.2 84.3,6.4 85.2,6.9 86.1,7.9 87.0,6.4 88.0,9.8 88.9,11.7 89.8,11.3 90.7,11.1 91.7,9.0 92.6,10.7 93.5,13.7 94.4,16.0 95.4,16.8 96.3,15.0 97.2,15.3 98.1,16.4 99.1,18.7 100.0,19.9" fill="none" stroke="var(--blue)" stroke-width="1.6"/></svg></div><div class="pft"><div class="l">KT</div><div class="v" style="color:var(--blue-700)">▼13.5%</div><svg viewBox="0 0 100 31" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,31 0.0,22.2 0.9,20.6 1.9,22.0 2.8,21.8 3.7,20.4 4.6,19.5 5.6,18.2 6.5,18.5 7.4,19.0 8.3,17.4 9.3,16.4 10.2,16.8 11.1,17.2 12.0,13.9 13.0,10.4 13.9,8.5 14.8,4.0 15.7,7.3 16.7,8.4 17.6,10.1 18.5,15.5 19.4,13.7 20.4,13.3 21.3,13.6 22.2,13.2 23.1,13.9 24.1,15.5 25.0,13.1 25.9,12.4 26.9,12.8 27.8,13.8 28.7,13.0 29.6,12.2 30.6,11.0 31.5,8.9 32.4,9.5 33.3,10.3 34.3,11.3 35.2,11.4 36.1,12.3 37.0,12.3 38.0,14.7 38.9,13.9 39.8,13.3 40.7,11.5 41.7,16.3 42.6,17.5 43.5,17.5 44.4,20.0 45.4,20.6 46.3,19.5 47.2,19.4 48.1,19.6 49.1,13.2 50.0,17.9 50.9,18.0 51.9,20.1 52.8,21.0 53.7,21.5 54.6,20.7 55.6,19.7 56.5,19.7 57.4,17.8 58.3,15.3 59.3,20.7 60.2,21.5 61.1,19.9 62.0,21.1 63.0,19.3 63.9,19.5 64.8,20.6 65.7,21.3 66.7,20.9 67.6,20.1 68.5,20.6 69.4,20.9 70.4,19.1 71.3,21.4 72.2,20.9 73.1,20.1 74.1,18.9 75.0,19.4 75.9,19.6 76.9,18.5 77.8,20.3 78.7,20.7 79.6,20.4 80.6,20.0 81.5,20.3 82.4,20.7 83.3,20.5 84.3,21.7 85.2,22.0 86.1,21.4 87.0,23.8 88.0,23.0 88.9,22.8 89.8,24.5 90.7,26.8 91.7,29.0 92.6,27.9 93.5,26.9 94.4,24.5 95.4,20.1 96.3,22.5 97.2,22.2 98.1,22.1 99.1,24.0 100.0,28.2 100,31" fill="var(--blue)" opacity=".12"/><polyline points="0.0,22.2 0.9,20.6 1.9,22.0 2.8,21.8 3.7,20.4 4.6,19.5 5.6,18.2 6.5,18.5 7.4,19.0 8.3,17.4 9.3,16.4 10.2,16.8 11.1,17.2 12.0,13.9 13.0,10.4 13.9,8.5 14.8,4.0 15.7,7.3 16.7,8.4 17.6,10.1 18.5,15.5 19.4,13.7 20.4,13.3 21.3,13.6 22.2,13.2 23.1,13.9 24.1,15.5 25.0,13.1 25.9,12.4 26.9,12.8 27.8,13.8 28.7,13.0 29.6,12.2 30.6,11.0 31.5,8.9 32.4,9.5 33.3,10.3 34.3,11.3 35.2,11.4 36.1,12.3 37.0,12.3 38.0,14.7 38.9,13.9 39.8,13.3 40.7,11.5 41.7,16.3 42.6,17.5 43.5,17.5 44.4,20.0 45.4,20.6 46.3,19.5 47.2,19.4 48.1,19.6 49.1,13.2 50.0,17.9 50.9,18.0 51.9,20.1 52.8,21.0 53.7,21.5 54.6,20.7 55.6,19.7 56.5,19.7 57.4,17.8 58.3,15.3 59.3,20.7 60.2,21.5 61.1,19.9 62.0,21.1 63.0,19.3 63.9,19.5 64.8,20.6 65.7,21.3 66.7,20.9 67.6,20.1 68.5,20.6 69.4,20.9 70.4,19.1 71.3,21.4 72.2,20.9 73.1,20.1 74.1,18.9 75.0,19.4 75.9,19.6 76.9,18.5 77.8,20.3 78.7,20.7 79.6,20.4 80.6,20.0 81.5,20.3 82.4,20.7 83.3,20.5 84.3,21.7 85.2,22.0 86.1,21.4 87.0,23.8 88.0,23.0 88.9,22.8 89.8,24.5 90.7,26.8 91.7,29.0 92.6,27.9 93.5,26.9 94.4,24.5 95.4,20.1 96.3,22.5 97.2,22.2 98.1,22.1 99.1,24.0 100.0,28.2" fill="none" stroke="var(--blue)" stroke-width="1.6"/></svg></div><div class="pft"><div class="l">ACE 미국30년국채액티브</div><div class="v" style="color:var(--blue-700)">▼14.5%</div><svg viewBox="0 0 100 31" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,31 0.0,11.6 0.9,11.5 1.9,10.3 2.8,9.5 3.7,8.5 4.6,8.0 5.6,9.4 6.5,9.6 7.4,10.4 8.3,12.2 9.3,12.2 10.2,12.1 11.1,10.5 12.0,10.6 13.0,9.5 13.9,9.1 14.8,8.2 15.7,8.8 16.7,9.9 17.6,7.6 18.5,8.1 19.4,7.1 20.4,8.4 21.3,8.4 22.2,8.4 23.1,7.9 24.1,8.1 25.0,8.1 25.9,7.9 26.9,5.9 27.8,7.7 28.7,8.1 29.6,9.0 30.6,9.3 31.5,9.0 32.4,9.7 33.3,9.6 34.3,9.6 35.2,9.2 36.1,10.6 37.0,10.9 38.0,12.0 38.9,11.1 39.8,10.4 40.7,10.8 41.7,11.8 42.6,11.7 43.5,10.0 44.4,9.5 45.4,8.9 46.3,8.0 47.2,6.5 48.1,8.9 49.1,7.9 50.0,7.6 50.9,7.5 51.9,6.0 52.8,5.3 53.7,4.0 54.6,4.3 55.6,5.1 56.5,7.1 57.4,7.8 58.3,10.0 59.3,10.3 60.2,11.9 61.1,12.2 62.0,12.8 63.0,14.0 63.9,13.4 64.8,17.1 65.7,17.6 66.7,17.1 67.6,18.2 68.5,18.9 69.4,18.3 70.4,20.0 71.3,19.2 72.2,20.5 73.1,19.5 74.1,20.7 75.0,21.8 75.9,22.1 76.9,23.3 77.8,23.4 78.7,24.1 79.6,23.5 80.6,21.3 81.5,20.8 82.4,22.1 83.3,25.9 84.3,26.8 85.2,28.2 86.1,29.0 87.0,26.6 88.0,25.2 88.9,25.6 89.8,26.2 90.7,24.6 91.7,24.4 92.6,24.4 93.5,23.9 94.4,24.0 95.4,22.3 96.3,23.6 97.2,24.8 98.1,26.1 99.1,26.0 100.0,24.9 100,31" fill="var(--blue)" opacity=".12"/><polyline points="0.0,11.6 0.9,11.5 1.9,10.3 2.8,9.5 3.7,8.5 4.6,8.0 5.6,9.4 6.5,9.6 7.4,10.4 8.3,12.2 9.3,12.2 10.2,12.1 11.1,10.5 12.0,10.6 13.0,9.5 13.9,9.1 14.8,8.2 15.7,8.8 16.7,9.9 17.6,7.6 18.5,8.1 19.4,7.1 20.4,8.4 21.3,8.4 22.2,8.4 23.1,7.9 24.1,8.1 25.0,8.1 25.9,7.9 26.9,5.9 27.8,7.7 28.7,8.1 29.6,9.0 30.6,9.3 31.5,9.0 32.4,9.7 33.3,9.6 34.3,9.6 35.2,9.2 36.1,10.6 37.0,10.9 38.0,12.0 38.9,11.1 39.8,10.4 40.7,10.8 41.7,11.8 42.6,11.7 43.5,10.0 44.4,9.5 45.4,8.9 46.3,8.0 47.2,6.5 48.1,8.9 49.1,7.9 50.0,7.6 50.9,7.5 51.9,6.0 52.8,5.3 53.7,4.0 54.6,4.3 55.6,5.1 56.5,7.1 57.4,7.8 58.3,10.0 59.3,10.3 60.2,11.9 61.1,12.2 62.0,12.8 63.0,14.0 63.9,13.4 64.8,17.1 65.7,17.6 66.7,17.1 67.6,18.2 68.5,18.9 69.4,18.3 70.4,20.0 71.3,19.2 72.2,20.5 73.1,19.5 74.1,20.7 75.0,21.8 75.9,22.1 76.9,23.3 77.8,23.4 78.7,24.1 79.6,23.5 80.6,21.3 81.5,20.8 82.4,22.1 83.3,25.9 84.3,26.8 85.2,28.2 86.1,29.0 87.0,26.6 88.0,25.2 88.9,25.6 89.8,26.2 90.7,24.6 91.7,24.4 92.6,24.4 93.5,23.9 94.4,24.0 95.4,22.3 96.3,23.6 97.2,24.8 98.1,26.1 99.1,26.0 100.0,24.9" fill="none" stroke="var(--blue)" stroke-width="1.6"/></svg></div><div class="pft"><div class="l">KODEX 인버스</div><div class="v" style="color:var(--blue-700)">▼43.1%</div><svg viewBox="0 0 100 31" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,31 0.0,4.0 0.9,6.1 1.9,6.3 2.8,6.8 3.7,7.5 4.6,8.5 5.6,8.7 6.5,9.3 7.4,9.1 8.3,11.0 9.3,11.4 10.2,12.2 11.1,11.3 12.0,12.3 13.0,12.6 13.9,13.7 14.8,15.2 15.7,16.1 16.7,17.8 17.6,15.5 18.5,15.1 19.4,13.3 20.4,15.5 21.3,14.8 22.2,15.8 23.1,16.6 24.1,14.7 25.0,16.0 25.9,14.9 26.9,12.7 27.8,14.1 28.7,15.4 29.6,17.9 30.6,17.8 31.5,18.3 32.4,19.4 33.3,19.4 34.3,20.1 35.2,20.3 36.1,20.9 37.0,20.8 38.0,23.6 38.9,24.0 39.8,24.6 40.7,25.5 41.7,24.5 42.6,23.8 43.5,25.5 44.4,26.5 45.4,27.1 46.3,27.9 47.2,26.7 48.1,27.0 49.1,26.1 50.0,27.8 50.9,28.4 51.9,28.9 52.8,27.5 53.7,29.0 54.6,28.1 55.6,27.8 56.5,27.5 57.4,26.6 58.3,25.9 59.3,24.6 60.2,26.0 61.1,24.0 62.0,24.7 63.0,24.5 63.9,22.6 64.8,20.9 65.7,24.2 66.7,25.4 67.6,24.3 68.5,24.5 69.4,25.9 70.4,26.2 71.3,26.2 72.2,25.9 73.1,26.2 74.1,26.1 75.0,26.2 75.9,25.6 76.9,26.8 77.8,27.0 78.7,26.6 79.6,25.8 80.6,26.1 81.5,27.0 82.4,27.2 83.3,26.7 84.3,26.9 85.2,26.8 86.1,26.0 87.0,24.2 88.0,22.6 88.9,23.3 89.8,23.3 90.7,22.7 91.7,23.1 92.6,24.4 93.5,24.1 94.4,23.4 95.4,20.9 96.3,21.8 97.2,22.3 98.1,21.2 99.1,21.1 100.0,20.2 100,31" fill="var(--blue)" opacity=".12"/><polyline points="0.0,4.0 0.9,6.1 1.9,6.3 2.8,6.8 3.7,7.5 4.6,8.5 5.6,8.7 6.5,9.3 7.4,9.1 8.3,11.0 9.3,11.4 10.2,12.2 11.1,11.3 12.0,12.3 13.0,12.6 13.9,13.7 14.8,15.2 15.7,16.1 16.7,17.8 17.6,15.5 18.5,15.1 19.4,13.3 20.4,15.5 21.3,14.8 22.2,15.8 23.1,16.6 24.1,14.7 25.0,16.0 25.9,14.9 26.9,12.7 27.8,14.1 28.7,15.4 29.6,17.9 30.6,17.8 31.5,18.3 32.4,19.4 33.3,19.4 34.3,20.1 35.2,20.3 36.1,20.9 37.0,20.8 38.0,23.6 38.9,24.0 39.8,24.6 40.7,25.5 41.7,24.5 42.6,23.8 43.5,25.5 44.4,26.5 45.4,27.1 46.3,27.9 47.2,26.7 48.1,27.0 49.1,26.1 50.0,27.8 50.9,28.4 51.9,28.9 52.8,27.5 53.7,29.0 54.6,28.1 55.6,27.8 56.5,27.5 57.4,26.6 58.3,25.9 59.3,24.6 60.2,26.0 61.1,24.0 62.0,24.7 63.0,24.5 63.9,22.6 64.8,20.9 65.7,24.2 66.7,25.4 67.6,24.3 68.5,24.5 69.4,25.9 70.4,26.2 71.3,26.2 72.2,25.9 73.1,26.2 74.1,26.1 75.0,26.2 75.9,25.6 76.9,26.8 77.8,27.0 78.7,26.6 79.6,25.8 80.6,26.1 81.5,27.0 82.4,27.2 83.3,26.7 84.3,26.9 85.2,26.8 86.1,26.0 87.0,24.2 88.0,22.6 88.9,23.3 89.8,23.3 90.7,22.7 91.7,23.1 92.6,24.4 93.5,24.1 94.4,23.4 95.4,20.9 96.3,21.8 97.2,22.3 98.1,21.2 99.1,21.1 100.0,20.2" fill="none" stroke="var(--blue)" stroke-width="1.6"/></svg></div></div><p class="note">숫자 = 작년 말 종가 대비 올해 등락률(아래 표의 '작년말비'와 같은 기준) · 그래프 = 올해 흐름 · 상승 빨강, 하락 파랑</p>
+  <div class="scroll" style="margin-top:16px"><table class="g" id="pf"></table></div>
+</section>
+
+
+
+<footer>
+  <p>최근 = 각 시장 최근 거래일 종가 · 아침 발행 기준으로 한국은 전일, 미국·유럽은 지난밤</p>
+  <p id="miss" hidden></p>
+</footer>
+
+<button class="top" id="toTop" type="button" aria-label="맨 위로">↑</button>
+
+</div>
+<script>var DATA={"date":"2026-11-23","dateLabel":"11/23(월)","prevYear":"2025","window":126,"minR":0.3,"total":{"prev":-2.25,"mEnd":0.63,"yEnd":-20.39,"n":5},"groups":[{"dna":"Convex Risk","label":"Convex Risk","en":"CONVEX RISK","rows":[{"name":"114800","sub":"KODEX 인버스","disp":"KODEX 인버스","alt":"114800","pfx":"₩","d":0,"last":1382.0,"chg":[5.58,17.42,-43.13],"spark":[57.9,39.8,27.9,12.2,26.2,22.8,23.7,6.3,0.0,10.1,10.1,13.0,17.2,35.2,49.3,47.6,48.2,50.9,87.0,54.9,40.9,53.2,34.4,31.9,27.5,33.1,32.3,39.0,34.6,22.8,34.2,32.5,22.8,26.6,26.6,24.5,41.3,55.4,65.4,73.4,75.5,52.6,64.2,76.5,82.4,79.0,95.6,100.0]}],"avg":{"prev":5.58,"mEnd":17.42,"yEnd":-43.13,"n":1}},{"dna":"Industrial Flow","label":"Industrial Flow","en":"INDUSTRIAL FLOW","rows":[{"name":"481180","sub":"SOL 미국AI소프트웨어","disp":"SOL 미국AI소프트웨어","alt":"481180","pfx":"₩","d":0,"last":13460.0,"chg":[-5.58,-12.0,-10.45],"spark":[17.8,27.9,23.4,88.0,79.6,55.7,36.4,38.4,24.0,28.5,36.8,53.5,58.6,53.3,46.7,49.6,40.7,16.9,25.9,44.3,81.2,79.8,83.4,72.5,61.0,63.8,91.4,71.4,75.6,60.4,59.3,83.1,83.5,86.5,83.2,90.2,100.0,94.1,56.7,59.9,71.1,64.0,15.3,31.9,33.8,32.2,18.3,0.0]}],"avg":{"prev":-5.58,"mEnd":-12.0,"yEnd":-10.45,"n":1}},{"dna":"Info Seeker","label":"Info Seeker","en":"INFO SEEKER","rows":[{"name":"ANT","sub":"앤트로픽","disp":"ANT","alt":"앤트로픽","pfx":"$","d":2,"last":88.91,"chg":[-8.5,null,null],"spark":null}],"avg":{"prev":-8.5,"mEnd":null,"yEnd":null,"n":1}},{"dna":"FX Macro Overlay","label":"FX Macro Overlay","en":"FX MACRO OVERLAY","rows":[{"name":"476760","sub":"ACE 미국30년국채액티브","disp":"ACE 미국30년국채액티브","alt":"476760","pfx":"₩","d":0,"last":8490.0,"chg":[1.07,-1.16,-14.5],"spark":[70.6,76.2,78.1,79.1,90.9,80.5,86.7,86.7,92.8,95.4,100.0,96.7,88.4,76.2,74.7,67.1,64.4,59.4,58.6,44.1,46.4,42.9,41.2,34.4,32.5,33.7,31.3,25.1,23.8,19.9,17.2,23.6,30.8,14.7,7.9,0.0,1.4,5.0,10.6,11.0,15.3,15.7,18.4,21.9,19.0,9.7,8.7,13.5]},{"name":"030200","sub":"KT","disp":"KT","alt":"030200","pfx":"₩","d":0,"last":45500.0,"chg":[-3.81,-1.73,-13.5],"spark":[85.6,82.4,63.2,61.6,68.0,66.4,74.4,78.4,62.4,49.6,57.6,65.6,72.0,100.0,57.6,55.2,54.4,68.8,66.4,53.6,56.0,55.2,56.0,70.4,55.2,60.0,72.0,66.4,70.4,60.8,61.6,58.4,60.8,59.2,54.4,48.0,35.2,35.2,41.6,16.4,1.6,2.0,16.0,50.4,44.0,44.0,44.0,0.0]}],"avg":{"prev":-1.37,"mEnd":-1.44,"yEnd":-14.0,"n":2}}],"drivers":{"matrix":{"114800":{"KOSPI":-0.99,"KOSDAQ":-0.7,"미국(DJIA)":-0.14,"미국(S&P500)":-0.3,"미국(NASDAQ)":-0.36,"美 반도체(SOX)":-0.42,"유로(Stoxx600)":-0.16,"영국(FTSE100)":0.01,"독일(DAX)":-0.09,"일본(Nikkei225)":-0.79,"중국(상해종합)":-0.48,"홍콩(HangSeng)":-0.05,"대만(가권)":-0.66,"신흥국(EEM ETF)":-0.35,"미국SW(IGV)":-0.15,"USD/KRW":0.03,"JPY(100엔)/KRW":-0.13,"CNY/KRW":0.05,"USD/CNY":0.18,"Dollar Index":-0.01,"EUR/USD":-0.21,"USD/JPY":0.15,"KOFR(익일물)":0.01,"CD(91일)":0.02,"CP(91일)":0.09,"국고채(3년)":0.11,"국고채(5년)":0.08,"국고채(10년)":0.07,"국고채(30년)":0.09,"회사채(3년, AA-)":0.13,"美 SOFR(1일)":-0.09,"美 국채(10년)":0.18,"원유(WTI, 배럴)":0.05,"원유(Brent, 배럴)":0.05,"금(온스)":-0.14,"밀(센트/부셸)":0.04,"옥수수(센트/부셸)":0.08,"구리($/파운드)":-0.23,"알루미늄($/톤)":0.1},"481180":{"KOSPI":0.26,"KOSDAQ":0.32,"미국(DJIA)":0.32,"미국(S&P500)":0.43,"미국(NASDAQ)":0.45,"美 반도체(SOX)":0.14,"유로(Stoxx600)":0.06,"영국(FTSE100)":0.02,"독일(DAX)":0.17,"일본(Nikkei225)":0.39,"중국(상해종합)":0.24,"홍콩(HangSeng)":0.23,"대만(가권)":0.37,"신흥국(EEM ETF)":0.17,"미국SW(IGV)":0.8,"USD/KRW":-0.04,"JPY(100엔)/KRW":-0.0,"CNY/KRW":-0.05,"USD/CNY":0.01,"Dollar Index":0.06,"EUR/USD":0.13,"USD/JPY":-0.03,"KOFR(익일물)":0.05,"CD(91일)":0.04,"CP(91일)":-0.08,"국고채(3년)":-0.11,"국고채(5년)":-0.1,"국고채(10년)":-0.07,"국고채(30년)":-0.03,"회사채(3년, AA-)":-0.11,"美 SOFR(1일)":0.05,"美 국채(10년)":-0.09,"원유(WTI, 배럴)":-0.13,"원유(Brent, 배럴)":-0.14,"금(온스)":0.2,"밀(센트/부셸)":-0.07,"옥수수(센트/부셸)":-0.1,"구리($/파운드)":0.16,"알루미늄($/톤)":-0.03},"ANT":{},"476760":{"KOSPI":0.05,"KOSDAQ":-0.03,"미국(DJIA)":0.1,"미국(S&P500)":-0.0,"미국(NASDAQ)":-0.03,"美 반도체(SOX)":-0.01,"유로(Stoxx600)":0.09,"영국(FTSE100)":0.04,"독일(DAX)":0.04,"일본(Nikkei225)":0.02,"중국(상해종합)":0.07,"홍콩(HangSeng)":-0.11,"대만(가권)":-0.09,"신흥국(EEM ETF)":0.03,"미국SW(IGV)":-0.04,"USD/KRW":0.16,"JPY(100엔)/KRW":0.17,"CNY/KRW":0.16,"USD/CNY":0.07,"Dollar Index":0.11,"EUR/USD":-0.02,"USD/JPY":-0.02,"KOFR(익일물)":0.08,"CD(91일)":0.01,"CP(91일)":-0.01,"국고채(3년)":-0.34,"국고채(5년)":-0.39,"국고채(10년)":-0.51,"국고채(30년)":-0.42,"회사채(3년, AA-)":-0.35,"美 SOFR(1일)":-0.06,"美 국채(10년)":-0.41,"원유(WTI, 배럴)":-0.18,"원유(Brent, 배럴)":-0.2,"금(온스)":0.04,"밀(센트/부셸)":-0.01,"옥수수(센트/부셸)":-0.08,"구리($/파운드)":0.06,"알루미늄($/톤)":-0.09},"030200":{"KOSPI":-0.16,"KOSDAQ":-0.11,"미국(DJIA)":-0.07,"미국(S&P500)":-0.11,"미국(NASDAQ)":-0.13,"美 반도체(SOX)":-0.16,"유로(Stoxx600)":-0.06,"영국(FTSE100)":-0.04,"독일(DAX)":-0.05,"일본(Nikkei225)":-0.18,"중국(상해종합)":0.04,"홍콩(HangSeng)":0.13,"대만(가권)":-0.11,"신흥국(EEM ETF)":-0.09,"미국SW(IGV)":-0.06,"USD/KRW":-0.08,"JPY(100엔)/KRW":-0.15,"CNY/KRW":-0.09,"USD/CNY":0.24,"Dollar Index":-0.04,"EUR/USD":0.03,"USD/JPY":0.07,"KOFR(익일물)":-0.02,"CD(91일)":0.12,"CP(91일)":0.07,"국고채(3년)":0.15,"국고채(5년)":0.1,"국고채(10년)":0.13,"국고채(30년)":0.14,"회사채(3년, AA-)":0.14,"美 SOFR(1일)":-0.04,"美 국채(10년)":0.08,"원유(WTI, 배럴)":0.06,"원유(Brent, 배럴)":0.02,"금(온스)":0.06,"밀(센트/부셸)":0.04,"옥수수(센트/부셸)":0.14,"구리($/파운드)":-0.08,"알루미늄($/톤)":-0.1}},"grouped":[{"name":"KOSPI","hits":[{"ticker":"114800","r":-0.99}],"more":0,"count":1,"best":0.99},{"name":"미국SW(IGV)","hits":[{"ticker":"481180","r":0.8}],"more":0,"count":1,"best":0.8},{"name":"일본(Nikkei225)","hits":[{"ticker":"114800","r":-0.79}],"more":0,"count":1,"best":0.79},{"name":"국고채(10년)","hits":[{"ticker":"476760","r":-0.51}],"more":0,"count":1,"best":0.51},{"name":"미국(NASDAQ)","hits":[{"ticker":"481180","r":0.45}],"more":0,"count":1,"best":0.45},{"name":"국고채(30년)","hits":[{"ticker":"476760","r":-0.42}],"more":0,"count":1,"best":0.42}],"orphans":["030200","ANT"],"indicators":["KOSPI","KOSDAQ","미국(DJIA)","미국(S&P500)","미국(NASDAQ)","美 반도체(SOX)","유로(Stoxx600)","영국(FTSE100)","독일(DAX)","일본(Nikkei225)","중국(상해종합)","홍콩(HangSeng)","대만(가권)","신흥국(EEM ETF)","미국SW(IGV)","USD/KRW","JPY(100엔)/KRW","CNY/KRW","USD/CNY","Dollar Index","EUR/USD","USD/JPY","KOFR(익일물)","CD(91일)","CP(91일)","국고채(3년)","국고채(5년)","국고채(10년)","국고채(30년)","회사채(3년, AA-)","美 SOFR(1일)","美 국채(10년)","원유(WTI, 배럴)","원유(Brent, 배럴)","금(온스)","밀(센트/부셸)","옥수수(센트/부셸)","구리($/파운드)","알루미늄($/톤)"],"core":["KOSPI","미국(NASDAQ)","美 반도체(SOX)","USD/KRW","국고채(10년)","美 국채(10년)","금(온스)","원유(WTI, 배럴)"],"indGroups":[["주가",15],["환율",7],["금리",10],["원자재",7]]},"missing":[],"ecosFixes":[]};</script>
+<script>
+(function(){
+var D=DATA,$=function(s){return document.querySelector(s)};
+try{ if(window.self!==window.top) document.body.classList.add("embed"); }catch(e){ document.body.classList.add("embed") }
+function esc(x){return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function num(v,d){if(v==null||!isFinite(v))return "-";
+  var s=Number(v).toFixed(d==null?2:d),p=s.split("."),neg=p[0][0]==="-",i=neg?p[0].slice(1):p[0];
+  p[0]=(neg?"-":"")+i.replace(/\B(?=(\d{3})+(?!\d))/g,",");return p.length>1?p[0]+"."+p[1]:p[0]}
+function cls(v){return v>0?"up":v<0?"dn":"flat"}
+function chgTxt(v,isRate){if(v==null)return '<span class="dash">—</span>';
+  var d=isRate?1:2,u=isRate?"bp":"%";
+  if(Math.abs(v)<Math.pow(10,-d)/2)return '<span class="flat">'+(0).toFixed(d)+u+"</span>";
+  return '<span class="'+cls(v)+'">'+(v>0?"▲":"▼")+Math.abs(v).toFixed(d)+u+"</span>"}
+
+
+/* 스파크라인 — 0~100 정규화 배열 */
+function spark(a){if(!a||a.length<2)return "";
+  var w=76,h=22,st=w/(a.length-1),pts=[],i;
+  for(i=0;i<a.length;i++)pts.push((i*st).toFixed(1)+","+(h-1-a[i]/100*(h-3)).toFixed(1));
+  var last=a[a.length-1],first=a[0];
+  return '<svg class="sp" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true">'+
+    '<polygon class="ar" points="0,'+h+' '+pts.join(" ")+' '+w+','+h+'"/>'+
+    '<polyline class="ln" points="'+pts.join(" ")+'" style="stroke:'+(last>=first?"var(--accent)":"var(--blue)")+'"/></svg>'}
+
+/* 상관계수 표기 — 0을 떼지 않는다. 앞서 '.92'로 줄였다가 무슨 뜻인지 알 수 없다는 지적을 받았다 */
+function rTxt(r){return (r<0?"−":"+")+Math.abs(r).toFixed(2)}
+function rWord(r){var a=Math.abs(r);
+  return a>=.9?"거의 똑같이":a>=.75?"매우 비슷하게":a>=.6?"비슷하게":
+         a>=.45?"어느 정도":a>=.3?"약하게":"뚜렷하지 않게"}
+/* 표시용 이름 — 국내 종목은 코드(114800)가 아니라 종목명(KODEX 인버스)을 앞에 둔다.
+   미국 종목은 티커 자체가 이름 노릇을 하므로 그대로 둔다. */
+var DISP={},ALT={};
+D.groups.forEach(function(g){g.rows.forEach(function(r){
+  DISP[r.name]=r.disp||r.name; ALT[r.name]=r.alt||""})});
+function dsp(t){return DISP[t]||t}
+
+function topOf(t,n,min){var m=D.drivers.matrix[t]||{},a=[],k;
+  for(k in m){if(Math.abs(m[k])>=(min==null?D.minR:min))a.push([k,m[k]])}
+  a.sort(function(x,y){return Math.abs(y[1])-Math.abs(x[1])});return a.slice(0,n)}
+
+/* ── 머리 ─────────────────────────────────────────────── */
+$("#h1").textContent="관심종목 리포트";
+$("#dt").innerHTML=esc(D.dateLabel)+" · 한국 전일 종가 · 미국/유럽 지난밤 마감";
+var T=D.total;
+$("#kpis").innerHTML=[["전일비",T.prev],["전월말비",T.mEnd],["작년말비",T.yEnd]].map(function(x){
+  return '<div class="kpi"><div class="k">'+x[0]+'</div><div class="v '+cls(x[1])+'">'+
+    (x[1]==null?"—":(x[1]>0?"+":"")+x[1].toFixed(2)+"%")+'</div>'+
+    '<div class="sc">관심종목 '+T.n+'개 동일가중 단순평균</div></div>'}).join("");
+
+/* ── 01 관심종목 ──────────────────────────────────────── */
+var SORT=null,SDIR=-1;
+var PF_ROWS=[];
+D.groups.forEach(function(g){g.rows.forEach(function(r){PF_ROWS.push(r)})});
+var pfOrder=Array.from(document.querySelectorAll("#s1 .pfg .pft .l:first-child"),function(x){return x.textContent});
+var pfRank=function(r){var i=pfOrder.indexOf(r.disp||r.name);return i<0?pfOrder.length:i};
+PF_ROWS.sort(function(a,b){return pfRank(a)-pfRank(b)});
+function key(r,k){return k==="last"?r.last:r.chg[+k]}
+function rowH(r){
+  return '<tr class="r" data-t="'+esc(r.name)+'"><td><span class="tk">'+esc(r.disp||r.name)+
+    '</span><span class="nm">'+esc(r.alt||"")+"</span></td>"+
+    '<td class="spk mo">'+spark(r.spark)+"</td>"+
+    '<td class="val">'+(r.last==null?'<span class="dash">데이터 없음</span>':esc(r.pfx)+num(r.last,r.d))+"</td>"+
+    "<td>"+chgTxt(r.chg[0])+'</td><td class="mo">'+chgTxt(r.chg[1])+
+    '</td><td class="mo">'+chgTxt(r.chg[2])+"</td></tr>"}
+function renderPf(){
+  var C=[["종목",null,1,0],["6개월",null,1,1],["최근","last",0,0],["전일비","0",0,0],
+         ["전월말비","1",0,1],["작년말비","2",0,1]];
+  var h="<tr>"+C.map(function(c){var k=c[1],
+    aw=(k&&SORT===k)?' <span class="aw">'+(SDIR<0?"▼":"▲")+"</span>":"",
+    cl=(k?"s ":"")+(c[3]?"mo":"");
+    return "<th"+(cl.trim()?' class="'+cl.trim()+'"':"")+(k?' data-k="'+k+'"':"")+
+      (c[2]?' style="text-align:left"':"")+">"+c[0]+aw+"</th>"}).join("")+"</tr>";
+  var rows=PF_ROWS.slice();
+  if(SORT)rows.sort(function(a,b){var x=key(a,SORT),y=key(b,SORT);
+    if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return (x-y)*SDIR});
+  rows.forEach(function(r){h+=rowH(r)});
+  $("#pf").innerHTML=h}
+function rowOf(t){var r=null;D.groups.forEach(function(g){g.rows.forEach(function(x){
+  if(x.name===t)r=x})});return r}
+/* 좁은 화면에서 표에 못 실은 칸을 행을 펼쳐 보여준다. 넓은 화면에서는 표에 이미 있어 숨긴다 */
+function periodStrip(t){
+  var r=rowOf(t); if(!r)return "";
+  function cell(k,v,c){return '<span class="pc'+(c||"")+'"><b>'+k+"</b>"+v+"</span>"}
+  return '<div class="mper">'+
+    cell("최근", r.last==null?'<span class="dash">—</span>':esc(r.pfx)+num(r.last,r.d))+
+    cell("전일비", chgTxt(r.chg[0]))+cell("전월말비", chgTxt(r.chg[1]))+
+    cell("작년말비", chgTxt(r.chg[2]))+
+    cell("6개월", spark(r.spark).replace("<svg ", '<svg preserveAspectRatio="none" '), " w6")+
+    "</div>";
+}
+function detail(t){return periodStrip(t)}   /* 2026-11-21 상관계수 삭제 — 접힌 칸만 */
+function detailOld(t){var a=topOf(t,8,0);
+  var head=periodStrip(t);
+  if(!a.length)return head+'<p class="note">겹치는 거래일 부족 — 계산 불가</p>';
+  return head+'<div class="bars">'+a.map(function(x){
+    var weak=Math.abs(x[1])<D.minR;
+    return '<span class="bn">'+esc(x[0])+'</span><span class="bt"><i class="'+(x[1]<0?"neg":"")+
+      '" style="width:'+Math.round(Math.abs(x[1])*100)+'%'+(weak?";opacity:.45":"")+'"></i></span><span class="bv '+
+      (weak?"flat":x[1]<0?"neg":"up")+'">'+rTxt(x[1])+"<small>"+(x[1]<0?"반대로 ":"")+rWord(x[1])+"</small></span>"}).join("")+"</div>"}
+$("#pf").addEventListener("click",function(ev){
+  var th=ev.target.closest("th.s");
+  if(th){var k=th.dataset.k;if(SORT===k)SDIR=-SDIR;else{SORT=k;SDIR=-1}renderPf();return}
+  var tr=ev.target.closest("tr.r");if(!tr)return;
+  if(!window.matchMedia("(max-width:640px)").matches)return;   /* 넓은 화면은 표에 다 있어 펼칠 것 없음 */
+  var nx=tr.nextElementSibling;
+  if(nx&&nx.classList.contains("dt")){nx.remove();tr.classList.remove("op");return}
+  var d=document.createElement("tr");d.className="dt";
+  d.innerHTML='<td colspan="6">'+detail(tr.dataset.t)+"</td>";
+  tr.classList.add("op");tr.parentNode.insertBefore(d,tr.nextSibling)});
+/* ── 02 동행성 ─────────────────────────────────────────── */
+function heatColor(r){if(r==null)return "transparent";
+  var a=Math.min(Math.abs(r),1),o=(a*a*0.9).toFixed(3);
+  return "rgba("+(r<0?"17,87,207":"236,48,19")+","+o+")"}
+/* 히트맵이 32×37이면 정보가 너무 많아 패턴이 안 읽힌다(사용자 지적).
+   기본은 성격이 겹치지 않는 '핵심 지표'만 — 칸을 키울 수 있어 세로쓰기 라벨 없이 숫자까지 들어간다.
+   전체 지표는 토글로 남겨 둔다. */
+var HEAT_ALL=false;
+function viewHeat(){
+  var core=D.drivers.core||[];
+  if(!HEAT_ALL&&core.length)return viewHeatCore(core);
+  var ind=D.drivers.indicators;
+  if(!ind.length)return '<p class="note">계산된 상관 없음</p>';
+  var h='<div class="scroll"><table class="heat">';
+  var ig=D.drivers.indGroups||[];
+  if(ig.length){h+='<tr><th class="pf"></th>'+ig.map(function(g){
+    return '<th class="gb" colspan="'+g[1]+'">'+esc(g[0])+"</th>"}).join("")+"</tr>"}
+  h+='<tr><th class="pf"></th>'+
+    ind.map(function(n){return '<th class="ind">'+esc(n)+"</th>"}).join("")+"</tr>";
+  D.groups.forEach(function(g){
+    h+='<tr><th class="gp" colspan="'+(ind.length+1)+'">'+esc(g.label)+"</th></tr>";
+    g.rows.forEach(function(r){
+      var m=D.drivers.matrix[r.name]||{};
+      h+='<tr><th class="pf">'+esc(r.disp||r.name)+"</th>"+ind.map(function(n){
+        var v=m[n];
+        return '<td style="background:'+heatColor(v)+'" title="'+esc(r.name)+" × "+esc(n)+" = "+
+          (v==null?"-":rTxt(v))+'"></td>'}).join("")+"</tr>"})});
+  return h+"</table></div>"+
+    '<div class="legend"><i style="background:rgba(17,87,207,.9)"></i>−1.0 반대로'+
+    '<i style="background:rgba(17,87,207,.25)"></i><i style="background:transparent;border:1px solid var(--rule-soft)"></i>0 무관'+
+    '<i style="background:rgba(236,48,19,.25)"></i><i style="background:rgba(236,48,19,.9)"></i>+1.0 똑같이'+
+    "&nbsp;&nbsp;색이 진할수록 관계가 뚜렷함 · 칸에 마우스 올리면 정확한 값 표시"+
+    '</div><p class="note"><button id="heatTog" class="tog">← 핵심 지표만 보기</button></p>'}
+
+/* 핵심 지표 버전 — 열이 8개뿐이라 머리글을 눕히지 않아도 되고 칸 안에 값을 쓸 수 있다 */
+function viewHeatCore(core){
+  var h='<div class="scroll"><table class="heat core"><tr><th class="pf"></th>'+
+    core.map(function(n){return '<th class="ch">'+esc(n)+"</th>"}).join("")+"</tr>";
+  D.groups.forEach(function(g){
+    h+='<tr><th class="gp" colspan="'+(core.length+1)+'">'+esc(g.label)+"</th></tr>";
+    g.rows.forEach(function(r){
+      var m=D.drivers.matrix[r.name]||{};
+      h+='<tr><th class="pf">'+esc(r.disp||r.name)+"</th>"+core.map(function(n){
+        var v=m[n],strong=v!=null&&Math.abs(v)>=.55;
+        return '<td class="cc" style="background:'+heatColor(v)+';color:'+
+          (strong?"#fff":"var(--ink3)")+'">'+(v==null||Math.abs(v)<.2?"":rTxt(v))+"</td>"}).join("")+"</tr>"})});
+  return h+"</table></div>"+
+    '<div class="legend"><i style="background:rgba(17,87,207,.9)"></i>−1.0 반대로'+
+    '<i style="background:rgba(17,87,207,.25)"></i><i style="background:transparent;border:1px solid var(--rule-soft)"></i>0 무관'+
+    '<i style="background:rgba(236,48,19,.25)"></i><i style="background:rgba(236,48,19,.9)"></i>+1.0 똑같이'+
+    "&nbsp;&nbsp;|r| 0.20 미만은 비움</div>"+
+    '<p class="note">성격이 겹치지 않는 지표만 선별 (DJIA·S&amp;P500·나스닥처럼 거의 같이 움직이는 것은 하나만) '+
+    '<button id="heatTog" class="tog">전체 '+D.drivers.indicators.length+'개 지표 보기 →</button></p>'}
+function viewCards(){
+  var h='<div class="cards">';
+  D.groups.forEach(function(g){g.rows.forEach(function(r){
+    var a=topOf(r.name,3,0);   /* 기준선과 무관하게 상위 3개 — 약하면 약하다고 적는다 */
+    h+='<div class="card"><div class="ct">'+esc(r.disp||r.name)+'<span class="nm">'+esc(r.alt||"")+"</span></div>";
+    h+=a.length?'<div class="rows">'+a.map(function(x){
+        return '<span class="rn">'+esc(x[0])+'</span><span class="rb"><i class="'+(x[1]<0?"neg":"")+
+          '" style="width:'+Math.round(Math.abs(x[1])*100)+'%"></i></span><span class="rv '+
+          (Math.abs(x[1])<D.minR?"flat":x[1]<0?"neg":"up")+'">'+rTxt(x[1])+"</span>"}).join("")+"</div>"+
+        '<div class="none">'+(Math.abs(a[0][1])>=D.minR
+          ? esc(a[0][0])+"와 "+(a[0][1]<0?"반대로 ":"")+rWord(a[0][1])+" 움직임"
+          : "이 지표들로는 뚜렷이 설명되지 않는 종목")+"</div>"
+      :'<div class="none">겹치는 거래일 부족 — 계산 불가</div>';
+    h+="</div>"})});
+  return h+"</div>"}
+function viewByIdx(){
+  var g=D.drivers.grouped||[];
+  if(!g.length)return '<p class="note">겹치는 거래일 부족 — 이번 회차 미계산</p>';
+  var h='<div class="scroll"><table class="g" style="min-width:560px"><tr><th style="width:170px">지표</th><th style="text-align:left">함께 움직인 종목</th></tr>';
+  g.forEach(function(row){
+    h+='<tr><td><b>'+esc(row.name)+'</b></td><td style="text-align:left;white-space:normal;line-height:2">'+
+      row.hits.map(function(x){
+        var w=Math.round(Math.abs(x.r)*46);
+        return '<span style="display:inline-block;margin:0 16px 0 0;white-space:nowrap"><b>'+esc(dsp(x.ticker))+
+          '</b> <span style="display:inline-block;width:46px;height:8px;background:rgba(128,128,128,.15);vertical-align:middle;position:relative">'+
+          '<i style="position:absolute;left:0;top:0;bottom:0;width:'+w+'px;background:'+(x.r<0?"var(--blue)":"var(--accent)")+'"></i></span> '+
+          '<span class="'+(x.r<0?"neg":"up")+'">'+rTxt(x.r)+"</span></span>"}).join("")+
+      (row.more?'<span class="dash">외 '+row.more+"</span>":"")+"</td></tr>"});
+  h+="</table></div>";
+  if(D.drivers.orphans&&D.drivers.orphans.length)
+    h+='<p class="note">어느 지표와도 뚜렷이 함께 움직이지 않음: '+esc(D.drivers.orphans.join(", "))+"</p>";
+  return h}
+/* 2026-11-21 02 상관계수 섹션 삭제(사용자) — 계산 함수(viewCards 등)는 남겨 두되 화면에 붙이지 않는다 */
+
+if(D.missing&&D.missing.length){$("#miss").hidden=false;$("#miss").textContent="수집 실패: "+D.missing.join(", ")}
+/* 네비 — 사이트가 iframe에 <base target="_blank">를 넣기 때문에 기본 동작으로는
+   내부 앵커(#s1)까지 새 탭으로 열린다. 직접 스크롤해 그 문제를 피한다.
+   scrollIntoView 는 iframe 밖 부모 스크롤까지 밀어주므로 삽입 상태에서도 맞게 동작한다. */
+var NAV=document.querySelector(".nav");
+if(NAV)NAV.addEventListener("click",function(ev){
+  var a=ev.target.closest("a[href^='#']");
+  if(!a)return;
+  ev.preventDefault();
+  var el=document.getElementById(a.getAttribute("href").slice(1));
+  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+/* 위로가기 — 이 페이지는 사이트에서 iframe으로 열린다.
+   iframe이 자체 스크롤을 가지면 window 스크롤이 잡히고, 부모가 통째로 스크롤하는 구조면
+   window는 안 움직인다. 그래서 같은 출처일 때 부모 스크롤도 함께 본다(교차 출처면 조용히 실패). */
+(function(){
+  var btn=$("#toTop"), par=null;
+  try{ if(window.parent&&window.parent!==window&&window.parent.document) par=window.parent; }catch(e){}
+  function pos(){
+    var y=window.scrollY||0;
+    if(par){ try{ y=Math.max(y, par.scrollY||0); }catch(e){} }
+    return y;
+  }
+  function paint(){ btn.classList.toggle("on", pos()>360) }
+  btn.onclick=function(){
+    window.scrollTo({top:0,behavior:"smooth"});
+    if(par){ try{ par.scrollTo({top:0,behavior:"smooth"}); }catch(e){} }
+  };
+  window.addEventListener("scroll",paint,{passive:true});
+  if(par){ try{ par.addEventListener("scroll",paint,{passive:true}); }catch(e){} }
+  paint();
+})();
+
+renderPf();
+})();
+</script>
+</body></html>
