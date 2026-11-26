@@ -115,25 +115,40 @@
   .snaphead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
   .snaphead .seclabel{padding-top:8px;}
   .snapat{margin-left:auto;font-size:11px;color:var(--mut);}
-  .snapgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-    margin-top:10px;border:1px solid var(--line2);}
-  .sn{padding:12px 14px 13px;border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);}
-  .sn:nth-child(4n){border-right:0;}
-  .sn:nth-last-child(-n+4){border-bottom:0;}
-  .sn .l{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mut2);}
+  /* 2026-11-26 묶음 타일(사용자) — 국내 증시 2 · 미국 증시 4 · 환율·금리 3 · 원자재·코인 3.
+     PC 는 6칸 격자에 두 줄, 좁은 화면은 묶음별로 쌓는다. 그래프 색(상승 빨강·하락 파랑)은 그대로 */
+  .snaphead .gsub{font-size:11px;color:var(--mut);}
+  .snapgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 14px;margin-top:6px;}
+  .sgrp{min-width:0;}
+  .sgrp.w2{grid-column:span 2;} .sgrp.w3{grid-column:span 3;} .sgrp.w4{grid-column:span 4;}
+  .sgrp .gh{display:flex;gap:8px;align-items:baseline;padding:10px 0 6px;border-bottom:2px solid var(--ink);
+    white-space:nowrap;overflow:hidden;font-size:12.5px;font-weight:800;}
+  .sgrp .gt{display:grid;}
+  .sgrp.w1 .gt{grid-template-columns:1fr;}
+  .sgrp.w2 .gt{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sgrp.w3 .gt{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .sgrp.w4 .gt{grid-template-columns:repeat(4,minmax(0,1fr));}
+  .sn{padding:10px 10px 8px 0;border-right:1px solid var(--line2);min-width:0;}
+  .sn+.sn{padding-left:10px;}
+  .sn:last-child{border-right:0;}
+  .sn .l{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--mut2);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   /* 매시간 갱신되지 않는 항목(국고채·미 국채는 하루 한 번 고시)은 그 값의 날짜를 적는다 */
-  .sn .l .as{font-weight:500;letter-spacing:0;opacity:.85;margin-left:4px;white-space:nowrap;}
-  .sn .v{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-top:3px;line-height:1.1;}
-  .sn .c{font-size:12px;font-weight:700;margin-top:2px;}
+  .sn .l .as{font-weight:500;letter-spacing:0;font-size:10.5px;opacity:.85;margin-left:4px;}
+  .sn .v{font-size:20px;font-weight:800;letter-spacing:-0.4px;margin-top:2px;line-height:1.15;
+    font-variant-numeric:tabular-nums;}
+  .sn .c{font-size:12px;font-weight:700;margin-top:1px;}
   .sn .up{color:var(--acc7);} .sn .dn{color:#1a56db;} .sn .fl{color:var(--mut);}
-  .sn svg{display:block;width:100%;height:30px;margin-top:8px;}
-  .sn svg polyline{fill:none;stroke-width:1.6;}
+  .sn svg{display:block;width:100%;height:26px;margin-top:6px;}
+  .sn svg polyline{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke;}
   .sn svg polygon{opacity:.12;}
   @media (max-width:900px){ .snapgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .sn:nth-child(4n){border-right:1px solid var(--line2);}
-    .sn:nth-child(2n){border-right:0;}
-    .sn:nth-last-child(-n+4){border-bottom:1px solid var(--line2);}
-    .sn:nth-last-child(-n+2){border-bottom:0;} }
+    .sgrp.w2,.sgrp.w3,.sgrp.w4{grid-column:1/-1;}
+    .sgrp.w4 .gt{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .sgrp.w4 .sn:nth-child(2){border-right:0;}
+    .sgrp.w4 .sn:nth-child(3){padding-left:0;}
+    .sgrp.w4 .sn:nth-child(-n+2){border-bottom:1px solid var(--line2);} }
+  @media (max-width:520px){ .sn .v{font-size:17px;} .sn{padding-right:6px;} .sn+.sn{padding-left:6px;} }
   .totop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;display:grid;
     place-items:center;background:#fff;color:var(--ink);border:2px solid var(--ink);
     font-size:16px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;}
@@ -255,6 +270,7 @@
     <div class="wrap">
       <div class="snap" id="snap" hidden>
         <div class="snaphead"><span class="seclabel">MARKET SNAPSHOT</span>
+          <span class="gsub">그래프 = 최근 30거래일</span>
           <span class="snapat" id="snapAt"></span></div>
         <div class="snapgrid" id="snapGrid"></div>
       </div>
@@ -382,18 +398,26 @@ fetch("manifest.json", { cache:"no-store" })
    브리핑 HTML을 파싱하는 대신 작은 JSON 하나를 읽는다(발행 쪽이 바뀌어도 홈이 안 깨짐).
    서버는 1시간마다 갱신하지만(9/25 30분→1시간) 열려 있는 탭은 스스로 다시 불러오지 않으면 옛 화면에
    머문다 — 5분마다, 그리고 탭으로 돌아올 때 다시 읽는다. */
+/* 마켓 스냅샷 묶음 — 이름은 market.json 의 label 그대로(엔진 morning.py 가 만든다) */
+var SNAP_GROUPS = [
+  ["국내 증시", ["KOSPI", "KOSDAQ"]],
+  ["미국 증시", ["DOW", "NASDAQ", "S&P500", "VIX"]],
+  ["환율·금리", ["USD/KRW", "국고채 10년", "美 2년"]],
+  ["원자재·코인", ["금(온스)", "원유(WTI, 배럴)", "BTC"]]
+];
+var SNAP_SHORT = { "금(온스)": "금", "원유(WTI, 배럴)": "WTI", "국고채 10년": "국고 10년" };
 function loadSnap(){
 fetch("market.json", { cache:"no-store" })
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(m){
     if (!m || !m.items || !m.items.length) return;
     $("snapAt").textContent = m.at ? m.at + " 기준" : "";
-    $("snapGrid").innerHTML = m.items.map(function(it){
+    var tile = function(it){
       var up = (it.pct || 0) >= 0, cls = it.pct == null ? "fl" : (it.pct > 0 ? "up" : it.pct < 0 ? "dn" : "fl");
-      var arrow = it.pct == null ? "" : (it.pct > 0 ? "▲ " : it.pct < 0 ? "▼ " : "― ");
+      var arrow = it.pct == null ? "" : (it.pct > 0 ? "▲" : it.pct < 0 ? "▼" : "―");
       var val = Number(it.last).toLocaleString("ko-KR",
         { minimumFractionDigits: it.d, maximumFractionDigits: it.d }) + (it.rate ? "%" : "");
-      var pct = it.pct == null ? "—" : (it.pct > 0 ? "+" : "") + it.pct.toFixed(2) + "%";
+      var pct = it.pct == null ? "—" : Math.abs(it.pct).toFixed(2) + "%";
       var sp = "";
       if (it.spark && it.spark.length > 4) {
         var st = 100 / (it.spark.length - 1);
@@ -403,10 +427,24 @@ fetch("market.json", { cache:"no-store" })
              '<polygon points="0,30 ' + pts + ' 100,30" fill="' + col + '"/>' +
              '<polyline points="' + pts + '" stroke="' + col + '"/></svg>';
       }
-      var asOf = it.as ? '<span class="as">' + it.as + ' 종가</span>' : "";
-      return '<div class="sn"><div class="l">' + it.label + asOf + '</div>' +
+      var asOf = it.as ? '<span class="as">' + it.as + '</span>' : "";
+      return '<div class="sn"><div class="l">' + (SNAP_SHORT[it.label] || it.label) + asOf + '</div>' +
              '<div class="v">' + val + '</div>' +
              '<div class="c ' + cls + '">' + arrow + pct + '</div>' + sp + '</div>';
+    };
+    var by = {}, used = {};
+    m.items.forEach(function(it){ by[it.label] = it; });
+    var groups = SNAP_GROUPS.map(function(g){
+      var its = g[1].map(function(l){ used[l] = 1; return by[l]; }).filter(Boolean);
+      return [g[0], its];
+    });
+    // 묶음에 없는 새 지표가 market.json 에 생기면 '기타'로 — 조용히 사라지지 않게
+    var rest = m.items.filter(function(it){ return !used[it.label]; });
+    if (rest.length) groups.push(["기타", rest]);
+    $("snapGrid").innerHTML = groups.filter(function(g){ return g[1].length; }).map(function(g){
+      var n = Math.min(g[1].length, 4);
+      return '<div class="sgrp w' + n + '"><div class="gh">' + g[0] + '</div>' +
+             '<div class="gt">' + g[1].map(tile).join("") + '</div></div>';
     }).join("");
     $("snap").hidden = false;
   })
