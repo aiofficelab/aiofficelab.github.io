@@ -40,7 +40,7 @@
     color:var(--ink);font-size:13.5px;font-weight:600;}
   .mega a:hover{background:rgba(32,30,29,.05);color:var(--acc);}
   .mega a.off{color:var(--mut);pointer-events:none;}
-  .mega .no{font-size:10px;font-weight:600;color:var(--mut);min-width:18px;}
+  .mega .no{font-size:10px;font-weight:800;color:var(--acc);min-width:18px;}
   .mega .dd{margin-left:auto;font-size:11px;color:var(--mut);font-weight:600;white-space:nowrap;}
   .mega .dd.today{color:var(--acc);font-weight:800;}
   @media(max-width:640px){
@@ -57,9 +57,9 @@
   .brandlink:hover{color:var(--ink);}
   .page{min-height:100vh;display:flex;flex-direction:column;}
   main{flex:1;}
-  h1.masthead{margin:22px 0 4px;font-size:36px;line-height:1.02;font-weight:800;letter-spacing:-1.5px;}
-  .subdomain{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--mut);}
-  .dateline{margin-top:8px;padding-top:0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
+  h1.masthead{margin:36px 0 6px;font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-1.5px;}
+  .subdomain{font-size:16px;font-weight:700;letter-spacing:1px;color:var(--mut);}
+  .dateline{margin-top:14px;padding-top:0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;}
   .dateline .r{color:var(--mut);}
   /* 메뉴 바가 위에서 구획을 이미 그어 주므로 간격을 줄인다(9/6) */
   .lead{margin-top:14px;border-top:2px solid var(--ink);padding:13px 0 0;display:flex;gap:14px;align-items:baseline;flex-wrap:nowrap;}
@@ -80,7 +80,7 @@
   .cardx.off{cursor:default;border-color:var(--line2);}
   .cardx.off:hover{background:#fff;}
   .cardx .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
-  .cardx .no{font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums;}
+  .cardx .no{font-size:24px;font-weight:800;color:var(--acc);}
   .cardx.off .no{color:#9a9694;}
   .cardx .cad{font-size:12px;color:var(--mut);text-align:right;line-height:1.4;}
   .cardx .ttl{padding-top:2px;font-size:20px;font-weight:800;letter-spacing:-0.4px;}
@@ -129,13 +129,11 @@
   .sn svg{display:block;width:100%;height:30px;margin-top:8px;}
   .sn svg polyline{fill:none;stroke-width:1.6;}
   .sn svg polygon{opacity:.12;}
-  /* 좁은 화면은 3열 — 2열이면 12칸이 6줄로 길게 늘어진다(2026-11-26) */
-  @media (max-width:900px){ .snapgrid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  @media (max-width:900px){ .snapgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sn:nth-child(4n){border-right:1px solid var(--line2);}
-    .sn:nth-child(3n){border-right:0;}
+    .sn:nth-child(2n){border-right:0;}
     .sn:nth-last-child(-n+4){border-bottom:1px solid var(--line2);}
-    .sn:nth-last-child(-n+3){border-bottom:0;} }
-  @media (max-width:520px){ .sn{padding:10px 10px 11px;} .sn .v{font-size:18px;} .sn .l{letter-spacing:.3px;} }
+    .sn:nth-last-child(-n+2){border-bottom:0;} }
   .totop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;display:grid;
     place-items:center;background:#fff;color:var(--ink);border:2px solid var(--ink);
     font-size:16px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;}
@@ -231,7 +229,7 @@
   footer .s{font-size:11px;letter-spacing:0.5px;}
   :focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
   @media (max-width:640px){
-    h1.masthead{font-size:30px;}
+    h1.masthead{font-size:38px;}
     .lead .t{font-size:16px;}
     /* 모바일에서도 높이는 fitFrame이 정한다 */
   }
